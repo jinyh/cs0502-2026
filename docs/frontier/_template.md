@@ -14,7 +14,7 @@ status: living
 
 - **2026-Q3 基线**：<一句话现状>。
 - **关键开放问题**：<列出 2-4 个>。
-- **稳定参考**：见 [`deep/<deep_dive>`](../deep/<deep_dive>.md)。
+- **稳定参考**：见 `docs/deep/<deep_dive>`（如 `llm-deep-dive.md`）。
 
 ## 智能体联网增量区（动态，带日期戳）
 

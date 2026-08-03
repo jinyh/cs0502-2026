@@ -178,14 +178,15 @@ last_reviewed: YYYY-MM-DD
 - 21 个课程讲稿 PDF（`LectureNotes/`），Slide01-Welcome 为课程行政介绍
 - 课程大纲与教务材料（`reference/`，**不公开**，`.gitignore` 隔离）
 - 5 个交互可视化 HTML（`code/visualizations/`，迁移自课程 Demo）
-- 目录骨架与占位 README
+- 21 张知识点卡片（`docs/cards/`，全部完成初版，`stable`）
+- 3 个深度专题（`docs/deep/`：LLM / 强化学习 / 量子计算）
+- 2 个前沿注记页（`docs/frontier/`：LLM / CV，双层机制）
+- 多路径索引（`docs/paths/` 四页）与 `glossary.md`
+- OpenCode 配置全套（`opencode/`：AGENTS.md / knowledge.md / tools.md / sandbox-policy.md / 4 prompts）
+- `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
 
 ### 待完成
 
-- 21 张知识点卡片（`docs/cards/`，高价值 04/06/07/08/16/17/21 优先）
-- 深度专题 `llm-deep-dive.md`（最高优先）、`reinforcement-learning.md`、`quantum-computing.md`
-- 前沿注记 `llm-frontier.md`、`cv-frontier.md`
-- 多路径索引（`docs/paths/` 四页）与 `glossary.md`
-- OpenCode 配置全套（`opencode/`）
-- 联调验证（问答 / 沙箱 / 联网补前沿三条主链路）
-- `README.md` 与 `LICENSE`
+- `code/examples/` 概念演示 Python 脚本（对应卡片编号，部分已在卡片内嵌，待抽为独立可运行文件）
+- 动态联调：本地配 OpenCode + GLM/DeepSeek key，跑通问答 / 沙箱 / 联网补前沿 / 红线四条链路（静态验证已过：结构完整、链接有效、敏感文件零命中）
+- 二期可选：mkdocs 静态站点 + GitHub Pages；英文版；更多深度专题
