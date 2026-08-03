@@ -1,0 +1,46 @@
+# === 教师教务敏感数据（红线，永不提交）===
+reference/
+*.xls
+*.xlsx
+*.docx
+# 考题与作业
+*考题*
+*期末*
+*成绩*
+*学生名单*
+*作业*
+*homework*
+*HomeWork*
+
+# === 系统文件 ===
+.DS_Store
+Thumbs.db
+*.swp
+
+# === 编辑器/IDE ===
+.vscode/
+.idea/
+*.code-workspace
+
+# === Python ===
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+env/
+.pytest_cache/
+.ipynb_checkpoints/
+
+# === 构建产物 ===
+site/
+*.log
+
+# === API 密钥/本地配置 ===
+.env
+.env.local
+*.secret
+opencode/local/
+
+# === Claude/Agent 本地状态 ===
+.claude/settings.local.json
