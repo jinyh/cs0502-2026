@@ -36,6 +36,33 @@
 - [`14-data-mining`](../cards/14-data-mining.md)（材料数据驱动发现）
 - [`15-data-visualization`](../cards/15-data-visualization.md)
 
+## 船舶海洋与建筑工程
+
+重点：高性能计算、传感网络、控制联锁。
+
+- [`09-computer-system-arch`](../cards/09-computer-system-arch.md) + [`ext-complexity`](../cards/ext-complexity.md) — CFD/有限元仿真的算力与复杂度
+- [`11-computer-network`](../cards/11-computer-network.md) — 海洋观测浮标/传感网组网
+- [`ext-logic-boolean`](../cards/ext-logic-boolean.md) + [`12-information-security`](../cards/12-information-security.md) — 工业控制联锁与安全
+- [`06-graph-exploration`](../cards/06-graph-exploration.md) — 航线规划与最短路径
+
+## 机械动力与能源
+
+重点：建模仿真、机器人控制、工程化。
+
+- [`10-software-engineering`](../cards/10-software-engineering.md) + [`09-computer-system-arch`](../cards/09-computer-system-arch.md) — CAD/CAM 与数字孪生
+- [`16-artificial-intelligence`](../cards/16-artificial-intelligence.md) + [`reinforcement-learning`](../deep/reinforcement-learning.md) — 机器人学与运动控制
+- [`ext-logic-boolean`](../cards/ext-logic-boolean.md) — PLC 与工业控制逻辑
+- [`14-data-mining`](../cards/14-data-mining.md) — 设备状态监测与故障预测
+
+## 航空航天
+
+重点：高可信软件、轨道计算、遥感数据。
+
+- [`10-software-engineering`](../cards/10-software-engineering.md) + [`12-information-security`](../cards/12-information-security.md) — 飞控软件的高可信工程与安全规约
+- [`08-turing-machine`](../cards/08-turing-machine.md) — 轨道与姿态计算、可计算性边界
+- [`18-computer-vision`](../cards/18-computer-vision.md) + [`14-data-mining`](../cards/14-data-mining.md) — 遥感影像与地学大数据
+- [`ext-complexity`](../cards/ext-complexity.md) — 大规模仿真的复杂度约束
+
 ## 理科（数学/统计）学生
 
 重点：形式基础 + ML 数学 + 复杂度。

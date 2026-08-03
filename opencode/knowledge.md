@@ -30,6 +30,15 @@
 | 20 | [speech-recognition](../docs/cards/20-speech-recognition.md) | Slide20 | 智能 | 声学信号到文字 | ASR/声学/语言模型 |
 | 21 | [llm](../docs/cards/21-llm.md) | Slide21 | 智能 | 大语言模型与 Agent | Transformer/对齐/幻觉/Agent |
 
+## 扩展卡片（ext-，补全教学完整性）
+
+| 文件 | 主题 | 参考 |
+|---|---|---|
+| [ext-complexity](../docs/cards/ext-complexity.md) | 算法复杂度 Big-O / P 与 NP | MIT 6.0001、CS50 |
+| [ext-recursion-divide-conquer](../docs/cards/ext-recursion-divide-conquer.md) | 递归与分治、归并排序 | CS61A、CS106A |
+| [ext-web-technologies](../docs/cards/ext-web-technologies.md) | HTTP/HTML/前后端/REST、LLM API | CS50 Web |
+| [ext-logic-boolean](../docs/cards/ext-logic-boolean.md) | 布尔代数、逻辑门 | Dale Ch4 |
+
 ## 深度专题
 
 | 文件 | 主题 | 对应卡片 |

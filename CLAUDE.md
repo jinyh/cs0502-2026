@@ -76,6 +76,8 @@ ComputerIntroduction/
 
 凡旧规划主题确有深度展开需要时，在 `docs/deep/` 新建文件并在对应卡片 `related_deep` 字段登记反向链接。
 
+**扩展卡片**（`docs/cards/ext-*.md`）补全 21 讲未单独成讲、但导论应有的要点（算法复杂度、递归与分治、Web 技术基础、布尔逻辑），参考国内外导论（CS50/CS61A/CS106A/6.0001）与旧 45 篇规划。与 01-21 讲稿锚点卡片共模板、共入索引，见 `docs/cards/README.md`。
+
 ## 安全隔离约定（红线）
 
 `reference/` 目录是教师教务工作区，含**学生名单、成绩表、期末考题**等敏感数据，**永不提交**至公开仓库。
@@ -168,6 +170,7 @@ last_reviewed: YYYY-MM-DD
 - 文件命名：`XX-topic-name.md`（XX 为两位序号）；卡片与 `SlideNN` 编号一一对应
 - 对应讲稿引用格式：`（对应 SlideXX-EnglishName）`，如 `（对应 Slide02-IntroToCS）`
 - 参考文献格式：`作者 (年份). 标题. *期刊/出版社*.`
+- **跨学科联系**：优先体现交大优势工科（船舶海洋/材料化工/机械动力/生物医药/航空航天），见 `docs/paths/by-discipline-bridge.md`
 - **提交前自检**：`git status --porcelain` 确认未含 `reference/` 敏感文件
 - Git 提交信息使用中文，格式：`类型: 简要描述`（类型：`新增`、`修改`、`修复`、`重构`、`文档`）
 

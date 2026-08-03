@@ -28,6 +28,17 @@
 | 20 | `20-speech-recognition.md` | Slide20-SpeechRecognition | 智能思维 | 声学信号到文本的映射 |
 | 21 | `21-llm.md` | Slide21-LLM | 智能思维 | 大语言模型与 Agent 时代 |
 
+## 扩展卡片（ext- 前缀）
+
+> 01-21 锚定课堂讲稿；`ext-*` 补全教学完整性——参考国内外导论（Harvard CS50 / Berkeley CS61A / Stanford CS106A / MIT 6.0001）与旧 45 篇规划，覆盖交大 21 讲未单独成讲、但导论应有的要点。两者共用模板、共入索引。
+
+| 文件 | 主题 | 参考来源 |
+|---|---|---|
+| `ext-complexity.md` | 算法复杂度 Big-O / 最好最坏平均 / P 与 NP | MIT 6.0001、CS50 |
+| `ext-recursion-divide-conquer.md` | 递归思想、分治范式、归并排序、汉诺塔 | CS61A、CS106A |
+| `ext-web-technologies.md` | HTTP/HTML/前后端/REST、LLM API 接入 | CS50 Web 模块 |
+| `ext-logic-boolean.md` | 布尔代数、逻辑门、与数字电路和程序逻辑的关系 | Dale Ch4、旧规划 |
+
 ## 卡片模板
 
 每张卡片使用统一 YAML 元数据头 + 正文结构，详见 `04-data-structure-basics.md`（首个范例，确立全库写作范式）。字段：`title / lecture / aliases / thinking_pillar / category / tags / status / version / importance(1-5) / related_cards / related_deep / related_visualizations / last_reviewed`。
