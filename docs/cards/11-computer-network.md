@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 计算机网络（Computer Network）
 
-> 对应讲稿：[`Slide11-ComputerNetwork-2025.pdf`](../../LectureNotes/Slide11-ComputerNetwork-2025.pdf)
+> 对应讲稿：`Slide11-ComputerNetwork-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 人工智能（Artificial Intelligence）
 
-> 对应讲稿：[`Slide16-ArtificialIntelligence-2025.pdf`](../../LectureNotes/Slide16-ArtificialIntelligence-2025.pdf)
+> 对应讲稿：`Slide16-ArtificialIntelligence-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

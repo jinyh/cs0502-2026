@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 信息安全与密码学（Information Security & Cryptography）
 
-> 对应讲稿：[`Slide12-InformationSecurity-2025.pdf`](../../LectureNotes/Slide12-InformationSecurity-2025.pdf)
+> 对应讲稿：`Slide12-InformationSecurity-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

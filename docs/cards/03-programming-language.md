@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 编程语言（Programming Language）
 
-> 对应讲稿：[`Slide03-ProgrammingLanguage-2025.pdf`](../../LectureNotes/Slide03-ProgrammingLanguage-2025.pdf)
+> 对应讲稿：`Slide03-ProgrammingLanguage-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

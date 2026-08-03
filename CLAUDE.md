@@ -11,7 +11,7 @@
 - **前沿进展注记**（`docs/frontier/`）— 静态写底 + 智能体联网增量双层机制
 - **多路径索引**（`docs/paths/`）— 参考 Path2AGI，按思维支柱 / AI 能力 / 读者目标 / 跨学科桥接导航
 
-讲稿 PDF（`LectureNotes/`）只读，不动。知识库是其「AI 时代补层」而非替代——重点补充讲稿静态形式难以承载的**前沿进展**与**交互式问答**。
+讲稿 PDF（课程内部材料，发布在 Canvas，不入仓库）只读，不动。知识库是其「AI 时代补层」而非替代——重点补充讲稿静态形式难以承载的**前沿进展**与**交互式问答**。
 
 > 语言策略：中文为主，专业术语首次出现时标注英文原文（如：栈（stack））。暂不维护完整英文版。
 
@@ -39,7 +39,7 @@ ComputerIntroduction/
 ├── CLAUDE.md                           # 本文件：项目约定与 AI 协作指南
 ├── README.md                           # 仓库说明（中英摘要 + 快速开始）
 ├── LICENSE                             # 内容 CC-BY-SA 4.0 / 代码 MIT
-├── LectureNotes/                       # 21 个讲稿 PDF（只读源材料，原位不动）
+├── LectureNotes/  # 讲稿 PDF，课程内部材料，见 Canvas，不入仓库（本地保留）
 ├── docs/                               # 知识库主体
 │   ├── README.md
 │   ├── cards/                         # 21 讲轻量卡片（一讲一页，编号对齐 SlideNN）
@@ -130,7 +130,7 @@ last_reviewed: YYYY-MM-DD
 
 # <主题名称>（English Name）
 
-> 对应讲稿：[`SlideNN-EnglishName-2025.pdf`](../../LectureNotes/SlideNN-EnglishName-2025.pdf)
+> 对应讲稿：`SlideNN-EnglishName-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 ## 核心知识点（最小可检索单元）
@@ -178,7 +178,7 @@ last_reviewed: YYYY-MM-DD
 
 ### 已有资源
 
-- 21 个课程讲稿 PDF（`LectureNotes/`），Slide01-Welcome 为课程行政介绍
+- 21 个课程讲稿 PDF（课程内部材料，发布在 Canvas，不入仓库）
 - 课程大纲与教务材料（`reference/`，**不公开**，`.gitignore` 隔离）
 - 5 个交互可视化 HTML（`code/visualizations/`，迁移自课程 Demo）
 - 21 张知识点卡片（`docs/cards/`，全部完成初版，`stable`）

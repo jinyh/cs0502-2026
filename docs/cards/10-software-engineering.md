@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 软件工程（Software Engineering）
 
-> 对应讲稿：[`Slide10-SoftwareEngineering-2025.pdf`](../../LectureNotes/Slide10-SoftwareEngineering-2025.pdf)
+> 对应讲稿：`Slide10-SoftwareEngineering-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

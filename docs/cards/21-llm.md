@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 大语言模型（Large Language Model, LLM）
 
-> 对应讲稿：[`Slide21-LLM-2025.pdf`](../../LectureNotes/Slide21-LLM-2025.pdf)
+> 对应讲稿：`Slide21-LLM-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

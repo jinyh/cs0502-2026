@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 计算机系统与架构（Computer System & Architecture）
 
-> 对应讲稿：[`Slide09-ComputerSystemAndArchitecture-2025.pdf`](../../LectureNotes/Slide09-ComputerSystemAndArchitecture-2025.pdf)
+> 对应讲稿：`Slide09-ComputerSystemAndArchitecture-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

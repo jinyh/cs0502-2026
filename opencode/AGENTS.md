@@ -12,7 +12,7 @@
 
 - **主知识库**：`docs/cards/`（21 讲卡片，一讲一页）+ `docs/deep/`（AI 深度专题）。
 - **检索入口**：见 [`knowledge.md`](knowledge.md)。回答时优先引用卡片，给出相对路径（如 `docs/cards/04-*.md`）。
-- **讲稿原文**：`LectureNotes/*.pdf`，涉及具体讲稿内容时引用文件名（如「对应 Slide04」）。
+- **讲稿原文**：讲稿 PDF 在课程 Canvas，不在公开仓库；涉及具体讲稿时引用文件名（如「对应 Slide04」）。
 - **前沿进展**：见 `docs/frontier/`，遵循其静态层 + 联网增量双层约定（见下「前沿检索」）。
 - **术语**：首现标注英文，如：梯度下降（gradient descent）。人名保留原文。
 

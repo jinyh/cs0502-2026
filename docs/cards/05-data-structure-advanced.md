@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 数据结构进阶：搜索与哈希（Search & Hashing）
 
-> 对应讲稿：[`Slide05-DataStructure2-2025.pdf`](../../LectureNotes/Slide05-DataStructure2-2025.pdf)
+> 对应讲稿：`Slide05-DataStructure2-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

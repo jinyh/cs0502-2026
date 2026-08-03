@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 推荐系统（Recommendation System）
 
-> 对应讲稿：[`Slide19-RecommendSystem-2025.pdf`](../../LectureNotes/Slide19-RecommendSystem-2025.pdf)
+> 对应讲稿：`Slide19-RecommendSystem-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 

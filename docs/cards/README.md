@@ -1,6 +1,6 @@
 # 知识点卡片（docs/cards/）
 
-每讲一页轻量卡片，编号与 `LectureNotes/SlideNN-*.pdf` 严格一一对应，便于学生从讲稿跳转。
+每讲一页轻量卡片，编号与 `SlideNN-*.pdf` 讲稿严格一一对应（讲稿在课程 Canvas，不在公开仓库）。
 
 ## 21 讲对应表
 

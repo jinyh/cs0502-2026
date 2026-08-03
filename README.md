@@ -8,7 +8,7 @@
 ## 目录结构
 
 ```
-LectureNotes/      21 个课程讲稿 PDF（只读源材料）
+# 讲稿 PDF 在课程 Canvas，不在公开仓库
 docs/
   cards/          21 讲轻量知识点卡片（一讲一页，对齐 SlideNN）
   deep/           AI 高价值深度专题（LLM / 强化学习 / 量子计算）
@@ -87,9 +87,9 @@ opencode
 
 ## 许可证
 
-- **文档内容**（`docs/`、`LectureNotes/` 讲稿除外）：[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
+- **文档内容**（`docs/`）：[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
 - **代码**（`code/`、`opencode/` 配置）：MIT（见 `LICENSE`）
-- **讲稿 PDF**（`LectureNotes/`）：归课程组所有，本仓库仅作只读引用，不另授权。
+- **讲稿 PDF**：归课程组所有，发布在课程 Canvas，不在本仓库。
 
 ## 致谢
 

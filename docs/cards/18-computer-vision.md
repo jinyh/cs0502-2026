@@ -16,7 +16,7 @@ last_reviewed: 2026-08-03
 
 # 计算机视觉（Computer Vision）
 
-> 对应讲稿：[`Slide18-ComputerVision-2025.pdf`](../../LectureNotes/Slide18-ComputerVision-2025.pdf)
+> 对应讲稿：`Slide18-ComputerVision-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 
