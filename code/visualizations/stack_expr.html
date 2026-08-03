@@ -1,0 +1,526 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>栈的表达式求值动画演示</title>
+    <style>
+        body {
+            font-family: 'Microsoft YaHei', Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 30px;
+        }
+
+        .controls {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        select, button {
+            padding: 10px 20px;
+            margin: 0 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+
+        select {
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+
+        .expression-display {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            margin: 20px 0;
+            padding: 15px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            border-left: 5px solid #007bff;
+        }
+
+        .current-token {
+            color: #ff6b6b;
+            background: #ffe0e0;
+            padding: 2px 8px;
+            border-radius: 4px;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        .stack-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 30px 0;
+            gap: 20px;
+        }
+
+        .stack {
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .stack-title {
+            text-align: center;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 8px;
+        }
+
+        .operand-title {
+            background: #e3f2fd;
+            color: #1976d2;
+        }
+
+        .operator-title {
+            background: #fff3e0;
+            color: #f57c00;
+        }
+
+        .stack-visual {
+            border: 3px solid #ddd;
+            border-radius: 10px;
+            min-height: 400px;
+            position: relative;
+            background: #fafafa;
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            padding: 10px;
+        }
+
+        .stack-item {
+            width: 80%;
+            padding: 12px;
+            margin: 2px 0;
+            border-radius: 8px;
+            text-align: center;
+            font-weight: bold;
+            font-size: 18px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            animation: stackPush 0.5s ease-out;
+        }
+
+        @keyframes stackPush {
+            from {
+                transform: translateY(-20px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .operand-item {
+            background: linear-gradient(135deg, #42a5f5, #1e88e5);
+            color: white;
+        }
+
+        .operator-item {
+            background: linear-gradient(135deg, #ff9800, #f57c00);
+            color: white;
+        }
+
+        .top-indicator {
+            position: absolute;
+            right: -40px;
+            background: #ff4757;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 12px;
+            animation: bounce 1s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-5px); }
+            60% { transform: translateY(-3px); }
+        }
+
+        .step-info {
+            background: #e8f5e8;
+            border-left: 4px solid #4caf50;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 0 8px 8px 0;
+            font-size: 16px;
+        }
+
+        .result {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #2e7d32;
+            background: #c8e6c9;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .priority-table {
+            background: #f5f5f5;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-size: 14px;
+        }
+
+        .priority-table h4 {
+            margin-top: 0;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 栈的表达式求值动画演示</h1>
+        
+        <div class="controls">
+            <select id="expressionSelect">
+                <option value="5+(6/2)*3">5+(6/2)*3</option>
+                <option value="2+3*4">2+3*4</option>
+                <option value="(1+2)*(3+4)">（1+2）*（3+4）</option>
+                <option value="8/2+3*4-1">8/2+3*4-1</option>
+                <option value="((2+3)*4)/5">（（2+3）*4）/5</option>
+            </select>
+            <button onclick="startAnimation()">开始演示</button>
+            <button onclick="nextStep()" id="nextBtn" disabled>下一步</button>
+            <button onclick="resetAnimation()">重置</button>
+        </div>
+
+        <div class="priority-table">
+            <h4>🎯 运算符优先级表</h4>
+            <p><strong>高优先级：</strong> * / （乘除法）</p>
+            <p><strong>低优先级：</strong> + - （加减法）</p>
+            <p><strong>特殊：</strong> ( ) （括号优先级最高，但遇到右括号时触发计算）</p>
+        </div>
+
+        <div class="expression-display" id="expressionDisplay">
+            选择一个表达式开始演示
+        </div>
+
+        <div class="stack-container">
+            <div class="stack">
+                <div class="stack-title operand-title">📊 操作数栈（存储数字）</div>
+                <div class="stack-visual" id="operandStack">
+                    <div style="color: #999; font-style: italic; margin: auto;">空栈</div>
+                </div>
+            </div>
+
+            <div class="stack">
+                <div class="stack-title operator-title">⚙️ 运算符栈（存储运算符）</div>
+                <div class="stack-visual" id="operatorStack">
+                    <div style="color: #999; font-style: italic; margin: auto;">空栈</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="step-info" id="stepInfo">
+            点击"开始演示"来查看栈的工作过程
+        </div>
+
+        <div class="result" id="result" style="display: none;">
+            计算结果将在这里显示
+        </div>
+    </div>
+
+    <script>
+        class ExpressionEvaluator {
+            constructor() {
+                this.operandStack = [];
+                this.operatorStack = [];
+                this.expression = '';
+                this.currentIndex = 0;
+                this.steps = [];
+                this.currentStep = 0;
+                this.precedence = {
+                    '+': 1, '-': 1,
+                    '*': 2, '/': 2,
+                    '(': 0, ')': 0
+                };
+            }
+
+            preprocess(expr) {
+                // 预处理表达式，生成步骤
+                this.expression = expr.replace(/\s/g, '');
+                this.operandStack = [];
+                this.operatorStack = [];
+                this.steps = [];
+                this.currentIndex = 0;
+                
+                let i = 0;
+                while (i < this.expression.length) {
+                    const char = this.expression[i];
+                    
+                    if (this.isDigit(char)) {
+                        let num = '';
+                        while (i < this.expression.length && this.isDigit(this.expression[i])) {
+                            num += this.expression[i];
+                            i++;
+                        }
+                        i--; // 回退一位
+                        this.addStep(`读取数字: ${num}`, `将数字 ${num} 推入操作数栈`, 'push_operand', num);
+                        
+                    } else if (char === '(') {
+                        this.addStep(`读取左括号: (`, `将左括号 ( 推入运算符栈`, 'push_operator', char);
+                        
+                    } else if (char === ')') {
+                        this.addStep(`读取右括号: )`, `遇到右括号，开始计算直到左括号`, 'right_paren', char);
+                        
+                    } else if (this.isOperator(char)) {
+                        this.addStep(`读取运算符: ${char}`, `处理运算符 ${char}`, 'operator', char);
+                    }
+                    i++;
+                }
+                
+                this.addStep('表达式结束', '计算栈中剩余的运算符', 'finish', '');
+            }
+
+            addStep(action, description, type, token) {
+                this.steps.push({
+                    action,
+                    description,
+                    type,
+                    token,
+                    operandStack: [...this.operandStack],
+                    operatorStack: [...this.operatorStack]
+                });
+            }
+
+            isDigit(char) {
+                return char >= '0' && char <= '9';
+            }
+
+            isOperator(char) {
+                return ['+', '-', '*', '/'].includes(char);
+            }
+
+            hasHigherPrecedence(op1, op2) {
+                return this.precedence[op1] > this.precedence[op2];
+            }
+
+            calculate(op, b, a) {
+                switch(op) {
+                    case '+': return a + b;
+                    case '-': return a - b;
+                    case '*': return a * b;
+                    case '/': return a / b;
+                    default: return 0;
+                }
+            }
+
+            executeStep(step) {
+                switch(step.type) {
+                    case 'push_operand':
+                        this.operandStack.push(parseInt(step.token));
+                        break;
+                        
+                    case 'push_operator':
+                        this.operatorStack.push(step.token);
+                        break;
+                        
+                    case 'right_paren':
+                        while (this.operatorStack.length > 0 && this.operatorStack[this.operatorStack.length - 1] !== '(') {
+                            this.performCalculation();
+                        }
+                        if (this.operatorStack.length > 0) {
+                            this.operatorStack.pop(); // 移除左括号
+                        }
+                        break;
+                        
+                    case 'operator':
+                        while (this.operatorStack.length > 0 && 
+                               this.operatorStack[this.operatorStack.length - 1] !== '(' &&
+                               this.precedence[this.operatorStack[this.operatorStack.length - 1]] >= this.precedence[step.token]) {
+                            this.performCalculation();
+                        }
+                        this.operatorStack.push(step.token);
+                        break;
+                        
+                    case 'finish':
+                        while (this.operatorStack.length > 0) {
+                            this.performCalculation();
+                        }
+                        break;
+                }
+            }
+
+            performCalculation() {
+                if (this.operandStack.length >= 2 && this.operatorStack.length > 0) {
+                    const op = this.operatorStack.pop();
+                    const b = this.operandStack.pop();
+                    const a = this.operandStack.pop();
+                    const result = this.calculate(op, b, a);
+                    this.operandStack.push(result);
+                }
+            }
+        }
+
+        let evaluator = new ExpressionEvaluator();
+        let isAnimating = false;
+
+        function updateStackDisplay() {
+            const operandStackEl = document.getElementById('operandStack');
+            const operatorStackEl = document.getElementById('operatorStack');
+            
+            // 更新操作数栈
+            if (evaluator.operandStack.length === 0) {
+                operandStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
+            } else {
+                operandStackEl.innerHTML = '';
+                evaluator.operandStack.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'stack-item operand-item';
+                    div.textContent = item;
+                    if (index === evaluator.operandStack.length - 1) {
+                        div.innerHTML += '<span class="top-indicator">TOP</span>';
+                    }
+                    operandStackEl.appendChild(div);
+                });
+            }
+            
+            // 更新运算符栈
+            if (evaluator.operatorStack.length === 0) {
+                operatorStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
+            } else {
+                operatorStackEl.innerHTML = '';
+                evaluator.operatorStack.forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'stack-item operator-item';
+                    div.textContent = item;
+                    if (index === evaluator.operatorStack.length - 1) {
+                        div.innerHTML += '<span class="top-indicator">TOP</span>';
+                    }
+                    operatorStackEl.appendChild(div);
+                });
+            }
+        }
+
+        function updateExpressionDisplay() {
+            const expr = document.getElementById('expressionSelect').value;
+            let displayExpr = '';
+            
+            if (evaluator.currentStep < evaluator.steps.length) {
+                const currentToken = evaluator.steps[evaluator.currentStep].token;
+                let tokenIndex = 0;
+                
+                for (let i = 0; i < expr.length; i++) {
+                    if (tokenIndex <= evaluator.currentStep && expr[i] === currentToken) {
+                        displayExpr += `<span class="current-token">${expr[i]}</span>`;
+                        tokenIndex++;
+                    } else {
+                        displayExpr += expr[i];
+                    }
+                }
+            } else {
+                displayExpr = expr;
+            }
+            
+            document.getElementById('expressionDisplay').innerHTML = `表达式: ${displayExpr}`;
+        }
+
+        function startAnimation() {
+            const expr = document.getElementById('expressionSelect').value;
+            evaluator = new ExpressionEvaluator();
+            evaluator.preprocess(expr);
+            evaluator.currentStep = 0;
+            isAnimating = true;
+            
+            document.getElementById('nextBtn').disabled = false;
+            document.getElementById('result').style.display = 'none';
+            
+            updateStackDisplay();
+            updateExpressionDisplay();
+            document.getElementById('stepInfo').textContent = '点击"下一步"开始逐步执行';
+        }
+
+        function nextStep() {
+            if (evaluator.currentStep >= evaluator.steps.length) {
+                return;
+            }
+            
+            const step = evaluator.steps[evaluator.currentStep];
+            evaluator.executeStep(step);
+            
+            updateStackDisplay();
+            updateExpressionDisplay();
+            
+            document.getElementById('stepInfo').innerHTML = `
+                <strong>步骤 ${evaluator.currentStep + 1}:</strong> ${step.action}<br>
+                <em>${step.description}</em>
+            `;
+            
+            evaluator.currentStep++;
+            
+            if (evaluator.currentStep >= evaluator.steps.length) {
+                document.getElementById('nextBtn').disabled = true;
+                const result = evaluator.operandStack[0] || 0;
+                document.getElementById('result').innerHTML = `🎉 计算完成！最终结果: ${result}`;
+                document.getElementById('result').style.display = 'block';
+                isAnimating = false;
+            }
+        }
+
+        function resetAnimation() {
+            evaluator = new ExpressionEvaluator();
+            document.getElementById('nextBtn').disabled = true;
+            document.getElementById('result').style.display = 'none';
+            document.getElementById('stepInfo').textContent = '点击"开始演示"来查看栈的工作过程';
+            document.getElementById('expressionDisplay').textContent = '选择一个表达式开始演示';
+            
+            const operandStackEl = document.getElementById('operandStack');
+            const operatorStackEl = document.getElementById('operatorStack');
+            operandStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
+            operatorStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
+            
+            isAnimating = false;
+        }
+
+        // 初始化
+        resetAnimation();
+    </script>
+</body>
+</html>

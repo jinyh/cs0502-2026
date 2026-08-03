@@ -1,0 +1,552 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>二叉堆优先队列动画</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2em;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+        }
+        
+        .controls {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        input[type="number"] {
+            padding: 12px;
+            border: 2px solid #667eea;
+            border-radius: 8px;
+            font-size: 16px;
+            width: 100px;
+            outline: none;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.15);
+        }
+        
+        .btn-insert {
+            background: #48bb78;
+            color: white;
+        }
+        
+        .btn-extract {
+            background: #f56565;
+            color: white;
+        }
+        
+        .btn-random {
+            background: #ed8936;
+            color: white;
+        }
+        
+        .btn-clear {
+            background: #718096;
+            color: white;
+        }
+        
+        .info {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+        
+        .info-item {
+            background: #f7fafc;
+            padding: 15px 25px;
+            border-radius: 10px;
+            border-left: 4px solid #667eea;
+        }
+        
+        .info-label {
+            font-size: 0.85em;
+            color: #718096;
+            margin-bottom: 5px;
+        }
+        
+        .info-value {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: #2d3748;
+        }
+        
+        .canvas-container {
+            background: #f7fafc;
+            border-radius: 15px;
+            padding: 20px;
+            overflow-x: auto;
+            min-height: 400px;
+        }
+        
+        canvas {
+            display: block;
+            margin: 0 auto;
+        }
+        
+        .array-view {
+            margin-top: 20px;
+            padding: 20px;
+            background: #edf2f7;
+            border-radius: 10px;
+        }
+        
+        .array-title {
+            font-weight: bold;
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+        
+        .array-content {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        
+        .array-item {
+            background: white;
+            padding: 10px 15px;
+            border-radius: 8px;
+            border: 2px solid #cbd5e0;
+            font-weight: bold;
+            color: #2d3748;
+            min-width: 45px;
+            text-align: center;
+        }
+        
+        .array-index {
+            font-size: 0.7em;
+            color: #a0aec0;
+            display: block;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 1.5em;
+            }
+            
+            .controls {
+                flex-direction: column;
+                width: 100%;
+            }
+            
+            button, input {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌳 二叉堆优先队列</h1>
+        <p class="subtitle">最小堆实现 - 可视化动画演示</p>
+        
+        <div class="controls">
+            <input type="number" id="valueInput" placeholder="输入值" min="1" max="99" value="10">
+            <button class="btn-insert" onclick="insert()">插入元素</button>
+            <button class="btn-extract" onclick="extractMin()">取出最小值</button>
+            <button class="btn-random" onclick="insertRandom()">随机插入</button>
+            <button class="btn-clear" onclick="clearHeap()">清空堆</button>
+        </div>
+        
+        <div class="info">
+            <div class="info-item">
+                <div class="info-label">堆大小</div>
+                <div class="info-value" id="heapSize">0</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">最小值</div>
+                <div class="info-value" id="minValue">-</div>
+            </div>
+            <div class="info-item">
+                <div class="info-label">当前操作</div>
+                <div class="info-value" id="currentOp" style="font-size: 1em;">等待中</div>
+            </div>
+        </div>
+        
+        <div class="canvas-container">
+            <canvas id="heapCanvas"></canvas>
+        </div>
+        
+        <div class="array-view">
+            <div class="array-title">数组表示：</div>
+            <div class="array-content" id="arrayView"></div>
+        </div>
+    </div>
+
+    <script>
+        class MinHeap {
+            constructor() {
+                this.heap = [];
+            }
+            
+            parent(i) { return Math.floor((i - 1) / 2); }
+            leftChild(i) { return 2 * i + 1; }
+            rightChild(i) { return 2 * i + 2; }
+            
+            swap(i, j) {
+                [this.heap[i], this.heap[j]] = [this.heap[j], this.heap[i]];
+            }
+            
+            insert(value) {
+                this.heap.push(value);
+                this.heapifyUp(this.heap.length - 1);
+            }
+            
+            heapifyUp(index) {
+                const steps = [];
+                while (index > 0) {
+                    const parentIndex = this.parent(index);
+                    if (this.heap[index] < this.heap[parentIndex]) {
+                        steps.push({ type: 'swap', indices: [index, parentIndex] });
+                        this.swap(index, parentIndex);
+                        index = parentIndex;
+                    } else {
+                        break;
+                    }
+                }
+                return steps;
+            }
+            
+            extractMin() {
+                if (this.heap.length === 0) return null;
+                if (this.heap.length === 1) return this.heap.pop();
+                
+                const min = this.heap[0];
+                this.heap[0] = this.heap.pop();
+                this.heapifyDown(0);
+                return min;
+            }
+            
+            heapifyDown(index) {
+                const steps = [];
+                while (true) {
+                    let smallest = index;
+                    const left = this.leftChild(index);
+                    const right = this.rightChild(index);
+                    
+                    if (left < this.heap.length && this.heap[left] < this.heap[smallest]) {
+                        smallest = left;
+                    }
+                    
+                    if (right < this.heap.length && this.heap[right] < this.heap[smallest]) {
+                        smallest = right;
+                    }
+                    
+                    if (smallest !== index) {
+                        steps.push({ type: 'swap', indices: [index, smallest] });
+                        this.swap(index, smallest);
+                        index = smallest;
+                    } else {
+                        break;
+                    }
+                }
+                return steps;
+            }
+            
+            peek() {
+                return this.heap.length > 0 ? this.heap[0] : null;
+            }
+            
+            size() {
+                return this.heap.length;
+            }
+            
+            clear() {
+                this.heap = [];
+            }
+        }
+        
+        const heap = new MinHeap();
+        const canvas = document.getElementById('heapCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        let animating = false;
+        let highlightNodes = [];
+        
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            canvas.width = Math.max(800, container.clientWidth - 40);
+            canvas.height = 400;
+            drawHeap();
+        }
+        
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+        
+        function drawHeap() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            if (heap.size() === 0) {
+                ctx.fillStyle = '#a0aec0';
+                ctx.font = '20px Arial';
+                ctx.textAlign = 'center';
+                ctx.fillText('堆为空，请插入元素', canvas.width / 2, canvas.height / 2);
+                return;
+            }
+            
+            const nodeRadius = 25;
+            const levelHeight = 80;
+            const startY = 50;
+            
+            function drawNode(index, x, y, level) {
+                if (index >= heap.size()) return;
+                
+                const value = heap.heap[index];
+                const leftIndex = heap.leftChild(index);
+                const rightIndex = heap.rightChild(index);
+                
+                // 绘制连线
+                if (leftIndex < heap.size()) {
+                    const leftX = x - (canvas.width / Math.pow(2, level + 2));
+                    const leftY = y + levelHeight;
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + nodeRadius);
+                    ctx.lineTo(leftX, leftY - nodeRadius);
+                    ctx.stroke();
+                }
+                
+                if (rightIndex < heap.size()) {
+                    const rightX = x + (canvas.width / Math.pow(2, level + 2));
+                    const rightY = y + levelHeight;
+                    ctx.strokeStyle = '#cbd5e0';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(x, y + nodeRadius);
+                    ctx.lineTo(rightX, rightY - nodeRadius);
+                    ctx.stroke();
+                }
+                
+                // 绘制节点
+                const isHighlighted = highlightNodes.includes(index);
+                ctx.fillStyle = isHighlighted ? '#f56565' : '#667eea';
+                ctx.beginPath();
+                ctx.arc(x, y, nodeRadius, 0, Math.PI * 2);
+                ctx.fill();
+                
+                ctx.strokeStyle = isHighlighted ? '#c53030' : '#5a67d8';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+                
+                // 绘制值
+                ctx.fillStyle = 'white';
+                ctx.font = 'bold 18px Arial';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText(value, x, y);
+                
+                // 递归绘制子节点
+                if (leftIndex < heap.size()) {
+                    const leftX = x - (canvas.width / Math.pow(2, level + 2));
+                    const leftY = y + levelHeight;
+                    drawNode(leftIndex, leftX, leftY, level + 1);
+                }
+                
+                if (rightIndex < heap.size()) {
+                    const rightX = x + (canvas.width / Math.pow(2, level + 2));
+                    const rightY = y + levelHeight;
+                    drawNode(rightIndex, rightX, rightY, level + 1);
+                }
+            }
+            
+            drawNode(0, canvas.width / 2, startY, 0);
+        }
+        
+        function updateInfo() {
+            document.getElementById('heapSize').textContent = heap.size();
+            document.getElementById('minValue').textContent = heap.peek() !== null ? heap.peek() : '-';
+            
+            const arrayView = document.getElementById('arrayView');
+            arrayView.innerHTML = '';
+            
+            if (heap.size() === 0) {
+                arrayView.innerHTML = '<div style="color: #a0aec0;">空</div>';
+            } else {
+                heap.heap.forEach((value, index) => {
+                    const item = document.createElement('div');
+                    item.className = 'array-item';
+                    item.innerHTML = `<span class="array-index">[${index}]</span>${value}`;
+                    arrayView.appendChild(item);
+                });
+            }
+        }
+        
+        async function insert() {
+            if (animating) return;
+            
+            const input = document.getElementById('valueInput');
+            const value = parseInt(input.value);
+            
+            if (isNaN(value) || value < 1 || value > 99) {
+                alert('请输入1-99之间的数字');
+                return;
+            }
+            
+            animating = true;
+            document.getElementById('currentOp').textContent = `插入 ${value}`;
+            
+            const oldSize = heap.size();
+            heap.insert(value);
+            
+            highlightNodes = [oldSize];
+            drawHeap();
+            await sleep(500);
+            
+            // 模拟上浮动画
+            let current = oldSize;
+            while (current > 0) {
+                const parent = heap.parent(current);
+                if (heap.heap[current] < heap.heap[parent]) {
+                    highlightNodes = [current, parent];
+                    drawHeap();
+                    await sleep(500);
+                    current = parent;
+                } else {
+                    break;
+                }
+            }
+            
+            highlightNodes = [];
+            drawHeap();
+            updateInfo();
+            
+            document.getElementById('currentOp').textContent = '等待中';
+            animating = false;
+        }
+        
+        async function extractMin() {
+            if (animating || heap.size() === 0) return;
+            
+            animating = true;
+            const min = heap.peek();
+            document.getElementById('currentOp').textContent = `取出 ${min}`;
+            
+            highlightNodes = [0];
+            drawHeap();
+            await sleep(500);
+            
+            heap.extractMin();
+            
+            if (heap.size() > 0) {
+                highlightNodes = [0];
+                drawHeap();
+                await sleep(500);
+                
+                // 模拟下沉动画
+                let current = 0;
+                while (true) {
+                    let smallest = current;
+                    const left = heap.leftChild(current);
+                    const right = heap.rightChild(current);
+                    
+                    if (left < heap.size() && heap.heap[left] < heap.heap[smallest]) {
+                        smallest = left;
+                    }
+                    
+                    if (right < heap.size() && heap.heap[right] < heap.heap[smallest]) {
+                        smallest = right;
+                    }
+                    
+                    if (smallest !== current) {
+                        highlightNodes = [current, smallest];
+                        drawHeap();
+                        await sleep(500);
+                        current = smallest;
+                    } else {
+                        break;
+                    }
+                }
+            }
+            
+            highlightNodes = [];
+            drawHeap();
+            updateInfo();
+            
+            document.getElementById('currentOp').textContent = '等待中';
+            animating = false;
+        }
+        
+        function insertRandom() {
+            const value = Math.floor(Math.random() * 99) + 1;
+            document.getElementById('valueInput').value = value;
+            insert();
+        }
+        
+        function clearHeap() {
+            if (animating) return;
+            heap.clear();
+            highlightNodes = [];
+            drawHeap();
+            updateInfo();
+        }
+        
+        function sleep(ms) {
+            return new Promise(resolve => setTimeout(resolve, ms));
+        }
+        
+        // 初始化
+        updateInfo();
+        drawHeap();
+    </script>
+</body>
+</html>

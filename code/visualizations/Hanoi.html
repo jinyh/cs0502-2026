@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>汉诺塔递归演示</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+            flex-wrap: wrap;
+        }
+
+        .control-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+
+        input, select, button {
+            padding: 8px 12px;
+            border: none;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button {
+            background: #4CAF50;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #666;
+            cursor: not-allowed;
+        }
+
+        .game-area {
+            display: flex;
+            gap: 30px;
+            align-items: flex-start;
+        }
+
+        .hanoi-container {
+            flex: 1;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 450px;
+        }
+
+        .towers {
+            display: flex;
+            justify-content: space-around;
+            align-items: flex-end;
+            height: 350px;
+            margin: 20px 0;
+        }
+
+        .tower {
+            width: 200px;
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100%;
+        }
+
+        .tower-base {
+            width: 180px;
+            height: 20px;
+            background: #8B4513;
+            border-radius: 10px;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+
+        .tower-pole {
+            width: 8px;
+            height: 280px;
+            background: #654321;
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            border-radius: 4px;
+            z-index: 2;
+        }
+
+        .tower-disks {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column-reverse;
+            align-items: center;
+            z-index: 3;
+            min-height: 24px;
+        }
+
+        .tower-label {
+            position: absolute;
+            bottom: -35px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-weight: bold;
+            font-size: 18px;
+            white-space: nowrap;
+        }
+
+        .disk {
+            height: 20px;
+            border-radius: 10px;
+            margin: 1px 0;
+            position: relative;
+            transition: all 0.5s ease;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .stack-panel {
+            width: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            min-height: 450px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stack-visualization {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 20px;
+            min-height: 280px;
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+
+        .stack-item {
+            background: rgba(255, 255, 255, 0.1);
+            margin: 5px 0;
+            padding: 8px 12px;
+            border-radius: 4px;
+            border-left: 4px solid #4CAF50;
+            font-family: monospace;
+            font-size: 12px;
+        }
+
+        .stats {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-top: auto;
+        }
+
+        .stat-item {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+        }
+
+        .tower-highlight {
+            background: rgba(255, 255, 0, 0.3) !important;
+            border-radius: 10px;
+            transition: background 0.3s;
+        }
+
+        .hanoi-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .stack-title {
+            text-align: center;
+            margin-bottom: 20px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        @media (max-width: 768px) {
+            .game-area {
+                flex-direction: column;
+            }
+            
+            .towers {
+                height: 300px;
+            }
+            
+            .tower {
+                width: 150px;
+            }
+            
+            .tower-base {
+                width: 130px;
+            }
+            
+            .tower-pole {
+                height: 230px;
+            }
+            
+            .hanoi-container,
+            .stack-panel {
+                min-height: 350px;
+            }
+            
+            .stack-visualization {
+                min-height: 200px;
+            }
+            
+            .controls {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>汉诺塔递归演示</h1>
+            <p>观察递归算法如何使用栈来解决汉诺塔问题</p>
+        </div>
+
+        <div class="controls">
+            <div class="control-group">
+                <label>圆盘数量:</label>
+                <input type="number" id="diskCount" min="1" max="8" value="3">
+            </div>
+            <div class="control-group">
+                <label>动画速度:</label>
+                <select id="speed">
+                    <option value="1000">慢速</option>
+                    <option value="500" selected>中速</option>
+                    <option value="200">快速</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <button id="startBtn">开始演示</button>
+                <button id="resetBtn">重置</button>
+                <button id="pauseBtn" disabled>暂停</button>
+            </div>
+        </div>
+
+        <div class="game-area">
+            <div class="hanoi-container">
+                <div class="hanoi-title">汉诺塔游戏区</div>
+                <div class="towers">
+                    <div class="tower" data-tower="0">
+                        <div class="tower-pole"></div>
+                        <div class="tower-disks"></div>
+                        <div class="tower-base"></div>
+                        <div class="tower-label">起始柱 (A)</div>
+                    </div>
+                    <div class="tower" data-tower="1">
+                        <div class="tower-pole"></div>
+                        <div class="tower-disks"></div>
+                        <div class="tower-base"></div>
+                        <div class="tower-label">辅助柱 (B)</div>
+                    </div>
+                    <div class="tower" data-tower="2">
+                        <div class="tower-pole"></div>
+                        <div class="tower-disks"></div>
+                        <div class="tower-base"></div>
+                        <div class="tower-label">目标柱 (C)</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stack-panel">
+                <div class="stack-title">递归调用栈</div>
+                <div class="stack-visualization" id="stackVis"></div>
+                
+                <div class="stats">
+                    <div class="stat-item">
+                        <div class="stat-value" id="moveCount">0</div>
+                        <div>移动次数</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stackDepth">0</div>
+                        <div>栈深度</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class HanoiTower {
+            constructor() {
+                this.towers = [[], [], []];
+                this.diskCount = 3;
+                this.moveCount = 0;
+                this.isRunning = false;
+                this.isPaused = false;
+                this.speed = 500;
+                this.callStack = [];
+                this.currentMove = null;
+                
+                this.colors = [
+                    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
+                    '#FFEAA7', '#DDA0DD', '#F4A460', '#87CEEB'
+                ];
+                
+                this.initializeElements();
+                this.reset();
+            }
+
+            initializeElements() {
+                this.diskCountInput = document.getElementById('diskCount');
+                this.speedSelect = document.getElementById('speed');
+                this.startBtn = document.getElementById('startBtn');
+                this.resetBtn = document.getElementById('resetBtn');
+                this.pauseBtn = document.getElementById('pauseBtn');
+                this.stackVis = document.getElementById('stackVis');
+                this.moveCountEl = document.getElementById('moveCount');
+                this.stackDepthEl = document.getElementById('stackDepth');
+
+                this.startBtn.addEventListener('click', () => this.start());
+                this.resetBtn.addEventListener('click', () => this.reset());
+                this.pauseBtn.addEventListener('click', () => this.togglePause());
+                this.diskCountInput.addEventListener('change', () => this.reset());
+                this.speedSelect.addEventListener('change', (e) => {
+                    this.speed = parseInt(e.target.value);
+                });
+            }
+
+            reset() {
+                this.isRunning = false;
+                this.isPaused = false;
+                this.moveCount = 0;
+                this.callStack = [];
+                this.diskCount = parseInt(this.diskCountInput.value);
+                
+                this.towers = [[], [], []];
+                for (let i = this.diskCount; i >= 1; i--) {
+                    this.towers[0].push(i);
+                }
+                
+                this.updateDisplay();
+                this.updateButtons();
+                this.updateStats();
+            }
+
+            start() {
+                if (this.isPaused) {
+                    this.isPaused = false;
+                    this.updateButtons();
+                    return;
+                }
+                
+                this.isRunning = true;
+                this.updateButtons();
+                this.solveHanoi(this.diskCount, 0, 2, 1);
+            }
+
+            togglePause() {
+                this.isPaused = !this.isPaused;
+                this.updateButtons();
+            }
+
+            updateButtons() {
+                this.startBtn.disabled = this.isRunning && !this.isPaused;
+                this.pauseBtn.disabled = !this.isRunning;
+                this.resetBtn.disabled = this.isRunning && !this.isPaused;
+                this.diskCountInput.disabled = this.isRunning;
+                
+                this.pauseBtn.textContent = this.isPaused ? '继续' : '暂停';
+                this.startBtn.textContent = this.isPaused ? '继续' : '开始演示';
+            }
+
+            async solveHanoi(n, from, to, aux) {
+                if (!this.isRunning) return;
+                
+                // 将函数调用压入栈
+                const callInfo = {
+                    n: n,
+                    from: String.fromCharCode(65 + from),
+                    to: String.fromCharCode(65 + to),
+                    aux: String.fromCharCode(65 + aux),
+                    id: Date.now() + Math.random()
+                };
+                
+                this.callStack.push(callInfo);
+                this.updateStackVisualization();
+                
+                await this.delay(this.speed / 2);
+                
+                if (n === 1) {
+                    // 基础情况：移动一个圆盘
+                    await this.moveDisk(from, to);
+                } else {
+                    // 递归情况
+                    // 步骤1：将n-1个圆盘从起始柱移动到辅助柱
+                    await this.solveHanoi(n - 1, from, aux, to);
+                    
+                    // 步骤2：将最大的圆盘从起始柱移动到目标柱
+                    await this.moveDisk(from, to);
+                    
+                    // 步骤3：将n-1个圆盘从辅助柱移动到目标柱
+                    await this.solveHanoi(n - 1, aux, to, from);
+                }
+                
+                // 函数调用完成，从栈中弹出
+                this.callStack.pop();
+                this.updateStackVisualization();
+                
+                if (this.callStack.length === 0) {
+                    this.isRunning = false;
+                    this.updateButtons();
+                }
+            }
+
+            async moveDisk(from, to) {
+                while (this.isPaused) {
+                    await this.delay(100);
+                }
+                
+                if (!this.isRunning) return;
+                
+                const disk = this.towers[from].pop();
+                this.towers[to].push(disk);
+                this.moveCount++;
+                
+                this.updateDisplay();
+                this.updateStats();
+                
+                // 高亮当前移动
+                this.highlightMove(from, to, disk);
+                
+                await this.delay(this.speed);
+            }
+
+            highlightMove(from, to, disk) {
+                const fromTower = document.querySelector(`[data-tower="${from}"]`);
+                const toTower = document.querySelector(`[data-tower="${to}"]`);
+                
+                fromTower.classList.add('tower-highlight');
+                toTower.classList.add('tower-highlight');
+                
+                setTimeout(() => {
+                    fromTower.classList.remove('tower-highlight');
+                    toTower.classList.remove('tower-highlight');
+                }, this.speed);
+            }
+
+            updateDisplay() {
+                const towerElements = document.querySelectorAll('.tower-disks');
+                
+                towerElements.forEach((diskContainer, towerIndex) => {
+                    // 清除现有圆盘
+                    diskContainer.innerHTML = '';
+                    
+                    // 添加新圆盘（从下到上）
+                    const tower = this.towers[towerIndex];
+                    tower.forEach((diskSize, diskIndex) => {
+                        const diskEl = document.createElement('div');
+                        diskEl.className = 'disk';
+                        diskEl.style.width = `${60 + diskSize * 20}px`;
+                        diskEl.style.backgroundColor = this.colors[diskSize - 1];
+                        diskEl.textContent = diskSize;
+                        
+                        diskContainer.appendChild(diskEl);
+                    });
+                });
+            }
+
+            updateStackVisualization() {
+                this.stackVis.innerHTML = '';
+                
+                if (this.callStack.length === 0) {
+                    this.stackVis.innerHTML = '<div style="text-align: center; color: #888; margin-top: 50px;">栈为空</div>';
+                    return;
+                }
+                
+                // 从栈顶到栈底显示
+                for (let i = this.callStack.length - 1; i >= 0; i--) {
+                    const call = this.callStack[i];
+                    const stackItem = document.createElement('div');
+                    stackItem.className = 'stack-item';
+                    stackItem.innerHTML = `
+                        <strong>hanoi(${call.n}, ${call.from}, ${call.to}, ${call.aux})</strong><br>
+                        <small>移动 ${call.n} 个圆盘: ${call.from} → ${call.to}</small>
+                    `;
+                    this.stackVis.appendChild(stackItem);
+                }
+            }
+
+            updateStats() {
+                this.moveCountEl.textContent = this.moveCount;
+                this.stackDepthEl.textContent = this.callStack.length;
+            }
+
+            delay(ms) {
+                return new Promise(resolve => setTimeout(resolve, ms));
+            }
+        }
+
+        // 初始化游戏
+        window.addEventListener('DOMContentLoaded', () => {
+            new HanoiTower();
+        });
+    </script>
+</body>
+</html>

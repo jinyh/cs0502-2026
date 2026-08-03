@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>多带图灵机 - 回文检查器</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            padding: 20px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+        }
+
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 2.5em;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 1.1em;
+        }
+
+        .control-panel {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            font-family: 'Courier New', monospace;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        button {
+            flex: 1;
+            min-width: 120px;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-start {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-start:hover {
+            background: #5568d3;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-step {
+            background: #51cf66;
+            color: white;
+        }
+
+        .btn-step:hover {
+            background: #40c057;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(81, 207, 102, 0.4);
+        }
+
+        .btn-reset {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .btn-reset:hover {
+            background: #fa5252;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+
+        .btn-auto {
+            background: #ffd43b;
+            color: #333;
+        }
+
+        .btn-auto:hover {
+            background: #fcc419;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 212, 59, 0.4);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none !important;
+        }
+
+        .state-display {
+            background: #e7f5ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #667eea;
+        }
+
+        .state-info {
+            display: flex;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .state-item {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .state-label {
+            font-weight: 600;
+            color: #495057;
+            margin-bottom: 5px;
+        }
+
+        .state-value {
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            color: #667eea;
+            font-weight: bold;
+        }
+
+        .tape-container {
+            margin-bottom: 25px;
+        }
+
+        .tape-label {
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 1.1em;
+        }
+
+        .tape {
+            display: flex;
+            gap: 2px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow-x: auto;
+            min-height: 80px;
+            align-items: center;
+        }
+
+        .cell {
+            min-width: 50px;
+            height: 50px;
+            border: 2px solid #dee2e6;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Courier New', monospace;
+            font-size: 20px;
+            font-weight: bold;
+            background: white;
+            border-radius: 5px;
+            position: relative;
+            transition: all 0.3s;
+        }
+
+        .cell.active {
+            background: #ffd43b;
+            border-color: #fab005;
+            transform: scale(1.1);
+            box-shadow: 0 4px 12px rgba(255, 212, 59, 0.5);
+        }
+
+        .cell.marker {
+            background: #e7f5ff;
+            border-color: #339af0;
+        }
+
+        .head-pointer {
+            position: absolute;
+            top: -25px;
+            font-size: 24px;
+            color: #667eea;
+            animation: bounce 0.5s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
+        }
+
+        .transition-log {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            max-height: 200px;
+            overflow-y: auto;
+            margin-top: 20px;
+        }
+
+        .transition-log h3 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .log-entry {
+            padding: 8px;
+            margin-bottom: 5px;
+            background: white;
+            border-left: 3px solid #667eea;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+        }
+
+        .log-entry.current {
+            background: #fff3bf;
+            border-left-color: #fab005;
+        }
+
+        .result {
+            text-align: center;
+            padding: 20px;
+            margin-top: 20px;
+            border-radius: 10px;
+            font-size: 1.5em;
+            font-weight: bold;
+            display: none;
+        }
+
+        .result.success {
+            background: #d3f9d8;
+            color: #2b8a3e;
+            border: 2px solid #51cf66;
+            display: block;
+        }
+
+        .result.failure {
+            background: #ffe3e3;
+            color: #c92a2a;
+            border: 2px solid #ff6b6b;
+            display: block;
+        }
+
+        .speed-control {
+            margin-top: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .speed-control input {
+            flex: 1;
+        }
+
+        .examples {
+            background: #e7f5ff;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+
+        .examples h3 {
+            color: #495057;
+            margin-bottom: 10px;
+        }
+
+        .example-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .example-btn {
+            padding: 8px 16px;
+            background: white;
+            border: 2px solid #667eea;
+            color: #667eea;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .example-btn:hover {
+            background: #667eea;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 多带图灵机回文检查器</h1>
+        <p class="subtitle">3条纸带 · 符号集 {0, 1, ▷, ◁, □}</p>
+
+        <div class="control-panel">
+            <div class="input-group">
+                <label for="inputString">输入字符串（仅使用 0 和 1）：</label>
+                <input type="text" id="inputString" placeholder="例如: 010010, 1001, 11011" value="1001">
+            </div>
+
+            <div class="button-group">
+                <button class="btn-start" onclick="initialize()">🚀 初始化</button>
+                <button class="btn-step" onclick="step()" id="stepBtn" disabled>➡️ 单步执行</button>
+                <button class="btn-auto" onclick="toggleAuto()" id="autoBtn" disabled>▶️ 自动运行</button>
+                <button class="btn-reset" onclick="reset()">🔄 重置</button>
+            </div>
+
+            <div class="speed-control">
+                <label>速度控制：</label>
+                <input type="range" id="speedControl" min="100" max="2000" value="800" step="100">
+                <span id="speedValue">800ms</span>
+            </div>
+        </div>
+
+        <div class="examples">
+            <h3>📝 示例字符串：</h3>
+            <div class="example-buttons">
+                <button class="example-btn" onclick="setExample('1001')">1001 ✓</button>
+                <button class="example-btn" onclick="setExample('010010')">010010 ✓</button>
+                <button class="example-btn" onclick="setExample('11011')">11011 ✓</button>
+                <button class="example-btn" onclick="setExample('101')">101 ✓</button>
+                <button class="example-btn" onclick="setExample('1010')">1010 ✗</button>
+                <button class="example-btn" onclick="setExample('0110')">0110 ✗</button>
+            </div>
+        </div>
+
+        <div class="state-display">
+            <div class="state-info">
+                <div class="state-item">
+                    <div class="state-label">当前状态：</div>
+                    <div class="state-value" id="currentState">-</div>
+                </div>
+                <div class="state-item">
+                    <div class="state-label">执行步数：</div>
+                    <div class="state-value" id="stepCount">0</div>
+                </div>
+                <div class="state-item">
+                    <div class="state-label">状态描述：</div>
+                    <div class="state-value" id="stateDesc">-</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="tape-container">
+            <div class="tape-label">📼 T1 (输入带)：</div>
+            <div class="tape" id="tape1"></div>
+        </div>
+
+        <div class="tape-container">
+            <div class="tape-label">📼 T2 (复制带)：</div>
+            <div class="tape" id="tape2"></div>
+        </div>
+
+        <div class="tape-container">
+            <div class="tape-label">📼 T3 (输出带)：</div>
+            <div class="tape" id="tape3"></div>
+        </div>
+
+        <div id="result" class="result"></div>
+
+        <div class="transition-log">
+            <h3>📋 状态转换日志：</h3>
+            <div id="logContainer"></div>
+        </div>
+    </div>
+
+    <script>
+        let tape1 = [], tape2 = [], tape3 = [];
+        let head1 = 0, head2 = 0, head3 = 0;
+        let currentState = 'init';
+        let stepCounter = 0;
+        let autoRunning = false;
+        let autoInterval = null;
+        let transitionLog = [];
+
+        const stateDescriptions = {
+            'qs': '起步：将读头从▷移到数据区首格',
+            'qc': '复制：将T1的数据复制到T2',
+            'ql': '复位：将T1读头退回到▷',
+            'qt': '比较：两端同步比较是否一致',
+            'qr': '记录：将结果写入T3',
+            'qh': '停机：检查完成'
+        };
+
+        function setExample(str) {
+            document.getElementById('inputString').value = str;
+        }
+
+        function initialize() {
+            const input = document.getElementById('inputString').value;
+            
+            if (!/^[01]+$/.test(input)) {
+                alert('请输入有效的二进制字符串（仅包含0和1）！');
+                return;
+            }
+
+            reset();
+
+            // 初始化纸带1: ▷ + 输入 + ◁ + □□□
+            tape1 = ['▷', ...input.split(''), '◁', '□', '□', '□'];
+            
+            // 初始化纸带2和3: ▷ + □□□...
+            tape2 = ['▷', ...Array(input.length + 5).fill('□')];
+            tape3 = ['▷', ...Array(input.length + 5).fill('□')];
+
+            head1 = 0;
+            head2 = 0;
+            head3 = 0;
+            currentState = 'qs';
+            stepCounter = 0;
+            transitionLog = [];
+
+            addLog(`初始化完成，输入字符串: ${input}`);
+            addLog(`状态转移到 qs (起步状态)`);
+
+            renderTapes();
+            updateStateDisplay();
+            
+            document.getElementById('stepBtn').disabled = false;
+            document.getElementById('autoBtn').disabled = false;
+            document.getElementById('result').style.display = 'none';
+        }
+
+        function step() {
+            if (currentState === 'qh') {
+                return;
+            }
+
+            stepCounter++;
+
+            switch(currentState) {
+                case 'qs':
+                    stateQs();
+                    break;
+                case 'qc':
+                    stateQc();
+                    break;
+                case 'ql':
+                    stateQl();
+                    break;
+                case 'qt':
+                    stateQt();
+                    break;
+                case 'qr':
+                    stateQr();
+                    break;
+            }
+
+            renderTapes();
+            updateStateDisplay();
+
+            if (currentState === 'qh') {
+                stopAuto();
+                showResult();
+            }
+        }
+
+        function stateQs() {
+            // 将三个读头都移到数据区首格
+            if (tape1[head1] === '▷' && tape2[head2] === '▷' && tape3[head3] === '▷') {
+                head1++;
+                head2++;
+                head3++;
+                addLog(`qs: 读头从▷右移到数据区首格`);
+                currentState = 'qc';
+                addLog(`状态转移: qs → qc (开始复制)`);
+            }
+        }
+
+        function stateQc() {
+            // 复制T1到T2
+            const symbol = tape1[head1];
+            
+            if (symbol === '◁') {
+                // 复制完成，进入左复位状态
+                addLog(`qc: 遇到◁，复制完成`);
+                currentState = 'ql';
+                head1 = 0; // 准备回到开头
+                addLog(`状态转移: qc → ql (准备复位T1)`);
+            } else if (symbol === '0' || symbol === '1') {
+                tape2[head2] = symbol;
+                addLog(`qc: 复制 '${symbol}' 到T2[${head2}]`);
+                head1++;
+                head2++;
+            }
+        }
+
+        function stateQl() {
+            // 将T1读头退回到▷后的第一个数据位
+            if (tape1[head1] === '▷') {
+                head1 = 1; // 移到第一个数据位
+                head2 = 1; // T2也准备好
+                addLog(`ql: T1读头复位到数据区首格`);
+                currentState = 'qt';
+                
+                // 找到T2的最后一个数据位（◁之前）
+                for (let i = tape2.length - 1; i >= 0; i--) {
+                    if (tape2[i] === '0' || tape2[i] === '1') {
+                        head2 = i;
+                        break;
+                    }
+                }
+                addLog(`状态转移: ql → qt (开始两端比较)`);
+            } else {
+                head1--;
+            }
+        }
+
+        function stateQt() {
+            // 两端比较
+            const left = tape1[head1];
+            const right = tape2[head2];
+
+            addLog(`qt: 比较 T1[${head1}]='${left}' 与 T2[${head2}]='${right}'`);
+
+            if (left === '◁' || right === '▷' || head1 > head2) {
+                // 比较完成，是回文
+                addLog(`qt: 所有位都匹配，是回文！`);
+                currentState = 'qr';
+                tape3[1] = '1';
+                head3 = 1;
+                addLog(`状态转移: qt → qr (记录结果: 回文)`);
+            } else if (left === right) {
+                // 继续比较
+                addLog(`qt: 匹配！继续比较下一对`);
+                head1++;
+                head2--;
+            } else {
+                // 不匹配，不是回文
+                addLog(`qt: 不匹配！不是回文`);
+                currentState = 'qr';
+                tape3[1] = '0';
+                head3 = 1;
+                addLog(`状态转移: qt → qr (记录结果: 非回文)`);
+            }
+        }
+
+        function stateQr() {
+            // 记录结果
+            if (head3 === 1 && (tape3[1] === '0' || tape3[1] === '1')) {
+                tape3[2] = '◁';
+                head3 = 2;
+                addLog(`qr: 写入结束标记◁`);
+            } else if (tape3[head3] === '◁') {
+                currentState = 'qh';
+                addLog(`状态转移: qr → qh (停机)`);
+            }
+        }
+
+        function renderTapes() {
+            renderTape('tape1', tape1, head1);
+            renderTape('tape2', tape2, head2);
+            renderTape('tape3', tape3, head3);
+        }
+
+        function renderTape(elementId, tape, headPos) {
+            const container = document.getElementById(elementId);
+            container.innerHTML = '';
+            
+            tape.forEach((symbol, index) => {
+                const cell = document.createElement('div');
+                cell.className = 'cell';
+                
+                if (symbol === '▷' || symbol === '◁') {
+                    cell.classList.add('marker');
+                }
+                
+                if (index === headPos) {
+                    cell.classList.add('active');
+                    const pointer = document.createElement('div');
+                    pointer.className = 'head-pointer';
+                    pointer.textContent = '▼';
+                    cell.appendChild(pointer);
+                }
+                
+                cell.textContent = (cell.textContent || '') + symbol;
+                container.appendChild(cell);
+            });
+        }
+
+        function updateStateDisplay() {
+            document.getElementById('currentState').textContent = currentState;
+            document.getElementById('stepCount').textContent = stepCounter;
+            document.getElementById('stateDesc').textContent = stateDescriptions[currentState] || '-';
+        }
+
+        function addLog(message) {
+            transitionLog.push(message);
+            const logContainer = document.getElementById('logContainer');
+            const entry = document.createElement('div');
+            entry.className = 'log-entry current';
+            entry.textContent = `步骤 ${stepCounter}: ${message}`;
+            
+            // 移除之前的current类
+            const prevCurrent = logContainer.querySelector('.log-entry.current');
+            if (prevCurrent) {
+                prevCurrent.classList.remove('current');
+            }
+            
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        function showResult() {
+            const resultDiv = document.getElementById('result');
+            const result = tape3[1];
+            
+            if (result === '1') {
+                resultDiv.className = 'result success';
+                resultDiv.textContent = '✅ 是回文字符串！';
+            } else {
+                resultDiv.className = 'result failure';
+                resultDiv.textContent = '❌ 不是回文字符串！';
+            }
+            
+            document.getElementById('stepBtn').disabled = true;
+            document.getElementById('autoBtn').disabled = true;
+        }
+
+        function toggleAuto() {
+            if (autoRunning) {
+                stopAuto();
+            } else {
+                startAuto();
+            }
+        }
+
+        function startAuto() {
+            autoRunning = true;
+            document.getElementById('autoBtn').textContent = '⏸️ 暂停';
+            document.getElementById('stepBtn').disabled = true;
+            
+            const speed = parseInt(document.getElementById('speedControl').value);
+            autoInterval = setInterval(() => {
+                if (currentState !== 'qh') {
+                    step();
+                } else {
+                    stopAuto();
+                }
+            }, speed);
+        }
+
+        function stopAuto() {
+            autoRunning = false;
+            document.getElementById('autoBtn').textContent = '▶️ 自动运行';
+            document.getElementById('stepBtn').disabled = (currentState === 'qh');
+            
+            if (autoInterval) {
+                clearInterval(autoInterval);
+                autoInterval = null;
+            }
+        }
+
+        function reset() {
+            stopAuto();
+            tape1 = [];
+            tape2 = [];
+            tape3 = [];
+            head1 = 0;
+            head2 = 0;
+            head3 = 0;
+            currentState = 'init';
+            stepCounter = 0;
+            transitionLog = [];
+            
+            document.getElementById('tape1').innerHTML = '';
+            document.getElementById('tape2').innerHTML = '';
+            document.getElementById('tape3').innerHTML = '';
+            document.getElementById('logContainer').innerHTML = '';
+            document.getElementById('currentState').textContent = '-';
+            document.getElementById('stepCount').textContent = '0';
+            document.getElementById('stateDesc').textContent = '-';
+            document.getElementById('stepBtn').disabled = true;
+            document.getElementById('autoBtn').disabled = true;
+            document.getElementById('result').style.display = 'none';
+        }
+
+        // 速度控制
+        document.getElementById('speedControl').addEventListener('input', function(e) {
+            const speed = e.target.value;
+            document.getElementById('speedValue').textContent = speed + 'ms';
+            
+            if (autoRunning) {
+                stopAuto();
+                startAuto();
+            }
+        });
+
+        // 初始渲染
+        updateStateDisplay();
+    </script>
+</body>
+</html>

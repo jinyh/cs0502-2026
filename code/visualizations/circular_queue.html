@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>循环队列解决速度不匹配问题</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+            color: #333;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            max-width: 900px;
+            width: 100%;
+        }
+        
+        h1 {
+            text-align: center;
+            color: #667eea;
+            margin-bottom: 30px;
+            font-size: 28px;
+        }
+        
+        .devices {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 40px;
+            gap: 20px;
+        }
+        
+        .device {
+            flex: 1;
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            position: relative;
+        }
+        
+        .producer {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+        }
+        
+        .consumer {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+        }
+        
+        .device h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .speed {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 15px;
+        }
+        
+        .status {
+            font-size: 16px;
+            font-weight: bold;
+            padding: 8px;
+            background: rgba(255,255,255,0.3);
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        
+        .queue-container {
+            margin: 40px 0;
+            position: relative;
+        }
+        
+        .queue-title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            color: #667eea;
+            margin-bottom: 20px;
+        }
+        
+        .queue {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+        }
+        
+        .queue-slot {
+            width: 70px;
+            height: 70px;
+            border: 3px solid #667eea;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            font-weight: bold;
+            background: #f8f9ff;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+        
+        .queue-slot.filled {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            transform: scale(1.1);
+            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
+        }
+        
+        .queue-slot.head {
+            border-color: #00f2fe;
+            border-width: 4px;
+        }
+        
+        .queue-slot.tail {
+            border-color: #f5576c;
+            border-width: 4px;
+        }
+        
+        .queue-slot::before {
+            content: attr(data-index);
+            position: absolute;
+            top: -25px;
+            font-size: 12px;
+            color: #999;
+        }
+        
+        .pointers {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            margin-top: 20px;
+        }
+        
+        .pointer {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+        
+        .pointer-box {
+            width: 20px;
+            height: 20px;
+            border-radius: 4px;
+        }
+        
+        .head-pointer {
+            background: #00f2fe;
+        }
+        
+        .tail-pointer {
+            background: #f5576c;
+        }
+        
+        .stats {
+            display: flex;
+            justify-content: space-around;
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9ff;
+            border-radius: 12px;
+        }
+        
+        .stat {
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 28px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        
+        .stat-label {
+            font-size: 14px;
+            color: #666;
+            margin-top: 5px;
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        
+        button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: white;
+        }
+        
+        .btn-start {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .btn-pause {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        }
+        
+        .btn-reset {
+            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .message {
+            text-align: center;
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 8px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+        
+        .message.warning {
+            background: #fff3cd;
+            color: #856404;
+        }
+        
+        .message.success {
+            background: #d4edda;
+            color: #155724;
+        }
+        
+        @media (max-width: 768px) {
+            .container {
+                padding: 20px;
+            }
+            
+            h1 {
+                font-size: 22px;
+            }
+            
+            .devices {
+                flex-direction: column;
+            }
+            
+            .queue-slot {
+                width: 50px;
+                height: 50px;
+                font-size: 18px;
+            }
+            
+            .stats {
+                flex-direction: column;
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔄 循环队列解决设备速度不匹配问题</h1>
+        
+        <div class="devices">
+            <div class="device producer">
+                <h2>📤 生产者（快速）</h2>
+                <div class="speed">速度: 每0.8秒产生一个数据</div>
+                <div class="status" id="producer-status">等待中...</div>
+            </div>
+            
+            <div class="device consumer">
+                <h2>📥 消费者（慢速）</h2>
+                <div class="speed">速度: 每1.5秒消费一个数据</div>
+                <div class="status" id="consumer-status">等待中...</div>
+            </div>
+        </div>
+        
+        <div class="queue-container">
+            <div class="queue-title">循环队列缓冲区（容量: 8）</div>
+            <div class="queue" id="queue"></div>
+            <div class="pointers">
+                <div class="pointer">
+                    <div class="pointer-box head-pointer"></div>
+                    <span>队头（消费位置）</span>
+                </div>
+                <div class="pointer">
+                    <div class="pointer-box tail-pointer"></div>
+                    <span>队尾（生产位置）</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="stats">
+            <div class="stat">
+                <div class="stat-value" id="produced">0</div>
+                <div class="stat-label">已生产</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="consumed">0</div>
+                <div class="stat-label">已消费</div>
+            </div>
+            <div class="stat">
+                <div class="stat-value" id="queue-size">0</div>
+                <div class="stat-label">队列长度</div>
+            </div>
+        </div>
+        
+        <div id="message" class="message" style="display: none;"></div>
+        
+        <div class="controls">
+            <button class="btn-start" id="btn-start">▶️ 开始演示</button>
+            <button class="btn-pause" id="btn-pause" disabled>⏸️ 暂停</button>
+            <button class="btn-reset" id="btn-reset">🔄 重置</button>
+        </div>
+    </div>
+    
+    <script>
+        class CircularQueue {
+            constructor(capacity) {
+                this.capacity = capacity;
+                this.queue = new Array(capacity).fill(null);
+                this.head = 0;
+                this.tail = 0;
+                this.size = 0;
+            }
+            
+            enqueue(item) {
+                if (this.isFull()) return false;
+                this.queue[this.tail] = item;
+                this.tail = (this.tail + 1) % this.capacity;
+                this.size++;
+                return true;
+            }
+            
+            dequeue() {
+                if (this.isEmpty()) return null;
+                const item = this.queue[this.head];
+                this.queue[this.head] = null;
+                this.head = (this.head + 1) % this.capacity;
+                this.size--;
+                return item;
+            }
+            
+            isFull() {
+                return this.size === this.capacity;
+            }
+            
+            isEmpty() {
+                return this.size === 0;
+            }
+        }
+        
+        const QUEUE_CAPACITY = 8;
+        const PRODUCER_SPEED = 800;
+        const CONSUMER_SPEED = 1500;
+        
+        let queue = new CircularQueue(QUEUE_CAPACITY);
+        let producedCount = 0;
+        let consumedCount = 0;
+        let dataCounter = 1;
+        let isRunning = false;
+        let producerInterval = null;
+        let consumerInterval = null;
+        
+        function initQueue() {
+            const queueElement = document.getElementById('queue');
+            queueElement.innerHTML = '';
+            for (let i = 0; i < QUEUE_CAPACITY; i++) {
+                const slot = document.createElement('div');
+                slot.className = 'queue-slot';
+                slot.id = `slot-${i}`;
+                slot.setAttribute('data-index', i);
+                queueElement.appendChild(slot);
+            }
+        }
+        
+        function updateDisplay() {
+            for (let i = 0; i < QUEUE_CAPACITY; i++) {
+                const slot = document.getElementById(`slot-${i}`);
+                slot.className = 'queue-slot';
+                
+                if (queue.queue[i] !== null) {
+                    slot.textContent = queue.queue[i];
+                    slot.classList.add('filled');
+                } else {
+                    slot.textContent = '';
+                }
+                
+                if (i === queue.head && queue.size > 0) {
+                    slot.classList.add('head');
+                }
+                if (i === queue.tail) {
+                    slot.classList.add('tail');
+                }
+            }
+            
+            document.getElementById('produced').textContent = producedCount;
+            document.getElementById('consumed').textContent = consumedCount;
+            document.getElementById('queue-size').textContent = queue.size;
+        }
+        
+        function showMessage(text, type) {
+            const messageEl = document.getElementById('message');
+            messageEl.textContent = text;
+            messageEl.className = `message ${type}`;
+            messageEl.style.display = 'block';
+            setTimeout(() => {
+                messageEl.style.display = 'none';
+            }, 2000);
+        }
+        
+        function produce() {
+            const producerStatus = document.getElementById('producer-status');
+            
+            if (queue.isFull()) {
+                producerStatus.textContent = '⏸️ 队列已满，等待消费...';
+                showMessage('⚠️ 队列已满！生产者等待中...', 'warning');
+                return;
+            }
+            
+            const data = dataCounter++;
+            if (queue.enqueue(data)) {
+                producedCount++;
+                producerStatus.textContent = `✅ 已生产数据: ${data}`;
+                updateDisplay();
+            }
+        }
+        
+        function consume() {
+            const consumerStatus = document.getElementById('consumer-status');
+            
+            if (queue.isEmpty()) {
+                consumerStatus.textContent = '⏸️ 队列为空，等待生产...';
+                return;
+            }
+            
+            const data = queue.dequeue();
+            if (data !== null) {
+                consumedCount++;
+                consumerStatus.textContent = `✅ 已消费数据: ${data}`;
+                updateDisplay();
+            }
+        }
+        
+        function start() {
+            if (isRunning) return;
+            isRunning = true;
+            
+            document.getElementById('btn-start').disabled = true;
+            document.getElementById('btn-pause').disabled = false;
+            document.getElementById('producer-status').textContent = '运行中...';
+            document.getElementById('consumer-status').textContent = '运行中...';
+            
+            producerInterval = setInterval(produce, PRODUCER_SPEED);
+            consumerInterval = setInterval(consume, CONSUMER_SPEED);
+            
+            showMessage('✅ 演示开始！观察循环队列如何缓冲速度差异', 'success');
+        }
+        
+        function pause() {
+            if (!isRunning) return;
+            isRunning = false;
+            
+            clearInterval(producerInterval);
+            clearInterval(consumerInterval);
+            
+            document.getElementById('btn-start').disabled = false;
+            document.getElementById('btn-pause').disabled = true;
+            document.getElementById('producer-status').textContent = '已暂停';
+            document.getElementById('consumer-status').textContent = '已暂停';
+            
+            showMessage('⏸️ 演示已暂停', 'warning');
+        }
+        
+        function reset() {
+            pause();
+            queue = new CircularQueue(QUEUE_CAPACITY);
+            producedCount = 0;
+            consumedCount = 0;
+            dataCounter = 1;
+            
+            document.getElementById('producer-status').textContent = '等待中...';
+            document.getElementById('consumer-status').textContent = '等待中...';
+            
+            updateDisplay();
+            showMessage('🔄 已重置', 'success');
+        }
+        
+        document.getElementById('btn-start').addEventListener('click', start);
+        document.getElementById('btn-pause').addEventListener('click', pause);
+        document.getElementById('btn-reset').addEventListener('click', reset);
+        
+        initQueue();
+        updateDisplay();
+    </script>
+</body>
+</html>

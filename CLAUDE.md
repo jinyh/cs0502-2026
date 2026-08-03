@@ -1,8 +1,19 @@
-# 项目：计算机科学导论百科全书
+# 项目：计算机科学导论配套知识库 + 交互式智能体
 
 ## 概述
 
-这是一个面向非计算机专业理工及医学科学生的教科书级计算机科学导论百科，以上海交通大学 CS1955-02 计算机科学导论课程的 21 个讲稿为基础，扩展覆盖操作系统、编译原理、动态规划等经典 CS 主题。项目采用中英双语，混合文档、代码示例与可视化等多种形式，配合 OpenCode 类工具实现交互式教学（问答与沙箱代码运行）。
+上海交通大学「计算机科学导论（CS0502-02）」课程由计算机学院课程组承担，面向全校非计算机专业理工及医学科学生。本项目以 21 个课程讲稿 PDF 为只读锚点，构建一套**混合形态开源知识库**，并配套 **OpenCode 交互式智能体**（GLM / DeepSeek）辅助学习，体现 AI+ 课程新形势。
+
+知识库形态（混合方案）：
+
+- **21 讲轻量知识点卡片**（`docs/cards/`）— 一讲一页，核心知识点 + 直觉类比 + 前沿注记 + 跨学科联系
+- **少数 AI 高价值深度专题**（`docs/deep/`）— LLM、强化学习、量子计算等前沿变化快的主题
+- **前沿进展注记**（`docs/frontier/`）— 静态写底 + 智能体联网增量双层机制
+- **多路径索引**（`docs/paths/`）— 参考 Path2AGI，按思维支柱 / AI 能力 / 读者目标 / 跨学科桥接导航
+
+讲稿 PDF（`LectureNotes/`）只读，不动。知识库是其「AI 时代补层」而非替代——重点补充讲稿静态形式难以承载的**前沿进展**与**交互式问答**。
+
+> 语言策略：中文为主，专业术语首次出现时标注英文原文（如：栈（stack））。暂不维护完整英文版。
 
 ## 目标受众与教学理念
 
@@ -15,161 +26,122 @@
 ### 写作原则
 
 - **从直觉到形式**：先用类比和生活例子建立直觉，再引入形式化定义
-- **跨学科桥接**：在解释 CS 概念时主动关联数学、物理、生物学知识（如：图论与分子结构、信息安全与医疗数据隐私）
-- **渐进式深入**：每个主题从"为什么需要"开始，逐步展开到"怎么实现"
+- **跨学科桥接**：解释 CS 概念时主动关联数学、物理、生物学知识（如图论与分子结构、信息安全与医疗数据隐私）
+- **渐进式深入**：每个主题从「为什么需要」开始，逐步展开到「怎么实现」
 - **避免术语轰炸**：首次出现的每个术语都需要定义和中英标注
+- **卡片优先轻量，深度专题按需**：单卡片控制在 ~300 行，深度内容强制入 `docs/deep/`，避免卡片退化为厚重百科
 
 ## 目录结构
 
 ```
 ComputerIntroduction/
+├── .gitignore                         # 安全隔离（reference/ 等敏感数据永不提交）
 ├── CLAUDE.md                           # 本文件：项目约定与 AI 协作指南
-├── Ref_CLAUDE.md                       # CLAUDE.md 设计参考与决策记录
-├── 从基础学科到通用人工智能.md            # 知识体系总览（跨学科视角）
-├── README.md                           # 项目说明（中英双语）
-├── LectureNotes/                       # 课程讲稿（PDF，只读参考）
-├── docs/                               # 百科专题文档
-│   ├── zh/                             # 中文版
-│   │   ├── fundamentals/              # A. 计算基础（7 篇）
-│   │   ├── data-structures-algorithms/ # B. 数据结构与算法（8 篇）
-│   │   ├── systems/                   # C. 计算机系统（5 篇）
-│   │   ├── networking-security/       # D. 网络与安全（4 篇）
-│   │   ├── data/                      # E. 数据科学（4 篇）
-│   │   ├── ai-ml/                     # F. 人工智能与机器学习（9 篇）
-│   │   ├── emerging/                  # G. 新兴技术（4 篇）
-│   │   └── interdisciplinary/         # H. 交叉学科与社会影响（4 篇）
-│   └── en/                             # English version（同结构）
-├── code/                               # 代码示例（可独立运行）
-│   ├── data-structures/
-│   ├── algorithms/
-│   ├── systems/
-│   └── visualizations/
-├── figures/                            # 图表与示意图
-└── references/                         # 参考文献与资料
+├── README.md                           # 仓库说明（中英摘要 + 快速开始）
+├── LICENSE                             # 内容 CC-BY-SA 4.0 / 代码 MIT
+├── LectureNotes/                       # 21 个讲稿 PDF（只读源材料，原位不动）
+├── docs/                               # 知识库主体
+│   ├── README.md
+│   ├── cards/                         # 21 讲轻量卡片（一讲一页，编号对齐 SlideNN）
+│   │   ├── README.md                  # 21 讲对应表 + 模板说明
+│   │   └── 01-welcome.md ... 21-llm.md
+│   ├── deep/                          # 少数 AI 高价值深度专题
+│   │   ├── README.md                  # 选材标准 + 旧 45 篇规划降级附录
+│   │   └── llm-deep-dive.md  reinforcement-learning.md  quantum-computing.md
+│   ├── frontier/                      # 前沿注记（静态写底 + 智能体联网增量）
+│   │   ├── README.md  _template.md
+│   │   └── llm-frontier.md  cv-frontier.md
+│   ├── paths/                         # 多路径索引
+│   │   ├── by-thinking-pillar.md       # 计算思维 / 系统 / 数据 / 智能
+│   │   ├── by-ai-capability.md         # 感知 → 学习 → 推理 → 生成 → Agent
+│   │   ├── by-reader-goal.md           # 医工 / 信工 / 材料 / 理科
+│   │   └── by-discipline-bridge.md     # CS ↔ 医学 / 物理 / 生物
+│   └── glossary.md                    # 全局术语表（中英对照）
+├── opencode/                           # OpenCode 智能体入口
+│   ├── AGENTS.md                      # 行为约束（教学红线 / 不代写作业 / 沙箱安全）
+│   ├── knowledge.md                   # 知识库索引（指向 docs/，机器可解析）
+│   ├── tools.md                        # 沙箱 / 联网 / GLM·DeepSeek 接入（写意图不写死配置）
+│   ├── sandbox-policy.md              # 白名单包 / 超时 / 内存 / 禁网
+│   └── prompts/                       # 预设提示词
+├── code/                               # 代码示例与沙箱
+│   ├── README.md  requirements.txt
+│   ├── examples/                      # 概念演示 Python（文件名前缀对应卡片编号）
+│   └── visualizations/               # 自包含 HTML 交互可视化（迁移自课程 Demo）
+└── figures/                           # 静态图（SVG 优先）
 ```
 
 ## 主题覆盖范围
 
-### A. 计算基础（`docs/zh/fundamentals/`）— 7 篇
+主线为 **21 讲对应卡片**（见 `docs/cards/README.md` 的对应表）。旧版规划的 8 大类约 45 篇百科**降级为可选扩展附录**，见 `docs/deep/README.md`——按需取舍，不作为主线承诺。
 
-- `01-intro-to-cs.md` — 计算机科学导论（对应 Slide02-IntroToCS）
-- `02-number-systems.md` — 数制与数据表示 | *新增*（Forouzan Ch2-4：二进制/补码/浮点数/字符编码）
-- `03-programming-language.md` — 编程语言（对应 Slide03-ProgrammingLanguage）
-- `04-turing-machine.md` — 图灵机与可计算性（对应 Slide08-TuringMachine）
-- `05-formal-languages.md` — *扩展：形式语言与自动机*
-- `06-compiler.md` — *扩展：编译原理*
-- `07-logic-boolean.md` — 数理逻辑与布尔代数 | *新增*（Dale Ch4：布尔代数是数字电路和程序逻辑的数学基础）
+凡旧规划主题确有深度展开需要时，在 `docs/deep/` 新建文件并在对应卡片 `related_deep` 字段登记反向链接。
 
-### B. 数据结构与算法（`docs/zh/data-structures-algorithms/`）— 8 篇
+## 安全隔离约定（红线）
 
-- `01-data-structure-basics.md` — 数据结构基础：数组、栈、队列、链表、树（对应 Slide04-DataStructure）
-- `02-data-structure-advanced.md` — 数据结构进阶：搜索、哈希（对应 Slide05-DataStructure2）
-- `03-graph-exploration.md` — 图的遍历（对应 Slide06-GraphExploration）
-- `04-sorting-algorithms.md` — 排序算法 | *新增*（大纲 Week3：冒泡/快排/归并/堆排序）
-- `05-greedy-algorithm.md` — 贪心算法（对应 Slide07-GreedyAlgorithm）
-- `06-dynamic-programming.md` — *扩展：动态规划*
-- `07-divide-and-conquer.md` — 分治法 | *新增*（与排序/搜索紧密关联，三大算法范式之一）
-- `08-complexity-theory.md` — *扩展：算法复杂度与计算复杂性理论*
+`reference/` 目录是教师教务工作区，含**学生名单、成绩表、期末考题**等敏感数据，**永不提交**至公开仓库。
 
-### C. 计算机系统（`docs/zh/systems/`）— 5 篇
+- `.gitignore` 已纳入 `reference/` 整目录 + `*.xls / *.xlsx / *.docx` + `*考题* / *成绩* / *学生名单* / *作业*` 等通配双保险
+- 每次提交前用 `git status --porcelain` 自检，确认零敏感文件命中
+- 若学生向智能体粘贴名单 / 成绩 / 考题内容，智能体须立即拒绝并提示隐私（见 `opencode/AGENTS.md` 教学红线第 2 条）
 
-- `01-digital-circuits.md` — 数字电路与逻辑门 | *新增*（Dale Ch4-5：从逻辑门到 CPU 的硬件基础）
-- `02-computer-architecture.md` — 计算机系统与架构（对应 Slide09-ComputerSystemAndArchitecture）
-- `03-operating-system.md` — 操作系统（对应 Slide09 后半部分 + 扩展）
-- `04-software-engineering.md` — 软件工程（对应 Slide10-SoftwareEngineering）
-- `05-parallel-distributed.md` — *扩展：并行与分布式计算*
+## 智能体配置约定
 
-### D. 网络与安全（`docs/zh/networking-security/`）— 4 篇
+`opencode/` 子目录是学生本地拉取仓库后用 OpenCode 加载的智能体入口：
 
-- `01-computer-network.md` — 计算机网络（对应 Slide11-ComputerNetwork）
-- `02-information-security.md` — 信息安全与密码学（对应 Slide12-InformationSecurity）
-- `03-web-technologies.md` — Web 技术与互联网应用 | *新增*（HTTP/HTML/前后端架构）
-- `04-iot-emerging-networks.md` — 物联网与新型网络 | *新增*（大纲 Week5 第二讲）
+- `AGENTS.md` — 行为约束中枢：角色为课程学习助教；红线为不代写作业只给思路、不触碰敏感数据、导论不引入超范围形式化证明、直觉先行；语言中文为主、语气像助教
+- `knowledge.md` — 知识库检索入口：21 卡片表（编号 | 标题 | Slide | 一句话定位 | tags）+ 深度专题清单 + 跳转索引，机器可解析 + 人类可读
+- `tools.md` — 工具配置：写意图与约束，不写死配置块（避免 OpenCode 版本漂移）；GLM / DeepSeek 走 OpenAI 兼容 endpoint，密钥从环境变量读，不入仓库
+- `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，内存 512MB，沙箱内禁网
+- `prompts/` — 预设提示词：`explain-concept` / `trace-lecture` / `frontier-update` / `homework-guard`
 
-### E. 数据科学（`docs/zh/data/`）— 4 篇
+## AI 时代特色
 
-- `01-database.md` — 数据库（对应 Slide13-Database）
-- `02-data-mining.md` — 数据挖掘（对应 Slide14-DataMining）
-- `03-data-visualization.md` — 数据可视化（对应 Slide15-DataVisualization）
-- `04-big-data.md` — 大数据技术 | *新增*（MapReduce/Spark/分布式存储）
+本项目通过以下机制体现「AI+ 课程」：
 
-### F. 人工智能与机器学习（`docs/zh/ai-ml/`）— 9 篇
-
-- `01-artificial-intelligence.md` — 人工智能（对应 Slide16-ArtificialIntelligence）
-- `02-machine-learning.md` — 机器学习（对应 Slide17-MachineLearning）
-- `03-deep-learning.md` — 深度学习 | *新增*（Slide17 后半 + 扩展：CNN/RNN/Transformer）
-- `04-computer-vision.md` — 计算机视觉（对应 Slide18-ComputerVision）
-- `05-nlp.md` — *扩展：自然语言处理*
-- `06-speech-recognition.md` — 语音识别（对应 Slide20-SpeechRecognition）
-- `07-recommend-system.md` — 推荐系统（对应 Slide19-RecommendSystem）
-- `08-llm.md` — 大语言模型（对应 Slide21-LLM）
-- `09-reinforcement-learning.md` — *扩展：强化学习*
-
-### G. 新兴技术（`docs/zh/emerging/`）— 4 篇 🆕
-
-- `01-cloud-computing.md` — 云计算与虚拟化（SaaS/PaaS/IaaS，所有学生都在使用的基础设施）
-- `02-quantum-computing.md` — 量子计算基础（对物理/化学/材料学生尤为相关的计算范式变革）
-- `03-blockchain.md` — 区块链与去中心化技术（共识机制，医疗数据安全的新方向）
-- `04-robotics.md` — 机器人学（融合传感/控制/AI，工科和医学的交叉点）
-
-### H. 交叉学科与社会影响（`docs/zh/interdisciplinary/`）— 4 篇 🆕
-
-- `01-bioinformatics.md` — 生物信息学与计算医学（基因序列分析、医学影像AI、电子病历系统）
-- `02-hci.md` — 人机交互（用户界面设计，医疗信息系统的可用性）
-- `03-computing-ethics.md` — 计算伦理与 AI 治理（AI 在医疗/司法中的偏见、隐私保护）
-- `04-computational-science.md` — 科学计算与仿真模拟（数值模拟/有限元/蒙特卡洛，理工学生的核心工具）
+- **四大思维支柱对齐**：卡片 `thinking_pillar` 字段与课程大纲的四大思维（计算思维 / 系统思维 / 数据思维 / 智能思维）对齐，支撑 `paths/by-thinking-pillar.md`
+- **前沿进展机制**：`docs/frontier/` 双层结构——静态写底层（人工审校，季度更新，可作引用依据）+ 智能体联网增量区（每条标注检索日期与来源 URL，未经审校，学生批判性阅读）。仅对高变动 AI 主题建前沿页
+- **交互式智能体**：OpenCode 加载知识库做问答、跑代码沙箱、联网补充最新前沿，超越静态阅读
+- **跨学科桥接**：卡片「直觉类比」与「跨学科联系」字段主动关联医学 / 物理 / 生物，适配非 CS 专业背景
 
 ## 写作规范
 
-### 语言
-
-- 中文为主体写作语言，同步维护英文版本
-- 专业术语首次出现时标注英文原文，如：栈（stack）
-- 人名保留原文，不翻译
-- 代码注释使用中文
-
 ### 内容模板
 
-每个主题文档遵循以下标准结构。**可根据主题特点裁剪或调整章节顺序**——例如：数据可视化无需"算法与原理"章节，软件工程的"代码示例"侧重工程实践而非算法演示。
+**知识点卡片模板**（`docs/cards/`，每讲一页，~300 行上限）：
 
 ```markdown
-# [主题名称]（English Name）
+---
+title: <主题名称>
+lecture: SlideNN-EnglishName-2025
+aliases: [<别名1>, <别名2>]
+thinking_pillar: <计算思维|系统思维|数据思维|智能思维>
+category: <分类>
+tags: [<tag1>, <tag2>]
+status: <stable|draft|needs-review>
+version: 1.0
+importance: <1-5>
+related_cards: [<卡片编号-名>]
+related_deep: [<深度专题>]
+related_visualizations: [<可视化名>]
+last_reviewed: YYYY-MM-DD
+---
 
-## 概述
-一段话概括本主题在 CS 中的地位和重要性，以及为什么非CS专业学生也需要了解它。
+# <主题名称>（English Name）
 
-## 生活中的类比
-用日常生活或学生熟悉的学科场景引入核心概念（如：用图书馆比喻数据库）。
+> 对应讲稿：[`SlideNN-EnglishName-2025.pdf`](../../LectureNotes/SlideNN-EnglishName-2025.pdf)
 
-## 历史背景
-关键人物、时间节点、里程碑事件。
-
-## 核心概念
-- 概念 A：定义 + 直觉解释 + 图示
-- 概念 B：...
-每个概念先给直觉，再给形式化定义。
-
-## 算法与原理
-详细的算法描述，伪代码或 Python 实现，复杂度分析。
-对非CS学生：强调"算法在做什么"而非仅仅"怎么写代码"。
-
-## 代码示例
-可独立运行的 Python 代码，配合输出和逐行解释。
-代码应简洁，避免复杂的工程实践，专注于概念演示。
-
-## 可视化
-matplotlib/plotly 图表，流程图，架构图。
-
+## 一句话定位
+## 核心知识点（最小可检索单元）
+## 直觉类比（跨学科桥接）
+## 前沿进展注记（指向 frontier/）
 ## 跨学科联系
-本主题与数学/物理/生物/医学等学科的关联。
-例：图论与分子结构、信息安全与医疗数据隐私。
-
-## 实际应用
-该主题在工业界和学生专业领域的应用案例。
-
+## 推荐交互式问答（学生可向智能体提问）
 ## 延伸阅读
-教科书、论文、在线资源（标注难度级别）。
 ```
+
+**深度专题模板**（`docs/deep/`）不限篇幅，可含完整推导、代码与前沿展开，沿用旧百科模板的「历史背景 / 算法与原理 / 代码示例 / 可视化 / 实际应用 / 延伸阅读」结构。
+
+**前沿注记模板**见 `docs/frontier/_template.md`。
 
 ### Markdown 格式
 
@@ -183,33 +155,37 @@ matplotlib/plotly 图表，流程图，架构图。
 
 - Python 为主要编程语言，面向初学者风格
 - 代码可独立运行，开头注明对应主题和前置依赖
-- `requirements.txt` 管理依赖
+- `code/requirements.txt` 管理依赖
 - 注重可读性，变量命名清晰，配合中文注释
 - 避免复杂的设计模式和工程技巧，专注概念演示
 - 可视化优先 matplotlib / plotly，输出保存到 `figures/`，格式优先 SVG/PNG
 - 图表标题和标签使用中英双语
+- 沙箱运行安全白名单与限制见 `opencode/sandbox-policy.md`
 
 ## 协作约定
 
-- 新增主题前确认在「主题覆盖范围」章节中已列出
-- 文件命名：`XX-topic-name.md`（XX 为两位序号）
+- 新增主题前确认在「主题覆盖范围」或 `docs/deep/README.md` 选材清单中已列出
+- 文件命名：`XX-topic-name.md`（XX 为两位序号）；卡片与 `SlideNN` 编号一一对应
 - 对应讲稿引用格式：`（对应 SlideXX-EnglishName）`，如 `（对应 Slide02-IntroToCS）`
 - 参考文献格式：`作者 (年份). 标题. *期刊/出版社*.`
-- Git 提交信息使用中文，格式：`类型: 简要描述`
-  - 类型包括：`新增`、`修改`、`修复`、`重构`、`文档`
+- **提交前自检**：`git status --porcelain` 确认未含 `reference/` 敏感文件
+- Git 提交信息使用中文，格式：`类型: 简要描述`（类型：`新增`、`修改`、`修复`、`重构`、`文档`）
 
 ## 当前进度
 
 ### 已有资源
 
-- 21 个课程讲稿 PDF（`LectureNotes/`），其中 Slide01-Welcome 为课程行政介绍
-- 课程大纲（`Syllabus-IntroductionToCS-2024Spring.pdf`）
-- 知识体系总览文档（`从基础学科到通用人工智能.md`）
+- 21 个课程讲稿 PDF（`LectureNotes/`），Slide01-Welcome 为课程行政介绍
+- 课程大纲与教务材料（`reference/`，**不公开**，`.gitignore` 隔离）
+- 5 个交互可视化 HTML（`code/visualizations/`，迁移自课程 Demo）
+- 目录骨架与占位 README
 
 ### 待完成
 
-- 各主题独立百科文档（`docs/zh/` 下 8 个子目录，约 45 篇）
-- 代码示例（`code/`）
-- 可视化图表（`figures/`）
-- 英文版（`docs/en/`）
-- README.md
+- 21 张知识点卡片（`docs/cards/`，高价值 04/06/07/08/16/17/21 优先）
+- 深度专题 `llm-deep-dive.md`（最高优先）、`reinforcement-learning.md`、`quantum-computing.md`
+- 前沿注记 `llm-frontier.md`、`cv-frontier.md`
+- 多路径索引（`docs/paths/` 四页）与 `glossary.md`
+- OpenCode 配置全套（`opencode/`）
+- 联调验证（问答 / 沙箱 / 联网补前沿三条主链路）
+- `README.md` 与 `LICENSE`
