@@ -9,6 +9,8 @@
 
 ```
 # 讲稿 PDF 在课程 Canvas，不在公开仓库
+AGENTS.md        Claude Code / Codex / OpenCode 共享项目协作规范
+CLAUDE.md        Claude Code 入口（导入 AGENTS.md）
 docs/
   cards/          21 讲轻量知识点卡片（一讲一页，对齐 SlideNN）
   deep/           AI 高价值深度专题（LLM / 强化学习 / 量子计算）
@@ -17,6 +19,7 @@ docs/
   glossary.md     全局术语表（中英对照）
 opencode/         OpenCode 智能体配置
   AGENTS.md       行为约束（教学红线 / 不代写 / 沙箱安全 / 直觉先行）
+  CLAUDE.md       Claude Code 学生助教入口（导入同目录 AGENTS.md）
   knowledge.md    知识库检索索引
   tools.md        工具与 GLM/DeepSeek 接入
   sandbox-policy.md  沙箱安全策略
@@ -26,6 +29,13 @@ code/
   visualizations/ 自包含 HTML 交互可视化
 figures/          静态图（SVG 优先）
 ```
+
+## AI 协作工具入口
+
+- 在仓库根目录启动 Codex 或 OpenCode：直接读取 `AGENTS.md`。
+- 在仓库根目录启动 Claude Code：读取 `CLAUDE.md`，并由其导入 `AGENTS.md`。
+- `opencode/AGENTS.md` 是学生课程助教的专用约束，不替代根目录的项目协作规范。
+- 需要让 Claude Code 或 Codex 进入学生助教模式时，也应将工作目录设为 `opencode/`。
 
 ## 快速开始（学生）
 
@@ -44,11 +54,11 @@ git clone <repo-url> && cd ComputerIntroduction
 export ZHIPU_API_KEY=...        # GLM-4.6
 # export DEEPSEEK_API_KEY=...  # 备选 DeepSeek-V3
 
-# 在本目录启动 OpenCode，它会自动读取 opencode/AGENTS.md 作为行为约束
-opencode
+# 以 opencode/ 作为项目目录启动，加载其中的学生助教行为约束
+opencode opencode
 ```
 
-智能体会加载 `opencode/knowledge.md` 作为知识库索引，可：
+智能体会按需读取 `opencode/knowledge.md` 作为知识库索引，可：
 - **问答**：「用医院场景解释 ADT 为什么抽象」（定位到 `docs/cards/04`）
 - **跑沙箱**：运行 `code/examples/` 示例（遵守白名单/超时/禁网）
 - **补前沿**：「LLM 最新进展」→ 读 `docs/frontier/llm-frontier.md` 静态层 + 联网增量
@@ -83,7 +93,7 @@ opencode
 3. **前沿链路**：问「LLM 最新进展」→ 应读 `docs/frontier/llm-frontier.md` 静态层，联网追加增量，不修改静态层。
 4. **红线链路**：粘贴一道作业题要求完整答案 → 应拒绝代写，改为引导思路。
 
-静态已验证：21 卡片 + 3 深度专题 + 2 前沿页 + 4 路径 + 术语表 + 8 opencode 配置文件齐全，内部链接有效，`reference/` 零命中。
+静态已验证：21 卡片 + 3 深度专题 + 2 前沿页 + 4 路径 + 术语表 + 9 个 opencode 配置文件齐全，内部链接有效，`reference/` 零命中。
 
 ## 许可证
 
