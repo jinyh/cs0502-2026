@@ -14,7 +14,7 @@ estimated_minutes: 40
 assessment_tags: [图像表示, 卷积追踪, 任务辨析, 误差分析]
 labs: []
 figures: [18-convolution.svg]
-related_cards: [15-data-visualization, 17-machine-learning]
+related_cards: [neural-networks-transformers, multimodal-models, ml-evaluation, 15-data-visualization, 17-machine-learning]
 related_deep: [llm-deep-dive]
 related_visualizations: []
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 计算机视觉（Computer Vision）
 
 > 对应讲稿：`Slide18-ComputerVision-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 新序列定位：本页是 L19 的视觉应用案例；共享模型结构见 [`neural-networks-transformers`](neural-networks-transformers.md)，跨模态比较见 [`multimodal-models`](multimodal-models.md)。
 
 ## 一句话定位
 

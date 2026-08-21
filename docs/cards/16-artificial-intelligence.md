@@ -14,7 +14,7 @@ estimated_minutes: 35
 assessment_tags: [概念辨析, 历史脉络, 系统分析, 伦理判断]
 labs: []
 figures: []
-related_cards: [02-intro-to-cs, 17-machine-learning, 21-llm]
+related_cards: [ai-search-planning-agents, responsible-ai-systems, ai-security, 02-intro-to-cs, 17-machine-learning, 21-llm]
 related_deep: [reinforcement-learning, llm-deep-dive]
 related_visualizations: []
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 人工智能（Artificial Intelligence）
 
 > 对应讲稿：`Slide16-ArtificialIntelligence-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 图谱说明：本页保留 AI 历史与范式全景。状态空间、知识、规划与智能体闭环见 [`ai-search-planning-agents`](ai-search-planning-agents.md)，系统责任见 [`responsible-ai-systems`](responsible-ai-systems.md)。
 
 ## 一句话定位
 

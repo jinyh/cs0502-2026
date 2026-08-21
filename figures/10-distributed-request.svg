@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+  <title id="title">分布式请求中的部分失败</title>
+  <desc id="desc">客户端经过网络调用服务和数据库；超时后客户端无法确定请求未执行、执行中或响应丢失。</desc>
+  <rect width="960" height="470" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="48" font-size="30" font-weight="800" fill="#0f172a">超时只说明“没等到”，不说明“没执行”</text>
+    <g fill="#dbeafe" stroke="#2563eb" stroke-width="3">
+      <rect x="60" y="115" width="180" height="85" rx="18"/><rect x="390" y="115" width="180" height="85" rx="18"/><rect x="720" y="115" width="180" height="85" rx="18"/>
+    </g>
+    <g font-size="24" font-weight="700" fill="#1e3a8a"><text x="150" y="165">客户端</text><text x="480" y="165">服务</text><text x="810" y="165">数据库</text></g>
+    <path d="M240 135H390M570 135H720" stroke="#16a34a" stroke-width="4"/><path d="M720 180H570" stroke="#16a34a" stroke-width="4"/>
+    <path d="M390 180H305" stroke="#dc2626" stroke-width="4" stroke-dasharray="10 8"/>
+    <text x="315" y="120" font-size="18" fill="#166534">请求</text><text x="645" y="120" font-size="18" fill="#166534">写入</text><text x="645" y="215" font-size="18" fill="#166534">成功</text>
+    <text x="330" y="215" font-size="18" fill="#b91c1c">响应丢失 / 延迟</text>
+    <rect x="150" y="285" width="660" height="110" rx="20" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="480" y="325" font-size="24" font-weight="800" fill="#78350f">安全恢复：request id + 幂等 + 超时 + 退避 + 日志</text>
+    <text x="480" y="365" font-size="20" fill="#78350f">盲目重试可能把一次意图执行两次</text>
+  </g>
+</svg>

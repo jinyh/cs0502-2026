@@ -14,7 +14,7 @@ estimated_minutes: 55
 assessment_tags: [概率计算, 架构追踪, 方法比较, 风险分析]
 labs: [lab-08-language-model]
 figures: [21-language-model-evolution.svg]
-related_cards: [03-programming-language, 17-machine-learning, 20-speech-recognition]
+related_cards: [neural-networks-transformers, rag-tool-agents, ai-security, responsible-ai-systems, 03-programming-language, 17-machine-learning, 20-speech-recognition]
 related_deep: [llm-deep-dive]
 related_visualizations: []
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 大语言模型（Large Language Model, LLM）
 
 > 对应讲稿：`Slide21-LLM-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 图谱说明：本页聚焦语言模型演进。RAG、引用、工具调用和 Agent 编排见 [`rag-tool-agents`](rag-tool-agents.md)，权限边界见 [`ai-security`](ai-security.md)，部署与问责见 [`responsible-ai-systems`](responsible-ai-systems.md)。
 
 ## 一句话定位
 

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 430" role="img" aria-labelledby="title desc">
+  <title id="title">可重复计算证据链</title>
+  <desc id="desc">代码、数据、环境和配置共同产生运行记录、结果与评价，最后支持范围有限的主张。</desc>
+  <rect width="960" height="430" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="48" font-size="30" font-weight="800" fill="#0f172a">主张必须能沿证据链回到输入与版本</text>
+    <g fill="#e0f2fe" stroke="#0284c7" stroke-width="3">
+      <rect x="40" y="115" width="135" height="75" rx="15"/><rect x="195" y="115" width="135" height="75" rx="15"/>
+      <rect x="350" y="115" width="135" height="75" rx="15"/><rect x="505" y="115" width="135" height="75" rx="15"/>
+    </g>
+    <g font-size="21" font-weight="700" fill="#0c4a6e"><text x="108" y="160">代码版本</text><text x="263" y="160">数据版本</text><text x="418" y="160">环境锁定</text><text x="573" y="160">参数/种子</text></g>
+    <rect x="690" y="115" width="220" height="75" rx="15" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+    <text x="800" y="150" font-size="22" font-weight="700" fill="#14532d">运行命令 + 日志</text><text x="800" y="176" font-size="17" fill="#14532d">退出状态 / 生成物</text>
+    <path d="M175 153H195M330 153H350M485 153H505M640 153H690" stroke="#475569" stroke-width="3"/>
+    <rect x="210" y="285" width="230" height="80" rx="18" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <rect x="520" y="285" width="230" height="80" rx="18" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+    <text x="325" y="320" font-size="23" font-weight="800" fill="#78350f">结果 + 评价</text><text x="325" y="348" font-size="17" fill="#78350f">指标 / 基线 / 不确定性</text>
+    <text x="635" y="320" font-size="23" font-weight="800" fill="#7f1d1d">主张 + 限制</text><text x="635" y="348" font-size="17" fill="#7f1d1d">证据支持到哪里？</text>
+    <path d="M800 190C800 250 635 245 635 285M520 325H440" stroke="#475569" stroke-width="3" fill="none"/>
+  </g>
+</svg>

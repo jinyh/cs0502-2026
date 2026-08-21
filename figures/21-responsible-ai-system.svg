@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 500" role="img" aria-labelledby="title desc">
+  <title id="title">负责任 AI 系统分层评审</title>
+  <desc id="desc">问题、数据、模型、软件基础设施与人机流程逐层构成 AI 系统；治理、监测和责任贯穿所有层。</desc>
+  <rect width="960" height="500" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="46" font-size="30" font-weight="800" fill="#0f172a">负责任 AI 是系统工程，不是模型附加说明</text>
+    <g stroke-width="3">
+      <rect x="100" y="85" width="760" height="58" rx="16" fill="#fee2e2" stroke="#dc2626"/>
+      <rect x="135" y="157" width="690" height="58" rx="16" fill="#fef3c7" stroke="#d97706"/>
+      <rect x="170" y="229" width="620" height="58" rx="16" fill="#dcfce7" stroke="#16a34a"/>
+      <rect x="205" y="301" width="550" height="58" rx="16" fill="#dbeafe" stroke="#2563eb"/>
+      <rect x="240" y="373" width="480" height="58" rx="16" fill="#ede9fe" stroke="#7c3aed"/>
+    </g>
+    <g font-size="21" font-weight="800"><text x="480" y="121" fill="#7f1d1d">问题与受影响者：该不该做？服务谁？谁承担错误？</text><text x="480" y="193" fill="#78350f">数据：来源 · 代表性 · 许可 · 隐私 · 版本</text><text x="480" y="265" fill="#14532d">模型：泛化 · 指标 · 群体 · 漂移 · 边界</text><text x="480" y="337" fill="#1e3a8a">软件与基础设施：接口 · 安全 · 故障 · 恢复</text><text x="480" y="409" fill="#4c1d95">人机流程：解释 · 审批 · 接管 · 申诉</text></g>
+    <rect x="65" y="452" width="830" height="36" rx="12" fill="#0f172a"/>
+    <text x="480" y="477" font-size="18" font-weight="700" fill="#fff">贯穿治理：主张—证据—风险—控制—监测—责任人—退役</text>
+  </g>
+</svg>

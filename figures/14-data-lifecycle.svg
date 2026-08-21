@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+  <title id="title">数据生命周期与治理反馈</title>
+  <desc id="desc">数据从目的和采集开始，经过存储、处理、使用、共享与删除；质量、来源、权限和责任贯穿全程。</desc>
+  <rect width="960" height="470" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="52" font-size="30" font-weight="800" fill="#0f172a">数据治理从采集前开始，到删除后才结束</text>
+    <g fill="#e0f2fe" stroke="#0284c7" stroke-width="3">
+      <rect x="35" y="135" width="120" height="75" rx="16"/><rect x="185" y="135" width="120" height="75" rx="16"/>
+      <rect x="335" y="135" width="120" height="75" rx="16"/><rect x="505" y="135" width="120" height="75" rx="16"/>
+      <rect x="655" y="135" width="120" height="75" rx="16"/><rect x="805" y="135" width="120" height="75" rx="16"/>
+    </g>
+    <g font-size="20" font-weight="700" fill="#0c4a6e"><text x="95" y="180">目的/授权</text><text x="245" y="180">采集/标注</text><text x="395" y="180">存储/版本</text><text x="565" y="180">处理/分析</text><text x="715" y="180">使用/共享</text><text x="865" y="180">归档/删除</text></g>
+    <path d="M155 173H185M305 173H335M455 173H505M625 173H655M775 173H805" stroke="#475569" stroke-width="3"/>
+    <rect x="130" y="300" width="700" height="90" rx="20" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="480" y="340" font-size="24" font-weight="800" fill="#78350f">贯穿：质量 · provenance · 许可 · 隐私 · 权限 · 责任</text>
+    <text x="480" y="372" font-size="18" fill="#78350f">发现问题后回到上游修正，而不是只在末端“清洗”</text>
+    <path d="M865 210C865 275 95 275 95 210" stroke="#16a34a" stroke-width="3" fill="none" stroke-dasharray="10 7"/>
+  </g>
+</svg>

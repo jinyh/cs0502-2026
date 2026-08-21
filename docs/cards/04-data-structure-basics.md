@@ -14,7 +14,7 @@ estimated_minutes: 35
 assessment_tags: [结构辨析, 操作追踪, 复杂度比较]
 labs: [lab-01-structures]
 figures: [04-linear-storage.svg]
-related_cards: [05-data-structure-advanced, 06-graph-exploration]
+related_cards: [stack-queue, trees-heaps, ext-search-hashing, 05-data-structure-advanced, 06-graph-exploration]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

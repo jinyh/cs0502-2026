@@ -8,16 +8,16 @@
 ## 你会在这里找到什么
 
 ```text
-docs/curriculum/     AI 时代 21 讲课程蓝图 + 旧卡覆盖迁移矩阵
-docs/cards/          27 张迁移基线概念卡（后续按概念拆分，不绑定讲次数量）
+docs/curriculum/     21 讲课程蓝图 + 机器可读资源映射 + 迁移矩阵
+docs/cards/          46 张卡：21 张来源锚点/概览卡 + 25 张语义概念卡
 docs/deep/           LLM、强化学习、量子计算深度专题
 docs/frontier/       人工审校静态基线 + 学生前沿检索入口
 docs/paths/          5 条学习导航，包括工程问题求解路径
 docs/assessment/     脱敏考核蓝图、项目 rubric、进度 schema
-code/examples/       10 个可独立运行的概念示例
+code/examples/       18 个可独立运行的概念示例
 code/labs/           8 个“预测—实现—测试—解释”核心实验
 code/visualizations/ 5 个自包含交互页面
-figures/             19 张可访问 SVG 概念图
+figures/             30 张可访问 SVG 概念图
 .opencode/           学生 agent、5 个 skills、8 个 slash commands
 opencode/            教学、安全和知识检索规则
 ```
@@ -48,11 +48,11 @@ opencode . --agent course-tutor
 
 | 命令 | 学生要做的事 |
 |---|---|
-| `/learn 06 BFS 与 DFS` | 先诊断、预测，再获得分级提示与迁移题 |
-| `/practice 05 栈、队列与树` | 一次完成一道全新同构练习 |
+| `/learn L06 算法策略与复杂度` | 按讲次组合核心卡，先诊断、预测，再获得分级提示与迁移题 |
+| `/practice L05 图遍历与堆` | 一次完成一道全新同构练习 |
 | `/lab lab-02-graph` | 复制 starter 到 `student-work/` 后预测、实现、测试、解释 |
 | `/review 本周内容` | 基于本地进度做主动回忆和间隔复习 |
-| `/mock 02-15` | 按已批准蓝图模拟；未批准时只称通用课程练习 |
+| `/mock L02-L15` | 按已批准蓝图模拟；未批准时只称通用课程练习 |
 | `/project 路径规划项目` | 按 rubric 评审已有证据，不代做成品 |
 | `/exam-notes 全课程` | 从已练内容整理静态开卷资料 |
 | `/frontier LLM` | 先写判断，再经同意检索一手来源 |
@@ -70,7 +70,7 @@ OpenCode 可以帮助平时学习、作业辅导、项目评审与考前准备�
 
 ## 教师审核点
 
-- [`docs/curriculum/21-lecture-blueprint.md`](docs/curriculum/21-lecture-blueprint.md) 是待审批的课程重构提案；现有 27 张卡是迁移基线，统一标为 `needs-review`，不应误解为未来仍须“一讲一卡”。
+- [`docs/curriculum/21-lecture-blueprint.md`](docs/curriculum/21-lecture-blueprint.md) 与 [`lecture-card-map.yaml`](docs/curriculum/lecture-card-map.yaml) 是待审批的课程重构提案；46 张卡已完成内容迁移并统一标为 `needs-review`，不应误解为“一讲一卡”。
 - [`docs/assessment/blueprint.yaml`](docs/assessment/blueprint.yaml) 只是脱敏模板。只有教师填写权重、认知层级并把 `status` 改为 `approved` 后，`/mock` 才可宣称按课程考核结构校准。
 - 前沿联网结果写入 `student-work/frontier-notes/`，不自动回写人工审校静态层。
 

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-labelledby="title desc">
+  <title id="title">机器学习从目标人群到部署监测的评价链</title>
+  <desc id="desc">目标人群经采样形成数据，按独立单位划分训练验证测试；测试证据支持有限部署，部署后继续监测漂移和真实结果。</desc>
+  <rect width="960" height="460" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="48" font-size="30" font-weight="800" fill="#0f172a">评价设计决定“高分”能支持哪种主张</text>
+    <g fill="#e0f2fe" stroke="#0284c7" stroke-width="3">
+      <rect x="40" y="115" width="145" height="80" rx="16"/><rect x="220" y="115" width="145" height="80" rx="16"/>
+      <rect x="400" y="115" width="145" height="80" rx="16"/><rect x="580" y="115" width="145" height="80" rx="16"/>
+      <rect x="760" y="115" width="160" height="80" rx="16"/>
+    </g>
+    <g font-size="20" font-weight="700" fill="#0c4a6e"><text x="113" y="150">目标人群</text><text x="113" y="177" font-size="16">谁/何时/何地</text><text x="293" y="150">采样数据</text><text x="293" y="177" font-size="16">来源与偏差</text><text x="473" y="150">训练/验证</text><text x="473" y="177" font-size="16">拟合与选择</text><text x="653" y="150">独立测试</text><text x="653" y="177" font-size="16">一次最终评价</text><text x="840" y="150">有限部署</text><text x="840" y="177" font-size="16">范围与门槛</text></g>
+    <path d="M185 155H220M365 155H400M545 155H580M725 155H760" stroke="#475569" stroke-width="3"/>
+    <rect x="170" y="295" width="620" height="95" rx="20" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="480" y="335" font-size="24" font-weight="800" fill="#78350f">部署监测：输入漂移 · 真实表现 · 群体差异 · 人工覆盖</text>
+    <text x="480" y="368" font-size="18" fill="#78350f">越过验证范围或门槛时，降级 / 停止 / 复评</text>
+    <path d="M840 195C840 265 700 270 700 295" stroke="#16a34a" stroke-width="3" fill="none"/>
+  </g>
+</svg>

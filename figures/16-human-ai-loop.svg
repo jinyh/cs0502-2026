@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+  <title id="title">人类与 AI 的反馈、质疑和接管闭环</title>
+  <desc id="desc">人定义目标和约束，AI 给出建议与依据，人审查决定并执行；结果反馈用于监测，人可随时覆盖或接管。</desc>
+  <rect width="960" height="470" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="48" font-size="30" font-weight="800" fill="#0f172a">Human–AI loop：人必须能理解、质疑、覆盖与接管</text>
+    <g fill="#dbeafe" stroke="#2563eb" stroke-width="3">
+      <rect x="70" y="145" width="190" height="100" rx="20"/><rect x="385" y="145" width="190" height="100" rx="20"/><rect x="700" y="145" width="190" height="100" rx="20"/>
+    </g>
+    <g font-size="23" font-weight="800" fill="#1e3a8a"><text x="165" y="185">人：目标与约束</text><text x="480" y="185">AI：建议与依据</text><text x="795" y="185">人：决定与执行</text></g>
+    <g font-size="17" fill="#1e3a8a"><text x="165" y="218">任务 / 风险 / 权限</text><text x="480" y="218">来源 / 不确定性</text><text x="795" y="218">确认 / 覆盖 / 接管</text></g>
+    <path d="M260 195H385M575 195H700" stroke="#475569" stroke-width="4"/>
+    <path d="M795 245C795 345 165 345 165 245" stroke="#16a34a" stroke-width="4" fill="none"/>
+    <text x="480" y="330" font-size="22" font-weight="700" fill="#166534">结果、纠错与环境变化反馈</text>
+    <rect x="300" y="380" width="360" height="55" rx="15" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="480" y="415" font-size="20" font-weight="800" fill="#78350f">“有人点确认”不等于有效监督</text>
+  </g>
+</svg>

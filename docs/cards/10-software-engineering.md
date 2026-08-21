@@ -14,7 +14,7 @@ estimated_minutes: 35
 assessment_tags: [需求评审, 架构分析, 测试设计, 项目复盘]
 labs: []
 figures: []
-related_cards: [03-programming-language, 09-computer-system-arch, 12-information-security]
+related_cards: [reproducible-computing, distributed-systems, responsible-ai-systems, 03-programming-language, 09-computer-system-arch, 12-information-security]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

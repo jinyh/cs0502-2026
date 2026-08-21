@@ -1,17 +1,25 @@
 ---
 title: 数理逻辑与布尔代数
-lecture: 扩展（无单独讲稿，参考 Dale Ch4 / 旧 45 篇规划）
+card_id: boolean-logic
+lecture_refs: [L02, L03, L08]
+source_slides: [Slide03-ProgrammingLanguage-2025, Slide09-ComputerSystemAndArchitecture-2025]
 aliases: [布尔代数, 逻辑门, 真值表, 与或非, 数字逻辑]
-thinking_pillar: 计算思维
+thinking_pillars: [计算思维, 系统思维]
 category: fundamentals
 tags: [布尔代数, 逻辑门, 真值表, 数字逻辑, 入门]
 status: needs-review
 version: 1.0
 importance: 3
-related_cards: [08-turing-machine, 09-computer-system-arch, 03-programming-language]
+learning_objectives: [构造和解释真值表, 使用德摩根律变换条件, 连接程序条件与逻辑门]
+prerequisites: []
+estimated_minutes: 30
+assessment_tags: [真值表, 逻辑化简, 条件追踪]
+labs: []
+figures: []
+related_cards: [data-representation, computer-architecture, 03-programming-language, computability-limits]
 related_deep: []
 related_visualizations: []
-last_reviewed: 2026-08-03
+last_reviewed: 2026-08-22
 ---
 
 # 数理逻辑与布尔代数（Logic & Boolean Algebra）
@@ -21,6 +29,12 @@ last_reviewed: 2026-08-03
 ## 一句话定位
 
 布尔代数（Boolean algebra）用「真/假」两值做逻辑运算，是数字电路（硬件）和程序条件判断（软件）共同的数学基础。George Boole 1854 提出，Shannon 1938 把它接到电路上——从此逻辑与电路统一。
+
+## 学完应能做到
+
+1. 为不超过三个输入的布尔表达式构造和解释真值表。
+2. 使用德摩根律改写否定条件，并追踪短路求值。
+3. 说明程序条件、集合运算与数字逻辑门之间的共同结构。
 
 ## 核心知识点
 
@@ -93,6 +107,13 @@ last_reviewed: 2026-08-03
 3. 德摩根律怎么帮你化简 `not (A and B)`？
 4. 短路求值既是优化也是语义，举例说明危险性。
 5. 把你专业里一条「规则」写成布尔表达式。
+
+## 常见误区与边界
+
+- `A or B` 与自然语言“二选一”不同：普通 OR 允许两者都真，异或 XOR 才要求不同。
+- 德摩根律取反时要同时交换 AND/OR，并否定每个条件。
+- 短路求值可能跳过带副作用的表达式；不能只按代数结果理解执行。
+- 真实临床和工程规则常含连续量、不确定性和例外，不能强行压成简单布尔判断。
 
 ## 代码示例
 

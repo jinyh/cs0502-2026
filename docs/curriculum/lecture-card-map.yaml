@@ -1,0 +1,177 @@
+schema_version: 1
+status: proposal
+course: CS0502
+card_model: many-to-many
+notes:
+  - 讲次编号是教学序列，卡片文件名是概念标识，两者不得按编号猜测。
+  - core_cards 为当讲必读；supporting_cards 按诊断结果与场景选择。
+  - status 改为 approved 前，不宣称这是已生效的正式课表。
+lectures:
+  - id: L01
+    title: 计算机科学、四种思维与人机协作
+    core_cards: [01-welcome, 02-intro-to-cs]
+    supporting_cards: [responsible-ai-systems]
+    examples: []
+    labs: []
+    figures: []
+    assessment_tags: [课程地图, 场景建模, 人机协作]
+  - id: L02
+    title: 数据表示、编码、布尔逻辑与数值误差
+    core_cards: [data-representation, ext-logic-boolean]
+    supporting_cards: [ext-scientific-computing]
+    examples: [02_data_representation.py]
+    labs: []
+    figures: [02-data-representation.svg]
+    assessment_tags: [表示转换, 位模式解释, 误差诊断]
+  - id: L03
+    title: 程序、语言、抽象与问题求解
+    core_cards: [03-programming-language]
+    supporting_cards: [ext-logic-boolean, reproducible-computing]
+    examples: []
+    labs: []
+    figures: [03-language-pipeline.svg]
+    assessment_tags: [执行追踪, 接口设计, 测试构造]
+  - id: L04
+    title: 线性结构、栈、队列与哈希
+    core_cards: [04-data-structure-basics, stack-queue, ext-search-hashing]
+    supporting_cards: [ext-complexity]
+    examples: [04_linear_list.py, 05_structures.py]
+    labs: [lab-01-structures]
+    figures: [04-linear-storage.svg, 05-stack-queue-recursion.svg]
+    assessment_tags: [操作追踪, 结构选择, 哈希冲突]
+  - id: L05
+    title: 递归、树、堆、图与遍历
+    core_cards: [ext-recursion-divide-conquer, trees-heaps, 06-graph-exploration]
+    supporting_cards: [stack-queue]
+    examples: [05_structures.py, 06_graph_bfs_dfs.py]
+    labs: [lab-01-structures, lab-02-graph]
+    figures: [05-tree-heap.svg, 06-bfs-dfs.svg]
+    assessment_tags: [递归追踪, 堆操作, 图遍历]
+  - id: L06
+    title: 搜索、排序、算法策略与复杂度
+    core_cards: [algorithm-strategies, ext-complexity]
+    supporting_cards: [ext-search-hashing, ext-recursion-divide-conquer, 07-greedy-algorithm]
+    examples: [06_algorithm_strategies.py, 07_greedy_dijkstra.py]
+    labs: [lab-03-greedy]
+    figures: [05-complexity-growth.svg, 06-algorithm-strategies.svg, 07-greedy-dijkstra.svg]
+    assessment_tags: [复杂度分析, 策略选择, 反例构造]
+  - id: L07
+    title: 可计算性、复杂性与自动化边界
+    core_cards: [computability-limits, 08-turing-machine]
+    supporting_cards: [ext-complexity, algorithm-strategies]
+    examples: [08_turing_machine.py]
+    labs: [lab-04-turing-machine]
+    figures: [08-turing-transition.svg]
+    assessment_tags: [状态追踪, 边界辨析, 验证设计]
+  - id: L08
+    title: 计算机体系结构、存储与 AI 加速器
+    core_cards: [computer-architecture]
+    supporting_cards: [data-representation, ext-logic-boolean]
+    examples: [08_cache_locality.py]
+    labs: []
+    figures: [09-computer-os-layers.svg]
+    assessment_tags: [指令追踪, 局部性, 架构选择]
+  - id: L09
+    title: 操作系统、进程、并发与资源管理
+    core_cards: [operating-systems]
+    supporting_cards: [computer-architecture, stack-queue]
+    examples: [09_interleavings.py]
+    labs: []
+    figures: [09-process-concurrency.svg]
+    assessment_tags: [进程状态, 并发交错, 资源安全]
+  - id: L10
+    title: 网络、Web、API、云与分布式系统
+    core_cards: [11-computer-network, ext-web-technologies, distributed-systems]
+    supporting_cards: [operating-systems]
+    examples: [10_retry_idempotency.py]
+    labs: []
+    figures: [11-network-encapsulation.svg, 10-distributed-request.svg]
+    assessment_tags: [分层追踪, API设计, 部分失败]
+  - id: L11
+    title: 软件工程、测试、版本与可重复性
+    core_cards: [10-software-engineering, reproducible-computing]
+    supporting_cards: [ext-scientific-computing]
+    examples: []
+    labs: []
+    figures: [11-reproducibility-chain.svg]
+    assessment_tags: [测试设计, 版本追踪, 证据审查]
+  - id: L12
+    title: 安全、隐私、密码学与 AI 安全
+    core_cards: [12-information-security, ai-security]
+    supporting_cards: [operating-systems, distributed-systems]
+    examples: []
+    labs: []
+    figures: [12-public-key-signature.svg, 12-ai-threat-model.svg]
+    assessment_tags: [威胁建模, 机制选择, 工具权限]
+  - id: L13
+    title: 数据库、数据模型与查询
+    core_cards: [13-database]
+    supporting_cards: [ext-search-hashing, distributed-systems]
+    examples: [13_database.py]
+    labs: [lab-05-database]
+    figures: [13-relational-query.svg]
+    assessment_tags: [模式设计, SQL追踪, 查询分析]
+  - id: L14
+    title: 数据生命周期、质量、来源与治理
+    core_cards: [data-lifecycle-governance]
+    supporting_cards: [13-database, 14-data-mining, reproducible-computing]
+    examples: [14_clustering.py]
+    labs: [lab-06-clustering]
+    figures: [14-data-lifecycle.svg, 14-clustering-comparison.svg]
+    assessment_tags: [数据审计, 质量诊断, 治理设计]
+  - id: L15
+    title: 概率、统计证据、不确定性与数据分析
+    core_cards: [probability-uncertainty]
+    supporting_cards: [14-data-mining, ext-scientific-computing]
+    examples: [15_bayes_base_rate.py]
+    labs: []
+    figures: [15-base-rate.svg]
+    assessment_tags: [概率计算, 证据解释, 结论边界]
+  - id: L16
+    title: 可视化、人机交互与无障碍
+    core_cards: [15-data-visualization, hci-accessibility]
+    supporting_cards: [probability-uncertainty]
+    examples: [15_visualization.py]
+    labs: []
+    figures: [15-chart-selection.svg, 16-human-ai-loop.svg]
+    assessment_tags: [图表诊断, 交互设计, 无障碍改进]
+  - id: L17
+    title: AI 基础：搜索、知识、规划与智能体
+    core_cards: [16-artificial-intelligence, ai-search-planning-agents]
+    supporting_cards: [06-graph-exploration, algorithm-strategies]
+    examples: [06_graph_bfs_dfs.py, 07_greedy_dijkstra.py]
+    labs: [lab-02-graph]
+    figures: [06-bfs-dfs.svg, 07-greedy-dijkstra.svg]
+    assessment_tags: [状态建模, 搜索追踪, Agent设计]
+  - id: L18
+    title: 机器学习：泛化、评价、偏差与漂移
+    core_cards: [17-machine-learning, ml-evaluation]
+    supporting_cards: [data-lifecycle-governance, probability-uncertainty, 19-recommend-system]
+    examples: [17_generalization.py, 18_model_evaluation.py]
+    labs: [lab-07-machine-learning]
+    figures: [17-neural-learning.svg, 18-evaluation-pipeline.svg]
+    assessment_tags: [泛化诊断, 指标选择, 漂移监测]
+  - id: L19
+    title: 神经网络、Transformer 与多模态感知
+    core_cards: [neural-networks-transformers, multimodal-models]
+    supporting_cards: [18-computer-vision, 20-speech-recognition, 21-llm]
+    examples: [17_generalization.py, 21_ngram.py]
+    labs: [lab-07-machine-learning]
+    figures: [17-neural-learning.svg, 18-convolution.svg, 20-rnn-asr.svg]
+    assessment_tags: [模型追踪, 架构比较, 模态评价]
+  - id: L20
+    title: 生成式 AI：LLM、RAG、工具与 Agent
+    core_cards: [21-llm, rag-tool-agents]
+    supporting_cards: [ext-web-technologies, distributed-systems, ai-security, hci-accessibility]
+    examples: [20_rag_pipeline.py, 21_ngram.py]
+    labs: [lab-08-language-model]
+    figures: [20-rag-agent-loop.svg, 21-language-model-evolution.svg]
+    assessment_tags: [系统追踪, 引用核验, 工具评价]
+  - id: L21
+    title: AI 系统工程、负责任设计与课程综合
+    core_cards: [responsible-ai-systems]
+    supporting_cards: [computability-limits, reproducible-computing, data-lifecycle-governance, ml-evaluation, ai-security, hci-accessibility, rag-tool-agents]
+    examples: []
+    labs: []
+    figures: [21-responsible-ai-system.svg]
+    assessment_tags: [综合设计, 证据论证, 风险评审, 责任分配]

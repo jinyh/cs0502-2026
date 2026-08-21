@@ -14,7 +14,7 @@ estimated_minutes: 35
 assessment_tags: [相似度计算, 方法比较, 冷启动分析, 评价设计]
 labs: []
 figures: []
-related_cards: [06-graph-exploration, 13-database, 17-machine-learning]
+related_cards: [multimodal-models, ml-evaluation, responsible-ai-systems, 06-graph-exploration, 13-database, 17-machine-learning]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 推荐系统（Recommendation System）
 
 > 对应讲稿：`Slide19-RecommendSystem-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 新序列定位：本页是 L18–L21 的推荐应用案例；离线评价、反馈偏差与漂移见 [`ml-evaluation`](ml-evaluation.md)，系统影响见 [`responsible-ai-systems`](responsible-ai-systems.md)。
 
 ## 一句话定位
 

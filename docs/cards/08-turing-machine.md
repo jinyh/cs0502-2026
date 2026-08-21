@@ -14,7 +14,7 @@ estimated_minutes: 40
 assessment_tags: [模型组成, 状态追踪, 规则设计, 边界辨析]
 labs: [lab-04-turing-machine]
 figures: [08-turing-transition.svg]
-related_cards: [02-intro-to-cs, 09-computer-system-arch]
+related_cards: [computability-limits, algorithm-strategies, 02-intro-to-cs, 09-computer-system-arch]
 related_deep: []
 related_visualizations: [TuringMachine]
 last_reviewed: 2026-08-21

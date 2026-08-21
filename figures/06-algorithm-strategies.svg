@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-labelledby="title desc">
+  <title id="title">算法策略选择图</title>
+  <desc id="desc">从问题约束出发，在穷举、分治、贪心、动态规划和图搜索之间选择，再用正确性与复杂度验证。</desc>
+  <rect width="960" height="460" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <rect x="330" y="35" width="300" height="70" rx="18" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <text x="480" y="78" font-size="26" font-weight="800" fill="#0f172a">输入结构 + 目标 + 约束</text>
+    <g fill="#ecfeff" stroke="#0891b2" stroke-width="3">
+      <rect x="35" y="180" width="150" height="70" rx="16"/><rect x="220" y="180" width="150" height="70" rx="16"/>
+      <rect x="405" y="180" width="150" height="70" rx="16"/><rect x="590" y="180" width="150" height="70" rx="16"/>
+      <rect x="775" y="180" width="150" height="70" rx="16"/>
+    </g>
+    <g font-size="23" font-weight="700" fill="#164e63">
+      <text x="110" y="223">穷举</text><text x="295" y="223">分治</text><text x="480" y="223">贪心</text><text x="665" y="223">动态规划</text><text x="850" y="223">图搜索</text>
+    </g>
+    <path d="M480 105V145M110 145H850M110 145V180M295 145V180M480 145V180M665 145V180M850 145V180" stroke="#475569" stroke-width="3" fill="none"/>
+    <rect x="230" y="330" width="500" height="80" rx="18" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="480" y="365" font-size="24" font-weight="800" fill="#78350f">反例 / 不变量 / 测试 + 时间空间增长</text>
+    <text x="480" y="395" font-size="18" fill="#78350f">先证明“对”，再判断“用得起”</text>
+    <path d="M110 250L300 330M295 250L390 330M480 250V330M665 250L570 330M850 250L660 330" stroke="#64748b" stroke-width="3" fill="none"/>
+  </g>
+</svg>

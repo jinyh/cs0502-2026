@@ -2,12 +2,12 @@
 
 > 面向交大理工科学生，把 21 讲串成“从物理世界到可信决策”的完整链路。
 
-1. **定义问题与表示对象**：[`02`](../cards/02-intro-to-cs.md) → [`03`](../cards/03-programming-language.md) → [`04`](../cards/04-data-structure-basics.md)
-2. **组织关系并设计算法**：[`05`](../cards/05-data-structure-advanced.md) → [`06`](../cards/06-graph-exploration.md) → [`07`](../cards/07-greedy-algorithm.md)
-3. **在真实系统中执行**：[`09`](../cards/09-computer-system-arch.md) → [`10`](../cards/10-software-engineering.md) → [`11`](../cards/11-computer-network.md) → [`12`](../cards/12-information-security.md)
-4. **从实验与传感器形成数据**：[`13`](../cards/13-database.md) → [`14`](../cards/14-data-mining.md) → [`15`](../cards/15-data-visualization.md)
-5. **学习模型并进入专业任务**：[`17`](../cards/17-machine-learning.md) → [`18`](../cards/18-computer-vision.md) / [`20`](../cards/20-speech-recognition.md) / [`21`](../cards/21-llm.md)
-6. **验证与复现**：[`科学计算扩展`](../cards/ext-scientific-computing.md) → [`软件工程`](../cards/10-software-engineering.md) → [`信息安全`](../cards/12-information-security.md)
+1. **定义问题与表示对象**：[`02`](../cards/02-intro-to-cs.md) → [`data-representation`](../cards/data-representation.md) → [`03`](../cards/03-programming-language.md)
+2. **组织关系并设计算法**：[`04`](../cards/04-data-structure-basics.md) → [`trees-heaps`](../cards/trees-heaps.md) / [`06`](../cards/06-graph-exploration.md) → [`algorithm-strategies`](../cards/algorithm-strategies.md)
+3. **在真实系统中执行**：[`computer-architecture`](../cards/computer-architecture.md) → [`operating-systems`](../cards/operating-systems.md) → [`distributed-systems`](../cards/distributed-systems.md)
+4. **形成可追溯数据与证据**：[`13`](../cards/13-database.md) → [`data-lifecycle-governance`](../cards/data-lifecycle-governance.md) → [`probability-uncertainty`](../cards/probability-uncertainty.md) → [`reproducible-computing`](../cards/reproducible-computing.md)
+5. **学习模型并进入专业任务**：[`ml-evaluation`](../cards/ml-evaluation.md) → [`neural-networks-transformers`](../cards/neural-networks-transformers.md) → [`multimodal-models`](../cards/multimodal-models.md) / [`rag-tool-agents`](../cards/rag-tool-agents.md)
+6. **验证、交互与治理**：[`ai-security`](../cards/ai-security.md) → [`hci-accessibility`](../cards/hci-accessibility.md) → [`responsible-ai-systems`](../cards/responsible-ai-systems.md)
 
 ## 六类工程入口
 

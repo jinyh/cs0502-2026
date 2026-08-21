@@ -1,17 +1,25 @@
 ---
 title: 递归与分治
-lecture: Slide05-DataStructure2-2025 补充（参考 CS61A / CS106A）
+card_id: recursion-divide-conquer
+lecture_refs: [L05, L06]
+source_slides: [Slide05-DataStructure2-2025]
 aliases: [递归, 分治, 基线条件, 归并排序, 汉诺塔]
-thinking_pillar: 计算思维
+thinking_pillars: [计算思维]
 category: data-structures-algorithms
 tags: [递归, 分治, 归并排序, 汉诺塔, 入门]
 status: needs-review
 version: 2.0
 importance: 4
-related_cards: [05-data-structure-advanced, 06-graph-exploration, 07-greedy-algorithm, ext-complexity]
+learning_objectives: [追踪递归调用栈, 检查基线与规模缩小, 解释分治及其合并代价]
+prerequisites: [stack-queue, 03-programming-language]
+estimated_minutes: 40
+assessment_tags: [递归追踪, 终止分析, 分治设计, 复杂度]
+labs: [lab-01-structures]
+figures: [05-stack-queue-recursion.svg]
+related_cards: [stack-queue, trees-heaps, algorithm-strategies, ext-complexity]
 related_deep: []
 related_visualizations: [Hanoi]
-last_reviewed: 2026-08-21
+last_reviewed: 2026-08-22
 ---
 
 # 递归与分治（Recursion & Divide-and-Conquer）
@@ -21,6 +29,12 @@ last_reviewed: 2026-08-21
 ## 一句话定位
 
 递归（recursion）是「用自己定义自己」——把大问题化成同型的更小子问题，直到触底。分治（divide-and-conquer）是其工程化范式：分、治、合。
+
+## 学完应能做到
+
+1. 展开递归调用栈，记录参数、局部状态、返回值和恢复顺序。
+2. 检查基线条件是否覆盖边界，以及递归步骤是否严格缩小问题。
+3. 解释分治的拆分、子解和合并步骤，并估计递归深度和额外空间。
 
 ## 核心知识点
 
@@ -81,6 +95,13 @@ last_reviewed: 2026-08-21
 3. 汉诺塔 $n=64$ 要多少步？为什么传说里僧侣搬到世界末日（$2^{64}-1$）？
 4. 递归和迭代哪个更好？怎么选？
 5. 用递归思路描述你专业里一个「自相似」的过程。
+
+## 常见误区与边界
+
+- 有基线条件仍不保证终止；递归参数必须朝基线推进。
+- 递归是实现方式，分治是问题结构；两者不等同。
+- 同一子问题被重复计算会造成指数增长，记忆化可复用结果。
+- Python 的递归深度有限，不应把深递归用于任意大线性输入。
 
 ## 代码示例
 

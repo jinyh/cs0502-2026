@@ -14,7 +14,7 @@ estimated_minutes: 45
 assessment_tags: [任务辨析, 数据准备, 算法比较, 结果解释]
 labs: [lab-06-clustering]
 figures: [14-clustering-comparison.svg]
-related_cards: [13-database, 15-data-visualization, 17-machine-learning]
+related_cards: [data-lifecycle-governance, probability-uncertainty, ml-evaluation, 13-database, 15-data-visualization, 17-machine-learning]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

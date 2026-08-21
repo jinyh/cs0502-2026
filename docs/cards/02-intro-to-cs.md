@@ -14,7 +14,7 @@ estimated_minutes: 25
 assessment_tags: [概念辨析, 体系映射, 场景分析]
 labs: []
 figures: []
-related_cards: [01-welcome, 08-turing-machine, 16-artificial-intelligence]
+related_cards: [01-welcome, data-representation, algorithm-strategies, computability-limits, 16-artificial-intelligence, responsible-ai-systems]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

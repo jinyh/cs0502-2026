@@ -14,7 +14,7 @@ estimated_minutes: 45
 assessment_tags: [模式设计, 关系代数, SQL追踪, 查询分析]
 labs: [lab-05-database]
 figures: [13-relational-query.svg]
-related_cards: [10-software-engineering, 14-data-mining]
+related_cards: [data-lifecycle-governance, distributed-systems, rag-tool-agents, 10-software-engineering, 14-data-mining]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

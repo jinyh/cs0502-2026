@@ -1,17 +1,25 @@
 ---
 title: Web 技术基础
-lecture: 扩展（无单独讲稿，参考 Harvard CS50 Web 模块）
+card_id: web-technologies
+lecture_refs: [L10, L20]
+source_slides: [Slide11-ComputerNetwork-2025, Slide21-LLM-2025]
 aliases: [Web, HTTP, HTML, 前后端, REST, API]
-thinking_pillar: 系统思维
+thinking_pillars: [系统思维]
 category: networking-security
 tags: [Web, HTTP, HTML, 前后端, REST, API, 入门]
 status: needs-review
 version: 1.0
 importance: 3
-related_cards: [11-computer-network, 12-information-security, 21-llm]
+learning_objectives: [追踪HTTP请求响应, 区分前端后端与API, 分析状态安全和失败]
+prerequisites: [11-computer-network]
+estimated_minutes: 35
+assessment_tags: [协议追踪, API设计, 分层分析, 故障诊断]
+labs: []
+figures: [11-network-encapsulation.svg]
+related_cards: [11-computer-network, distributed-systems, 12-information-security, rag-tool-agents]
 related_deep: [llm-deep-dive]
 related_visualizations: []
-last_reviewed: 2026-08-03
+last_reviewed: 2026-08-22
 ---
 
 # Web 技术基础（Web Technologies）
@@ -21,6 +29,12 @@ last_reviewed: 2026-08-03
 ## 一句话定位
 
 Web 用一组开放协议（HTTP/HTML）把全球文档与应用连成可交互的整体。理解它的「前端-后端-协议」三层，是使用与搭建 AI 应用的基础。
+
+## 学完应能做到
+
+1. 追踪浏览器或 API 客户端发出 HTTP 请求并处理响应的关键字段和状态。
+2. 区分 HTML/CSS/JavaScript、后端业务逻辑、数据库和外部 API 的职责。
+3. 分析认证状态、超时、重复请求、输入验证和跨层错误。
 
 ## 核心知识点
 
@@ -81,6 +95,13 @@ Web 基础稳定。AI 时代趋势：前端成为 LLM 对话界面，后端成�
 3. REST API 的「资源 + 方法 + JSON」为什么好？
 4. LLM 为什么多以 Web API 形式提供？这降低了什么门槛？
 5. 用「传感器→后端→前端」描述你专业里一个数据采集展示系统。
+
+## 常见误区与边界
+
+- HTTP 无状态不等于应用没有会话；状态由 cookie、token、服务端存储等组合维持。
+- REST 是设计风格，不是所有 API 的唯一正确形式。
+- HTTPS 保护传输，不保证服务器、页面脚本或业务逻辑可信。
+- LLM API 调用仍是分布式系统调用，需要处理超时、重试、权限和费用边界。
 
 ## 代码示例
 

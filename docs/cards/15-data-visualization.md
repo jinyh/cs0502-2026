@@ -14,7 +14,7 @@ estimated_minutes: 35
 assessment_tags: [图表选择, 图表解读, 错误诊断, 设计改进]
 labs: []
 figures: [15-chart-selection.svg]
-related_cards: [14-data-mining, 17-machine-learning]
+related_cards: [probability-uncertainty, hci-accessibility, ml-evaluation, 14-data-mining, 17-machine-learning]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

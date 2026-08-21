@@ -14,7 +14,7 @@ estimated_minutes: 40
 assessment_tags: [序列追踪, 模型结构, 编辑错误, 场景分析]
 labs: []
 figures: [20-rnn-asr.svg]
-related_cards: [17-machine-learning, 21-llm]
+related_cards: [neural-networks-transformers, multimodal-models, ml-evaluation, 17-machine-learning, 21-llm]
 related_deep: [llm-deep-dive]
 related_visualizations: []
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 语音识别与序列建模（Speech Recognition and Sequence Modeling）
 
 > 对应讲稿：`Slide20-SpeechRecognition-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 新序列定位：本页是 L19 的语音应用案例；RNN/Transformer 共享结构见 [`neural-networks-transformers`](neural-networks-transformers.md)，模态融合与分层评价见 [`multimodal-models`](multimodal-models.md)。
 
 ## 一句话定位
 

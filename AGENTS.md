@@ -7,7 +7,7 @@
 知识库形态（混合方案）：
 
 - **21 讲课程蓝图**（`docs/curriculum/`）— 教学目标、工程场景、主动任务与跨章迁移
-- **轻量概念卡片**（`docs/cards/`）— 可跨讲次复用的最小可检索单元；现有 21 张讲稿锚点卡与 6 张扩展卡是迁移基线
+- **轻量概念卡片**（`docs/cards/`）— 21 张来源锚点/概览卡 + 25 张可跨讲次复用的语义概念卡
 - **少数 AI 高价值深度专题**（`docs/deep/`）— LLM、强化学习、量子计算等前沿变化快的主题
 - **前沿进展注记**（`docs/frontier/`）— 静态写底 + 智能体联网增量双层机制
 - **多路径索引**（`docs/paths/`）— 参考 Path2AGI，按思维支柱 / AI 能力 / 读者目标 / 跨学科桥接导航
@@ -44,9 +44,9 @@ ComputerIntroduction/
 ├── LectureNotes/  # 讲稿 PDF，课程内部材料，见 Canvas，不入仓库（本地保留）
 ├── docs/                               # 知识库主体
 │   ├── README.md
-│   ├── curriculum/                    # 21 讲教学蓝图 + 旧卡迁移矩阵
-│   ├── cards/                         # 多对多概念卡片（现有编号为 legacy id）
-│   │   ├── README.md                  # 卡片图谱、迁移基线 + 模板说明
+│   ├── curriculum/                    # 21 讲教学蓝图 + 机器资源映射 + 旧卡迁移矩阵
+│   ├── cards/                         # 多对多概念卡片（编号文件为来源锚点）
+│   │   ├── README.md                  # 卡片图谱、完整清单 + 模板说明
 │   │   └── 01-welcome.md ... 21-llm.md
 │   ├── deep/                          # 少数 AI 高价值深度专题
 │   │   ├── README.md                  # 选材标准 + 旧 45 篇规划降级附录
@@ -68,7 +68,7 @@ ComputerIntroduction/
 ├── .opencode/                         # 学生 agent / skills / slash commands
 ├── code/                               # 代码示例与沙箱
 │   ├── README.md  requirements.txt
-│   ├── examples/                      # 概念演示 Python（文件名前缀对应卡片编号）
+│   ├── examples/                      # 概念演示 Python（映射见 curriculum YAML）
 │   └── visualizations/               # 自包含 HTML 交互可视化（迁移自课程 Demo）
 └── figures/                           # 静态图（SVG 优先）
 ```
@@ -79,7 +79,7 @@ ComputerIntroduction/
 
 凡旧规划主题确有深度展开需要时，在 `docs/deep/` 新建文件并在对应卡片 `related_deep` 字段登记反向链接。
 
-现有 **扩展卡片**（`docs/cards/ext-*.md`）补全旧 21 张讲稿锚点卡未单独覆盖的要点。后续不再区分“主卡/扩展卡”的教学地位，而按概念粒度拆分、复用；迁移映射见 `docs/curriculum/legacy-coverage-matrix.md`。
+现有 **扩展卡片**（`docs/cards/ext-*.md`）已迁移到新语义元数据，只为兼容公开路径保留 `ext-` 文件名。讲次与卡片的实际组合见 `docs/curriculum/lecture-card-map.yaml`，迁移依据见 `docs/curriculum/legacy-coverage-matrix.md`。
 
 ## 安全隔离约定（红线）
 
@@ -127,6 +127,12 @@ tags: [<tag1>, <tag2>]
 status: <stable|draft|needs-review>
 version: 1.0
 importance: <1-5>
+learning_objectives: [<可观察目标1>, <可观察目标2>, <可观察目标3>]
+prerequisites: [<前置 card_id>]
+estimated_minutes: <分钟>
+assessment_tags: [<认知动作/题型标签>]
+labs: [<实验 id>]
+figures: [<SVG 文件名>]
 related_cards: [<卡片编号-名>]
 related_deep: [<深度专题>]
 related_visualizations: [<可视化名>]
@@ -187,18 +193,18 @@ last_reviewed: YYYY-MM-DD
 - 21 个课程讲稿 PDF（课程内部材料，发布在 Canvas，不入仓库）
 - 课程大纲与教务材料（`reference/`，**不公开**，`.gitignore` 隔离）
 - 5 个交互可视化 HTML（`code/visualizations/`，迁移自课程 Demo）
-- AI 时代 21 讲课程蓝图与旧卡覆盖迁移矩阵（`docs/curriculum/`，待课程组审批）
-- 27 张迁移基线卡片（`docs/cards/`，含 21 张讲稿锚点卡和 6 张扩展卡，统一为 `needs-review`）
+- AI 时代 21 讲课程蓝图、机器资源映射与旧卡覆盖迁移矩阵（`docs/curriculum/`，待课程组审批）
+- 46 张卡片（`docs/cards/`，含 21 张来源锚点/概览卡和 25 张语义概念卡，统一为 `needs-review`）
 - 3 个深度专题（`docs/deep/`：LLM / 强化学习 / 量子计算）
 - 2 个前沿注记页（`docs/frontier/`：LLM / CV，双层机制）
 - 多路径索引（`docs/paths/` 五页）与 `glossary.md`
-- 10 个概念示例、8 个核心实验、19 张 SVG 配图与跨平台 runner
+- 18 个概念示例、8 个核心实验、30 张 SVG 配图与跨平台 runner
 - OpenCode 配置全套（`course-tutor` agent / 5 skills / 8 slash commands）
 - `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
 
 ### 待完成
 
 - 教师审批 `docs/assessment/blueprint.yaml` 后再启用“按正式考核结构校准”的 `/mock`
-- 课程组审批 21 讲蓝图后，按迁移矩阵拆分过载卡并补齐缺失概念卡
+- 课程组审批 21 讲蓝图与 `lecture-card-map.yaml`
 - 发布前由任课教师抽查全部 `needs-review` 概念卡
 - 二期可选：mkdocs 静态站点 + GitHub Pages；英文版；更多深度专题

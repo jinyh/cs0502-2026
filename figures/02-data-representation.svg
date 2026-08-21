@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 420" role="img" aria-labelledby="title desc">
+  <title id="title">从物理量到位模式的数据表示链</title>
+  <desc id="desc">物理世界经过采样、量化和编码成为位模式，再按类型与元数据解释为程序中的值。</desc>
+  <rect width="960" height="420" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <g fill="#dbeafe" stroke="#2563eb" stroke-width="3">
+      <rect x="45" y="135" width="160" height="110" rx="18"/><rect x="275" y="135" width="160" height="110" rx="18"/>
+      <rect x="505" y="135" width="160" height="110" rx="18"/><rect x="735" y="135" width="180" height="110" rx="18"/>
+    </g>
+    <g font-size="24" font-weight="700" fill="#0f172a">
+      <text x="125" y="180">物理量</text><text x="125" y="214" font-size="18">光 / 声 / 温度</text>
+      <text x="355" y="180">采样与量化</text><text x="355" y="214" font-size="18">有限时间与等级</text>
+      <text x="585" y="180">位模式</text><text x="585" y="214" font-size="18">01000001</text>
+      <text x="825" y="180">类型 + 元数据</text><text x="825" y="214" font-size="18">整数 / 字符 / 像素</text>
+    </g>
+    <g stroke="#475569" stroke-width="4" fill="none">
+      <path d="M205 190H265"/><path d="M435 190H495"/><path d="M665 190H725"/>
+    </g>
+    <g fill="#475569"><path d="M265 190l-14-9v18z"/><path d="M495 190l-14-9v18z"/><path d="M725 190l-14-9v18z"/></g>
+    <text x="480" y="65" font-size="30" font-weight="800" fill="#0f172a">表示是一组约定，不是现实本身</text>
+    <text x="480" y="320" font-size="22" fill="#b91c1c">采样与量化已经丢失的信息，后续算法无法凭空恢复</text>
+    <text x="480" y="360" font-size="19" fill="#475569">Representation pipeline: world → sample → bits → interpreted value</text>
+  </g>
+</svg>

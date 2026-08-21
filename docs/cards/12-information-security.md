@@ -14,7 +14,7 @@ estimated_minutes: 40
 assessment_tags: [安全目标, 机制选择, 攻击分析, 威胁建模]
 labs: []
 figures: [12-public-key-signature.svg]
-related_cards: [10-software-engineering, 11-computer-network]
+related_cards: [ai-security, responsible-ai-systems, 10-software-engineering, 11-computer-network]
 related_deep: [quantum-computing]
 related_visualizations: []
 last_reviewed: 2026-08-21

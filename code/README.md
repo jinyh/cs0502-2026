@@ -2,7 +2,7 @@
 
 这里的代码服务于“先预测，再运行；先解释，再迁移”，不追求工程框架复杂度。
 
-- `examples/`：10 个概念演示，文件名前缀对应卡片编号。
+- `examples/`：18 个概念演示；文件名前缀是主要讲次或兼容 legacy 编号，精确关系见 `docs/curriculum/lecture-card-map.yaml`。
 - `labs/`：8 个核心实验，每个目录包含任务说明、`starter.py` 和测试。
 - `visualizations/`：5 个自包含 HTML 页面，打开后先完成页面顶部的预测任务。
 - `runner.py`：课程代码执行护栏，只接受 `examples/`、`labs/` 与 `student-work/` 下的 Python。

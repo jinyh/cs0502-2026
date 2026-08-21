@@ -5,6 +5,7 @@
 ## 文件
 
 - [`21-lecture-blueprint.md`](21-lecture-blueprint.md) — AI 时代 21 讲课程蓝图：边界、目标、场景、主动任务与跨章迁移。
+- [`lecture-card-map.yaml`](lecture-card-map.yaml) — 机器可读的讲次—核心卡—支持卡—示例—实验—配图—考核标签映射。
 - [`legacy-coverage-matrix.md`](legacy-coverage-matrix.md) — 现有 21 张讲稿锚点卡片与 6 张扩展卡片迁移到新序列的覆盖矩阵。
 
 ## 三层关系

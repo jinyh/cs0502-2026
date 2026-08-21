@@ -14,7 +14,7 @@ estimated_minutes: 60
 assessment_tags: [系统分层, 指令追踪, 进程状态, 调度, 并发分析]
 labs: []
 figures: [09-computer-os-layers.svg, 09-process-concurrency.svg]
-related_cards: [08-turing-machine, 10-software-engineering, 11-computer-network]
+related_cards: [computer-architecture, operating-systems, 08-turing-machine, 10-software-engineering, 11-computer-network]
 related_deep: []
 related_visualizations: [circular_queue]
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 计算机组成与操作系统（Computer Architecture and Operating System）
 
 > 对应讲稿：`Slide09-ComputerSystemAndArchitecture-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 图谱说明：本页保留讲稿全景。硬件执行与加速器见 [`computer-architecture`](computer-architecture.md)，进程、并发和资源管理见 [`operating-systems`](operating-systems.md)。
 
 ## 一句话定位
 

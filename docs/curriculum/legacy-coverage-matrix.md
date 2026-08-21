@@ -1,6 +1,6 @@
 # 现有卡片 → 新 21 讲覆盖矩阵
 
-> 用途：指导后续拆卡与补卡，不表示卡片必须按讲次重命名。`Lxx` 指 [`21-lecture-blueprint.md`](21-lecture-blueprint.md) 中的新教学序列。
+> 状态：内容迁移已实现，待课程组审核。本文保留迁移依据，不表示卡片必须按讲次重命名。`Lxx` 指 [`21-lecture-blueprint.md`](21-lecture-blueprint.md) 中的新教学序列，实际组合见 [`lecture-card-map.yaml`](lecture-card-map.yaml)。
 
 ## 迁移原则
 
@@ -47,13 +47,15 @@
 | `ext-web-technologies` | L10、L20 | reuse/extend | Web/API 进入 L10；LLM 服务与工具接口进入 L20 |
 | `ext-logic-boolean` | L02、L08 | reuse | 程序条件与逻辑门进 L02；数字电路连接 L08 |
 
-## 新增核心概念簇
+## 已新增核心概念簇
 
-下列内容现有卡片没有形成足够稳定、可检索的核心单元，后续应优先补卡。建议 id 只表达概念，不带讲次编号。
+下列内容原有卡片没有形成足够稳定、可检索的核心单元，现已按语义 id 补卡；id 只表达概念，不带讲次编号。
 
 | 建议 card id | 主要讲次 | 最小范围 |
 |---|---|---|
 | `data-representation` | L02、L08、L19 | 整数/浮点/文本/图像/声音编码与误差 |
+| `stack-queue` | L04、L05、L09 | LIFO/FIFO、状态边界、缓冲与调度 |
+| `trees-heaps` | L05、L06、L13 | 树遍历、堆序、优先队列与结构选择 |
 | `algorithm-strategies` | L06、L17 | 搜索、排序、分治、贪心、动态规划及反例 |
 | `computability-limits` | L07、L20 | 可判定性、复杂性、验证与自动化边界 |
 | `computer-architecture` | L08、L19 | ISA、存储层次、局部性、CPU/GPU/NPU |
@@ -64,7 +66,9 @@
 | `data-lifecycle-governance` | L14、L18、L21 | 来源、质量、许可、隐私、版本、删除与责任 |
 | `probability-uncertainty` | L15、L18、L21 | 条件概率、基率、抽样、区间、相关/因果和不确定性 |
 | `hci-accessibility` | L16、L21 | 交互反馈、认知负荷、无障碍与校准信任 |
+| `ai-search-planning-agents` | L17、L20 | 状态空间、知识表示、规划与 Agent 闭环 |
 | `ml-evaluation` | L18、L20、L21 | 划分、泄漏、指标、阈值、群体偏差和漂移 |
+| `neural-networks-transformers` | L19、L20 | CNN/RNN/注意力的结构偏置与资源代价 |
 | `multimodal-models` | L19、L20 | CNN/RNN/Transformer 与图像、语音、文本共享原理 |
 | `rag-tool-agents` | L20、L21 | 检索、引用、结构化工具、权限、日志和评价 |
 | `responsible-ai-systems` | L21（贯穿） | 人本、伦理、安全、公平、可持续、监督与问责 |
@@ -78,11 +82,11 @@
 | 多带图灵机的大量机械步骤 | 延伸阅读 | 对本课程“理解边界”的边际价值较低 |
 | 框架 API 与提示词模板背诵 | 实验按需提供 | 工具会变，评价与验证能力更稳定 |
 
-## 后续迁移顺序
+## 迁移完成度
 
-1. 课程组审批 21 讲目标、边界与考核动作。
-2. 优先拆解过载卡：`05`、`09`、`17`、`21`。
-3. 新增表示、概率/不确定性、数据治理、HCI/无障碍、分布式、AI 安全与系统工程卡。
-4. 将 CV、语音、推荐改为可跨 L18–L21 复用的案例卡。
-5. 为每讲登记 `core_cards / supporting_cards / lab / assessment_tags`，再更新 OpenCode 的自动检索映射。
-6. 教师复核后，才逐卡把 `status` 从 `needs-review` 改为 `stable`。
+- [ ] 课程组审批 21 讲目标、边界与考核动作。
+- [x] 用语义卡解除 `05`、`09`、`17`、`21` 的主题过载，同时保留旧公开路径。
+- [x] 新增表示、概率/不确定性、数据治理、HCI/无障碍、分布式、AI 安全与系统工程卡。
+- [x] 将 CV、语音、推荐定位为可跨 L18–L21 复用的应用案例卡。
+- [x] 在 `lecture-card-map.yaml` 登记 `core_cards / supporting_cards / examples / labs / figures / assessment_tags`。
+- [ ] 教师逐卡复核后，再把 `status` 从 `needs-review` 改为 `stable`。

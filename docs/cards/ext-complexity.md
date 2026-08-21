@@ -1,17 +1,25 @@
 ---
 title: 算法复杂度
-lecture: Slide05-DataStructure2-2025 补充（参考 MIT 6.0001 / CS50）
+card_id: algorithm-complexity
+lecture_refs: [L06, L07]
+source_slides: [Slide05-DataStructure2-2025]
 aliases: [复杂度, Big-O, 时间复杂度, 空间复杂度, 渐近分析, P/NP]
-thinking_pillar: 计算思维
+thinking_pillars: [计算思维]
 category: data-structures-algorithms
 tags: [复杂度, Big-O, 渐近分析, P/NP, 入门]
 status: needs-review
 version: 2.0
 importance: 4
-related_cards: [06-graph-exploration, 07-greedy-algorithm, 05-data-structure-advanced, 08-turing-machine]
+learning_objectives: [比较常见增长阶, 区分最好最坏平均与摊还, 结合输入规模判断可行性]
+prerequisites: [03-programming-language]
+estimated_minutes: 35
+assessment_tags: [复杂度分析, 增长比较, 工程可行性]
+labs: [lab-03-greedy]
+figures: [05-complexity-growth.svg]
+related_cards: [algorithm-strategies, computability-limits, 06-graph-exploration, 07-greedy-algorithm]
 related_deep: []
 related_visualizations: []
-last_reviewed: 2026-08-21
+last_reviewed: 2026-08-22
 ---
 
 # 算法复杂度（Algorithm Complexity）
@@ -21,6 +29,12 @@ last_reviewed: 2026-08-21
 ## 一句话定位
 
 算法复杂度（algorithm complexity）用 **Big-O** 渐近记号刻画算法随输入规模 $n$ 增长时的资源消耗趋势——回答「当数据变大，它还能不能用」。它是判断算法好坏的通用语言。
+
+## 学完应能做到
+
+1. 从循环、递归或数据结构操作估计常见时间和额外空间增长阶。
+2. 区分最好、最坏、平均和摊还分析所回答的问题。
+3. 用输入规模、资源预算和常数因素判断算法是否适合具体工程场景。
 
 ## 核心知识点
 
@@ -84,6 +98,13 @@ $f(n)=O(g(n))$ 表示 $f$ 增长不超过 $g$ 的常数倍。
 4. P 和 NP 的区别用一句话说清？P=NP 为什么是难题？
 5. 你专业的某计算任务，复杂度从 $O(n^2)$ 优化到 $O(n\log n)$ 意味着什么？
 
+## 常见误区与边界
+
+- Big-O 是增长上界，不是精确运行时间或“等号”。
+- 忽略常数只适合讨论充分大的规模；实际阈值仍需测量。
+- 平均 $O(1)$ 的哈希操作不提供无条件最坏保证。
+- P/NP 与不可判定性的系统解释见 [`computability-limits`](computability-limits.md)，不在本卡展开证明。
+
 ## 代码示例
 
 ```python
@@ -110,5 +131,5 @@ for n in [1000, 3000]:
 ## 延伸阅读
 
 - 对照课程：MIT 6.0001（复杂度 lecture）、Harvard CS50（algorithms）。
-- 关联：[`06`](06-graph-exploration.md)（BFS/DFS 的 $O(V+E)$）、[`07`](07-greedy-algorithm.md)（贪心的复杂度）、[`08`](08-turing-machine.md)（可解 vs 不可解）。
+- 关联：[`algorithm-strategies`](algorithm-strategies.md)、[`06`](06-graph-exploration.md)（BFS/DFS 的 $O(V+E)$）、[`07`](07-greedy-algorithm.md)（贪心的复杂度）、[`computability-limits`](computability-limits.md)（可解 vs 可承受）。
 - 经典：Cormen, T. et al. (2009). *Introduction to Algorithms*, Ch.1–3.

@@ -7,6 +7,7 @@ import xml.etree.ElementTree as ET
 ROOT = Path(__file__).resolve().parents[1]
 ALL_CARDS = sorted(path for path in (ROOT / "docs" / "cards").glob("*.md") if path.name != "README.md")
 LEGACY_ANCHOR_CARDS = sorted(path for path in ALL_CARDS if re.match(r"^\d{2}-", path.name))
+SEMANTIC_CARDS = sorted(set(ALL_CARDS) - set(LEGACY_ANCHOR_CARDS))
 REQUIRED_FIELDS = {
     "title",
     "lecture",
@@ -24,6 +25,28 @@ REQUIRED_FIELDS = {
     "figures",
     "last_reviewed",
 }
+SEMANTIC_REQUIRED_FIELDS = {
+    "title",
+    "card_id",
+    "lecture_refs",
+    "source_slides",
+    "thinking_pillars",
+    "category",
+    "tags",
+    "status",
+    "version",
+    "importance",
+    "learning_objectives",
+    "prerequisites",
+    "estimated_minutes",
+    "assessment_tags",
+    "labs",
+    "figures",
+    "related_cards",
+    "related_deep",
+    "related_visualizations",
+    "last_reviewed",
+}
 
 
 def frontmatter_fields(text):
@@ -34,6 +57,13 @@ def frontmatter_fields(text):
         for line in frontmatter.splitlines()
         if (match := re.match(r"^([a-z_]+):", line))
     }
+
+
+def inline_list(text, field):
+    frontmatter = text.split("---\n", 2)[1]
+    match = re.search(rf"^{field}:\s*\[(.*)\]\s*$", frontmatter, re.MULTILINE)
+    assert match, field
+    return [item.strip() for item in match.group(1).split(",") if item.strip()]
 
 
 def test_all_concept_cards_are_reviewable_and_stay_lightweight():
@@ -57,6 +87,39 @@ def test_legacy_anchor_cards_keep_their_migration_schema():
             assert "## 常见误区与边界" in text, card
 
 
+def test_semantic_cards_use_many_to_many_schema_and_active_learning_sections():
+    assert len(SEMANTIC_CARDS) >= 25
+    card_ids = []
+    for card in SEMANTIC_CARDS:
+        text = card.read_text(encoding="utf-8")
+        assert SEMANTIC_REQUIRED_FIELDS <= frontmatter_fields(text), card
+        assert inline_list(text, "lecture_refs"), card
+        assert "## 学完应能做到" in text, card
+        assert "## 常见误区与边界" in text, card
+        assert "## 主动学习" in text, card
+        objectives = re.findall(
+            r"^\d+\. ",
+            text.split("## 学完应能做到", 1)[1].split("\n## ", 1)[0],
+            re.MULTILINE,
+        )
+        assert len(objectives) == 3, card
+        card_id_match = re.search(r"^card_id:\s*(.+)$", text, re.MULTILINE)
+        assert card_id_match, card
+        card_ids.append(card_id_match.group(1).strip())
+
+    assert len(card_ids) == len(set(card_ids))
+
+
+def test_card_relationships_and_declared_figures_resolve():
+    card_stems = {card.stem for card in ALL_CARDS}
+    for card in ALL_CARDS:
+        text = card.read_text(encoding="utf-8")
+        for related in inline_list(text, "related_cards"):
+            assert related in card_stems, f"{card.name}: {related}"
+        for figure in inline_list(text, "figures"):
+            assert (ROOT / "figures" / figure).is_file(), f"{card.name}: {figure}"
+
+
 def test_curriculum_blueprint_has_21_observable_lectures():
     blueprint = (ROOT / "docs" / "curriculum" / "21-lecture-blueprint.md").read_text(encoding="utf-8")
     lecture_matches = list(re.finditer(r"^### L(\d{2}) .+$", blueprint, re.MULTILINE))
@@ -71,6 +134,28 @@ def test_curriculum_blueprint_has_21_observable_lectures():
         assert "**跨章迁移**" in section, match.group(0)
         objectives = re.findall(r"^\d+\. ", section.split("**工程场景**", 1)[0], re.MULTILINE)
         assert len(objectives) == 3, match.group(0)
+
+
+def test_lecture_card_map_covers_21_lectures_and_resolves_resources():
+    mapping = (ROOT / "docs" / "curriculum" / "lecture-card-map.yaml").read_text(encoding="utf-8")
+    lecture_matches = list(re.finditer(r"^  - id: (L\d{2})$", mapping, re.MULTILINE))
+    assert [match.group(1) for match in lecture_matches] == [f"L{number:02d}" for number in range(1, 22)]
+    assert re.search(r"^status:\s*proposal$", mapping, re.MULTILINE)
+
+    card_stems = {card.stem for card in ALL_CARDS}
+    for field, root, suffix in (
+        ("core_cards", ROOT / "docs" / "cards", ".md"),
+        ("supporting_cards", ROOT / "docs" / "cards", ".md"),
+        ("examples", ROOT / "code" / "examples", ""),
+        ("labs", ROOT / "code" / "labs", ""),
+        ("figures", ROOT / "figures", ""),
+    ):
+        for raw_items in re.findall(rf"^    {field}:\s*\[(.*)\]$", mapping, re.MULTILINE):
+            for item in [value.strip() for value in raw_items.split(",") if value.strip()]:
+                if field in {"core_cards", "supporting_cards"}:
+                    assert item in card_stems, f"{field}: {item}"
+                else:
+                    assert (root / f"{item}{suffix}").exists(), f"{field}: {item}"
 
 
 def test_local_markdown_links_resolve():
@@ -92,7 +177,7 @@ def test_local_markdown_links_resolve():
 
 def test_svg_assets_are_accessible_and_self_contained():
     svgs = sorted((ROOT / "figures").glob("*.svg"))
-    assert len(svgs) == 19
+    assert len(svgs) >= 30
     for svg in svgs:
         root = ET.parse(svg).getroot()
         children = [child.tag.rsplit("}", 1)[-1] for child in root]

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 470" role="img" aria-labelledby="title desc">
+  <title id="title">AI 应用威胁模型</title>
+  <desc id="desc">用户、检索内容和工具输出进入模型；模型只能通过权限网关访问受限工具，所有调用被验证和记录。</desc>
+  <rect width="960" height="470" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="48" font-size="30" font-weight="800" fill="#0f172a">模型不是安全边界，权限网关才是</text>
+    <g fill="#fee2e2" stroke="#dc2626" stroke-width="3">
+      <rect x="45" y="100" width="190" height="65" rx="16"/><rect x="45" y="195" width="190" height="65" rx="16"/><rect x="45" y="290" width="190" height="65" rx="16"/>
+    </g>
+    <g font-size="20" font-weight="700" fill="#7f1d1d"><text x="140" y="140">用户输入</text><text x="140" y="235">检索文档</text><text x="140" y="330">工具输出</text></g>
+    <rect x="350" y="175" width="210" height="110" rx="20" fill="#dbeafe" stroke="#2563eb" stroke-width="3"/>
+    <text x="455" y="222" font-size="25" font-weight="800" fill="#1e3a8a">模型 / Agent</text><text x="455" y="253" font-size="18" fill="#1e3a8a">内容均视为不可信</text>
+    <rect x="650" y="155" width="250" height="150" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+    <text x="775" y="198" font-size="24" font-weight="800" fill="#14532d">权限与验证网关</text>
+    <text x="775" y="232" font-size="18" fill="#14532d">允许列表 / 参数校验</text><text x="775" y="260" font-size="18" fill="#14532d">审批 / 隔离 / 审计</text>
+    <path d="M235 132L350 198M235 228H350M235 323L350 262M560 230H650" stroke="#475569" stroke-width="3" fill="none"/>
+    <rect x="650" y="365" width="250" height="65" rx="16" fill="#fef3c7" stroke="#d97706" stroke-width="3"/>
+    <text x="775" y="405" font-size="21" font-weight="700" fill="#78350f">受限文件 / API / 代码</text>
+    <path d="M775 305V365" stroke="#475569" stroke-width="3"/>
+  </g>
+</svg>

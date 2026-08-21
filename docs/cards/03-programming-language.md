@@ -14,7 +14,7 @@ estimated_minutes: 30
 assessment_tags: [概念辨析, 执行追踪, 语言比较]
 labs: []
 figures: [03-language-pipeline.svg]
-related_cards: [02-intro-to-cs, 09-computer-system-arch, 21-llm]
+related_cards: [02-intro-to-cs, data-representation, ext-logic-boolean, algorithm-strategies, reproducible-computing, 09-computer-system-arch, rag-tool-agents]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

@@ -14,7 +14,7 @@ estimated_minutes: 40
 assessment_tags: [分层映射, 报文追踪, 性能辨析, 场景设计]
 labs: []
 figures: [11-network-encapsulation.svg]
-related_cards: [09-computer-system-arch, 12-information-security]
+related_cards: [ext-web-technologies, distributed-systems, ai-security, 09-computer-system-arch, 12-information-security]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

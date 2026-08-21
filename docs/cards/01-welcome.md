@@ -14,7 +14,7 @@ estimated_minutes: 15
 assessment_tags: [课程地图, 学习规划]
 labs: []
 figures: []
-related_cards: [02-intro-to-cs]
+related_cards: [02-intro-to-cs, data-representation, responsible-ai-systems]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

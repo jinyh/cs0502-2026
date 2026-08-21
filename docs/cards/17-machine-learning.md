@@ -14,7 +14,7 @@ estimated_minutes: 60
 assessment_tags: [学习范式, 模型追踪, 结构比较, 泛化诊断]
 labs: [lab-07-machine-learning]
 figures: [17-neural-learning.svg]
-related_cards: [14-data-mining, 16-artificial-intelligence, 18-computer-vision, 20-speech-recognition, 21-llm]
+related_cards: [ml-evaluation, neural-networks-transformers, multimodal-models, 14-data-mining, 16-artificial-intelligence, 18-computer-vision, 20-speech-recognition, 21-llm]
 related_deep: [reinforcement-learning, llm-deep-dive]
 related_visualizations: []
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 机器学习与神经网络（Machine Learning and Neural Networks）
 
 > 对应讲稿：`Slide17-MachineLearning-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 图谱说明：本页保留机器学习全景。泛化、指标、数据泄漏与漂移见 [`ml-evaluation`](ml-evaluation.md)，网络结构原理见 [`neural-networks-transformers`](neural-networks-transformers.md)。
 
 ## 一句话定位
 

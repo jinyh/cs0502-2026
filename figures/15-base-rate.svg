@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 460" role="img" aria-labelledby="title desc">
+  <title id="title">低基率对阳性预测值的影响</title>
+  <desc id="desc">一万人中一百个真实阳性；检测找出九十个，但九千九百个阴性中百分之五误报，导致阳性结果里假阳性多于真阳性。</desc>
+  <rect width="960" height="460" rx="24" fill="#f8fafc"/>
+  <g font-family="system-ui,sans-serif" text-anchor="middle">
+    <text x="480" y="48" font-size="30" font-weight="800" fill="#0f172a">检测性能不变，基率会改变“阳性意味着什么”</text>
+    <rect x="60" y="105" width="380" height="230" rx="20" fill="#dcfce7" stroke="#16a34a" stroke-width="3"/>
+    <rect x="520" y="105" width="380" height="230" rx="20" fill="#fee2e2" stroke="#dc2626" stroke-width="3"/>
+    <text x="250" y="150" font-size="25" font-weight="800" fill="#14532d">真实患病：100 人</text>
+    <text x="250" y="205" font-size="46" font-weight="900" fill="#15803d">90</text><text x="250" y="240" font-size="20" fill="#14532d">真阳性（灵敏度 90%）</text>
+    <text x="710" y="150" font-size="25" font-weight="800" fill="#7f1d1d">实际阴性：9900 人</text>
+    <text x="710" y="205" font-size="46" font-weight="900" fill="#b91c1c">495</text><text x="710" y="240" font-size="20" fill="#7f1d1d">假阳性（误报率 5%）</text>
+    <text x="480" y="390" font-size="26" font-weight="800" fill="#1e3a8a">阳性预测值 = 90 / (90 + 495) ≈ 15.4%</text>
+    <text x="480" y="425" font-size="18" fill="#475569">准确率或灵敏度不能脱离目标人群基率解释</text>
+  </g>
+</svg>

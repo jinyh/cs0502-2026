@@ -14,7 +14,7 @@ estimated_minutes: 55
 assessment_tags: [操作追踪, 递归追踪, 结构选择, 复杂度]
 labs: [lab-01-structures]
 figures: [05-stack-queue-recursion.svg, 05-tree-heap.svg, 05-complexity-growth.svg]
-related_cards: [04-data-structure-basics, 06-graph-exploration, ext-search-hashing]
+related_cards: [04-data-structure-basics, stack-queue, trees-heaps, ext-recursion-divide-conquer, ext-search-hashing, ext-complexity, algorithm-strategies, 06-graph-exploration]
 related_deep: []
 related_visualizations: [stack_expr, circular_queue, binary_heap, Hanoi]
 last_reviewed: 2026-08-21
@@ -23,6 +23,8 @@ last_reviewed: 2026-08-21
 # 典型数据结构与算法（Data Structures and Algorithms）
 
 > 对应讲稿：`Slide05-DataStructure2-2025.pdf`（见课程 Canvas，不在公开仓库）
+
+> 图谱说明：本页保留讲稿全景。按概念学习请分别进入 [`stack-queue`](stack-queue.md)、[`trees-heaps`](trees-heaps.md)、[`ext-recursion-divide-conquer`](ext-recursion-divide-conquer.md) 与 [`algorithm-strategies`](algorithm-strategies.md)。
 
 ## 一句话定位
 

@@ -4,35 +4,35 @@
 
 ## 21 讲教学序列速查
 
-完整目标、工程场景与主动任务见 [`docs/curriculum/21-lecture-blueprint.md`](../docs/curriculum/21-lecture-blueprint.md)。下表的“现有入口”只是迁移期可用资源，一讲可组合多卡，一卡可服务多讲。
+完整目标、工程场景与主动任务见 [`docs/curriculum/21-lecture-blueprint.md`](../docs/curriculum/21-lecture-blueprint.md)；精确资源映射见 [`lecture-card-map.yaml`](../docs/curriculum/lecture-card-map.yaml)。一讲组合多卡，一卡可以服务多讲。
 
 | 讲次 | 主题 | 现有入口 / 检索 tag |
 |---|---|---|
-| L01 | CS、四种思维与人机协作 | `01`、`02`；课程地图/计算思维/OpenCode |
-| L02 | 数据表示、编码、逻辑与数值误差 | `ext-logic-boolean`、`ext-scientific-computing`；表示/浮点/编码 |
-| L03 | 程序、语言、抽象与问题求解 | `03`；语法/语义/编译/接口/测试 |
-| L04 | 线性结构、栈、队列与哈希 | `04`、`05`、`ext-search-hashing` |
-| L05 | 递归、树、堆、图与遍历 | `05`、`06`、`ext-recursion-divide-conquer` |
-| L06 | 搜索、排序、算法策略与复杂度 | `07`、`ext-complexity`、`ext-search-hashing`、`ext-recursion-divide-conquer` |
-| L07 | 可计算性、复杂性与自动化边界 | `08`、`ext-complexity`；可判定/资源边界/验证 |
-| L08 | 体系结构、存储与 AI 加速器 | `09`、`ext-logic-boolean`；CPU/GPU/NPU/局部性 |
-| L09 | OS、进程、并发与资源管理 | `09`；进程/调度/同步/隔离 |
-| L10 | 网络、Web、API、云与分布式 | `11`、`ext-web-technologies`；超时/重试/部分失败 |
-| L11 | 软件工程、测试、版本与可重复性 | `10`、`ext-scientific-computing`；Git/测试/复现 |
-| L12 | 安全、隐私、密码学与 AI 安全 | `12`；威胁建模/提示注入/工具权限 |
-| L13 | 数据库、数据模型与查询 | `13`；关系模型/SQL/索引/事务 |
-| L14 | 数据生命周期、质量、来源与治理 | `13`、`14`；provenance/数据质量/治理 |
-| L15 | 概率、统计证据与不确定性 | `14`、`15`、`ext-scientific-computing`；基率/抽样/区间 |
-| L16 | 可视化、HCI 与无障碍 | `15`；视觉编码/交互/无障碍/校准信任 |
-| L17 | AI：搜索、知识、规划与智能体 | `06`、`07`、`16` |
-| L18 | ML：泛化、评价、偏差与漂移 | `14`、`17`、`19`；数据泄漏/指标/漂移 |
-| L19 | 神经网络、Transformer 与多模态 | `17`、`18`、`20`、`21` |
-| L20 | GenAI：LLM、RAG、工具与 Agent | `21`、`ext-web-technologies`、`llm-deep-dive` |
-| L21 | AI 系统工程与负责任设计 | `10`、`12`、`16`、`19`、`21`；证据/风险/问责 |
+| L01 | CS、四种思维与人机协作 | `01-welcome`、`02-intro-to-cs` |
+| L02 | 数据表示、编码、逻辑与数值误差 | `data-representation`、`ext-logic-boolean`、`ext-scientific-computing` |
+| L03 | 程序、语言、抽象与问题求解 | `03-programming-language`；语法/语义/编译/接口/测试 |
+| L04 | 线性结构、栈、队列与哈希 | `04-data-structure-basics`、`stack-queue`、`ext-search-hashing` |
+| L05 | 递归、树、堆、图与遍历 | `ext-recursion-divide-conquer`、`trees-heaps`、`06-graph-exploration` |
+| L06 | 搜索、排序、算法策略与复杂度 | `algorithm-strategies`、`ext-complexity` |
+| L07 | 可计算性、复杂性与自动化边界 | `computability-limits`、`08-turing-machine` |
+| L08 | 体系结构、存储与 AI 加速器 | `computer-architecture`、`data-representation` |
+| L09 | OS、进程、并发与资源管理 | `operating-systems`、`computer-architecture` |
+| L10 | 网络、Web、API、云与分布式 | `11-computer-network`、`ext-web-technologies`、`distributed-systems` |
+| L11 | 软件工程、测试、版本与可重复性 | `10-software-engineering`、`reproducible-computing` |
+| L12 | 安全、隐私、密码学与 AI 安全 | `12-information-security`、`ai-security` |
+| L13 | 数据库、数据模型与查询 | `13-database`；关系模型/SQL/索引/事务 |
+| L14 | 数据生命周期、质量、来源与治理 | `data-lifecycle-governance`、`13-database`、`14-data-mining` |
+| L15 | 概率、统计证据与不确定性 | `probability-uncertainty`、`ext-scientific-computing` |
+| L16 | 可视化、HCI 与无障碍 | `15-data-visualization`、`hci-accessibility` |
+| L17 | AI：搜索、知识、规划与智能体 | `16-artificial-intelligence`、`ai-search-planning-agents` |
+| L18 | ML：泛化、评价、偏差与漂移 | `17-machine-learning`、`ml-evaluation` |
+| L19 | 神经网络、Transformer 与多模态 | `neural-networks-transformers`、`multimodal-models` |
+| L20 | GenAI：LLM、RAG、工具与 Agent | `21-llm`、`rag-tool-agents` |
+| L21 | AI 系统工程与负责任设计 | `responsible-ai-systems` |
 
-缺失与拆卡计划见 [`legacy-coverage-matrix.md`](../docs/curriculum/legacy-coverage-matrix.md)。蓝图状态为 `proposal`；课程组批准前，不得声称它是已经生效的正式教学安排。
+旧卡迁移依据见 [`legacy-coverage-matrix.md`](../docs/curriculum/legacy-coverage-matrix.md)。蓝图与映射状态仍为 `proposal`；课程组批准前，不得声称它们是已经生效的正式教学安排。
 
-## 现有讲稿锚点卡速查（迁移基线）
+## 讲稿来源锚点/概览卡速查
 
 格式：`编号 | 标题 | 对应讲稿 | 思维支柱 | 一句话定位 | 关键 tag`
 
@@ -60,7 +60,31 @@
 | 20 | [speech-recognition](../docs/cards/20-speech-recognition.md) | Slide20 | 智能 | 端到端 ASR 与序列建模 | RNN/隐藏状态/WER |
 | 21 | [llm](../docs/cards/21-llm.md) | Slide21 | 智能 | 从 N-gram 到大语言模型 | 嵌入/位置/注意力/生成/幻觉 |
 
-## 现有扩展卡片（迁移基线）
+## 新语义概念卡（跨讲次复用）
+
+| card id | 卡片 | 主要讲次 | 定位 |
+|---|---|---|---|
+| data-representation | [数据表示与编码](../docs/cards/data-representation.md) | L02/L08/L19 | 位模式、编码、采样与量化误差 |
+| stack-queue | [栈、队列与状态边界](../docs/cards/stack-queue.md) | L04/L05/L09 | LIFO/FIFO、边界与调度 |
+| trees-heaps | [树、堆与层次结构](../docs/cards/trees-heaps.md) | L05/L06/L13 | 遍历、堆序与优先队列 |
+| algorithm-strategies | [算法策略](../docs/cards/algorithm-strategies.md) | L06/L07/L17 | 分治、贪心、动态规划、正确性 |
+| computability-limits | [计算与自动化边界](../docs/cards/computability-limits.md) | L07/L11/L20/L21 | 可判定、复杂性与验证 |
+| computer-architecture | [体系结构与加速器](../docs/cards/computer-architecture.md) | L08/L19 | ISA、局部性、CPU/GPU/NPU |
+| operating-systems | [操作系统与并发](../docs/cards/operating-systems.md) | L09/L20 | 进程、调度、竞态、隔离 |
+| distributed-systems | [分布式系统](../docs/cards/distributed-systems.md) | L10/L20 | 超时、重试、幂等、部分失败 |
+| reproducible-computing | [可重复计算](../docs/cards/reproducible-computing.md) | L11/L18/L21 | 版本、环境、证据链 |
+| ai-security | [AI 应用安全](../docs/cards/ai-security.md) | L12/L20/L21 | 注入、工具权限与输出验证 |
+| data-lifecycle-governance | [数据生命周期与治理](../docs/cards/data-lifecycle-governance.md) | L14/L18/L21 | 来源、质量、许可与责任 |
+| probability-uncertainty | [概率与不确定性](../docs/cards/probability-uncertainty.md) | L15/L18/L21 | 基率、抽样、证据边界 |
+| hci-accessibility | [HCI 与无障碍](../docs/cards/hci-accessibility.md) | L16/L20/L21 | 可用性、无障碍、校准信任 |
+| ai-search-planning-agents | [AI 搜索与智能体](../docs/cards/ai-search-planning-agents.md) | L17/L20 | 状态空间、知识、规划、Agent |
+| ml-evaluation | [ML 泛化与评价](../docs/cards/ml-evaluation.md) | L18/L20/L21 | 泄漏、指标、偏差、漂移 |
+| neural-networks-transformers | [神经网络与 Transformer](../docs/cards/neural-networks-transformers.md) | L19/L20 | CNN/RNN/注意力结构偏置 |
+| multimodal-models | [多模态感知](../docs/cards/multimodal-models.md) | L19/L20/L21 | 图像、语音、文本对齐与融合 |
+| rag-tool-agents | [RAG 与工具 Agent](../docs/cards/rag-tool-agents.md) | L20/L21 | 检索、引用、工具与评价 |
+| responsible-ai-systems | [负责任 AI 系统](../docs/cards/responsible-ai-systems.md) | L21 | 四大思维综合评审 |
+
+## 兼容扩展语义卡
 
 | 文件 | 主题 | 参考 |
 |---|---|---|

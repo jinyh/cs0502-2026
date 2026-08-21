@@ -14,7 +14,7 @@ estimated_minutes: 40
 assessment_tags: [图表示, 遍历追踪, 场景建模]
 labs: [lab-02-graph]
 figures: [06-bfs-dfs.svg]
-related_cards: [04-data-structure-basics, 05-data-structure-advanced, 07-greedy-algorithm]
+related_cards: [trees-heaps, algorithm-strategies, ai-search-planning-agents, 04-data-structure-basics, 05-data-structure-advanced, 07-greedy-algorithm]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

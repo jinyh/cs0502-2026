@@ -14,7 +14,7 @@ estimated_minutes: 40
 assessment_tags: [策略选择, 反例, 算法追踪, 正确性直觉]
 labs: [lab-03-greedy]
 figures: [07-greedy-dijkstra.svg]
-related_cards: [05-data-structure-advanced, 06-graph-exploration]
+related_cards: [algorithm-strategies, ai-search-planning-agents, computability-limits, 05-data-structure-advanced, 06-graph-exploration]
 related_deep: []
 related_visualizations: []
 last_reviewed: 2026-08-21

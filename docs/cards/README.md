@@ -2,7 +2,7 @@
 
 卡片是可独立检索、练习和跨讲次复用的轻量概念单元，不要求与讲次或 `SlideNN-*.pdf` 一一对应。21 讲教学序列见 [`docs/curriculum/`](../curriculum/README.md)。
 
-当前 `01-*`–`21-*` 是按旧讲稿建立的**迁移基线卡片**，数字前缀为 legacy id；`ext-*` 是同期补充卡。课程组审批新蓝图前保留这些路径，避免链接失效。它们与新讲次的多对多关系见 [`legacy-coverage-matrix.md`](../curriculum/legacy-coverage-matrix.md)。
+当前 `01-*`–`21-*` 是按旧讲稿建立的**来源锚点/概览卡**，数字前缀为 legacy id；`ext-*` 保留兼容文件名，但已迁移为语义概念卡。新增语义卡承担拆分出的独立概念。精确多对多关系见 [`lecture-card-map.yaml`](../curriculum/lecture-card-map.yaml)。
 
 ## 旧 21 张讲稿锚点卡
 
@@ -30,9 +30,9 @@
 | 20 | `20-speech-recognition.md` | Slide20-SpeechRecognition | 智能思维 | 端到端语音识别与 RNN 序列建模 |
 | 21 | `21-llm.md` | Slide21-LLM | 智能思维 | 从 N-gram 到注意力与大语言模型 |
 
-## 旧扩展卡片（ext- 前缀）
+## 兼容扩展卡片（ext- 前缀）
 
-> `ext-*` 补全旧讲稿锚点卡未单独覆盖的导论要点。后续迁移完成后，不再区分“主卡”和“扩展卡”的教学地位。
+> `ext-*` 补全旧讲稿锚点卡未单独覆盖的导论要点。它们已采用新元数据，只因保留公开链接继续使用 `ext-` 文件名，教学地位与其他语义卡相同。
 
 | 文件 | 主题 | 参考来源 |
 |---|---|---|
@@ -43,12 +43,36 @@
 | `ext-web-technologies.md` | HTTP/HTML/前后端/REST、LLM API 接入 | CS50 Web 模块 |
 | `ext-logic-boolean.md` | 布尔代数、逻辑门、与数字电路和程序逻辑的关系 | Dale Ch4、旧规划 |
 
+## 新增语义卡片
+
+| 文件 | 主要讲次 | 核心主题 |
+|---|---|---|
+| `data-representation.md` | L02/L08/L19 | 位模式、编码、采样、量化与表示误差 |
+| `stack-queue.md` | L04/L05/L09 | LIFO/FIFO、状态边界与调度 |
+| `trees-heaps.md` | L05/L06/L13 | 树遍历、堆序与优先队列 |
+| `algorithm-strategies.md` | L06/L07/L17 | 分治、贪心、动态规划、正确性与反例 |
+| `computability-limits.md` | L07/L11/L20/L21 | 可判定性、复杂性与自动化边界 |
+| `computer-architecture.md` | L08/L19 | ISA、存储层次、局部性与 AI 加速器 |
+| `operating-systems.md` | L09/L20 | 进程、调度、竞态、死锁与隔离 |
+| `distributed-systems.md` | L10/L20 | 超时、重试、幂等、复制与部分失败 |
+| `reproducible-computing.md` | L11/L18/L21 | 版本、环境、数据、随机性与证据链 |
+| `ai-security.md` | L12/L20/L21 | 提示注入、工具权限、不可信输出与审计 |
+| `data-lifecycle-governance.md` | L14/L18/L21 | 数据来源、质量、许可、隐私与责任 |
+| `probability-uncertainty.md` | L15/L18/L21 | 条件概率、基率、抽样与结论边界 |
+| `hci-accessibility.md` | L16/L20/L21 | 可用性、无障碍、人类监督与校准信任 |
+| `ai-search-planning-agents.md` | L17/L20 | 状态空间、知识表示、规划与 Agent |
+| `ml-evaluation.md` | L18/L20/L21 | 数据泄漏、指标、群体偏差与漂移 |
+| `neural-networks-transformers.md` | L19/L20 | CNN、RNN、注意力与 Transformer |
+| `multimodal-models.md` | L19/L20/L21 | 图像、语音、文本对齐、融合与评价 |
+| `rag-tool-agents.md` | L20/L21 | RAG、引用、工具调用与可观察性 |
+| `responsible-ai-systems.md` | L21 | 四大思维下的 AI 系统综合评审 |
+
 ## 新卡片模板
 
-新卡片采用 [`docs/curriculum/README.md`](../curriculum/README.md) 的 `card_id / lecture_refs / source_slides / thinking_pillars` 元数据，把教学用途与讲稿来源分开。迁移期旧卡仍使用原有 `lecture / thinking_pillar` 字段，不做机械替换。
+语义卡采用 [`docs/curriculum/README.md`](../curriculum/README.md) 的 `card_id / lecture_refs / source_slides / thinking_pillars` 元数据，把教学用途与讲稿来源分开。21 张来源锚点卡仍使用原有 `lecture / thinking_pillar` 字段，不做机械替换。
 
 所有卡片正文结构：一句话定位 → 学完应能做到 → 核心知识点 → 工程桥接 → 常见误区与边界 → 主动学习与考核迁移 → 延伸阅读。前沿内容仅在确有必要时指向 `frontier/`，不为稳定主题强行添加。
 
 ## 建设状态
 
-现有 27 张迁移基线卡统一标记为 `needs-review`。下一阶段按覆盖矩阵拆分过载卡、补齐缺失概念；只有课程目标、术语、代码、图示、链接和主动学习任务经过教师复核后，才标记为 `stable`。
+现有 46 张卡包括 21 张来源锚点/概览卡和 25 张语义概念卡，均标记为 `needs-review`。内容迁移已经完成；只有课程目标、术语、代码、图示、链接和主动学习任务经过教师复核后，才标记为 `stable`。
