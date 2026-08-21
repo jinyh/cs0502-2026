@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 300" role="img" aria-labelledby="t d">
+  <title id="t">从源代码到执行</title><desc id="d">源代码可以经编译得到机器码，也可经字节码和虚拟机执行。</desc>
+  <defs><marker id="a" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0 0L8 4L0 8z" fill="#2563eb"/></marker></defs>
+  <rect width="960" height="300" rx="20" fill="#f8fafc"/><g font-family="system-ui,sans-serif" text-anchor="middle">
+  <g fill="#dbeafe" stroke="#2563eb" stroke-width="3"><rect x="40" y="105" width="150" height="80" rx="12"/><rect x="290" y="35" width="150" height="70" rx="12"/><rect x="530" y="35" width="170" height="70" rx="12"/><rect x="290" y="195" width="150" height="70" rx="12"/><rect x="530" y="195" width="170" height="70" rx="12"/><rect x="780" y="105" width="140" height="80" rx="12"/></g>
+  <g font-size="22" fill="#0f172a"><text x="115" y="152">源代码</text><text x="365" y="78">编译器</text><text x="615" y="78">机器码</text><text x="365" y="238">字节码</text><text x="615" y="238">虚拟机 / JIT</text><text x="850" y="152">CPU 执行</text></g>
+  <g stroke="#2563eb" stroke-width="4" marker-end="url(#a)"><path d="M190 130L290 78"/><path d="M440 70L530 70"/><path d="M700 70L790 120"/><path d="M190 170L290 225"/><path d="M440 230L530 230"/><path d="M700 230L790 180"/></g></g>
+</svg>

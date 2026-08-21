@@ -340,11 +340,12 @@
     <div class="container">
         <h1>🎯 多带图灵机回文检查器</h1>
         <p class="subtitle">3条纸带 · 符号集 {0, 1, ▷, ◁, □}</p>
+        <p class="subtitle">教学说明：页面中的 q 状态是便于观察的宏步骤；严格单带图灵机需把它们展开为更细的转移规则。</p>
 
         <div class="control-panel">
             <div class="input-group">
                 <label for="inputString">输入字符串（仅使用 0 和 1）：</label>
-                <input type="text" id="inputString" placeholder="例如: 010010, 1001, 11011" value="1001">
+                <input type="text" id="inputString" aria-describedby="predictionHint" placeholder="例如: 010010, 1001, 11011" value="1001">
             </div>
 
             <div class="button-group">
@@ -363,13 +364,14 @@
 
         <div class="examples">
             <h3>📝 示例字符串：</h3>
+            <p id="predictionHint"><strong>先预测：</strong>不要看按钮标记，先判断字符串是否正反相同，再初始化逐步验证。</p>
             <div class="example-buttons">
                 <button class="example-btn" onclick="setExample('1001')">1001 ✓</button>
                 <button class="example-btn" onclick="setExample('010010')">010010 ✓</button>
                 <button class="example-btn" onclick="setExample('11011')">11011 ✓</button>
                 <button class="example-btn" onclick="setExample('101')">101 ✓</button>
                 <button class="example-btn" onclick="setExample('1010')">1010 ✗</button>
-                <button class="example-btn" onclick="setExample('0110')">0110 ✗</button>
+                <button class="example-btn" onclick="setExample('0110')">0110 ✓</button>
             </div>
         </div>
 
@@ -405,7 +407,7 @@
             <div class="tape" id="tape3"></div>
         </div>
 
-        <div id="result" class="result"></div>
+        <div id="result" class="result" aria-live="polite"></div>
 
         <div class="transition-log">
             <h3>📋 状态转换日志：</h3>
@@ -524,7 +526,6 @@
                 // 复制完成，进入左复位状态
                 addLog(`qc: 遇到◁，复制完成`);
                 currentState = 'ql';
-                head1 = 0; // 准备回到开头
                 addLog(`状态转移: qc → ql (准备复位T1)`);
             } else if (symbol === '0' || symbol === '1') {
                 tape2[head2] = symbol;

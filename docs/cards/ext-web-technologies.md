@@ -5,7 +5,7 @@ aliases: [Web, HTTP, HTML, 前后端, REST, API]
 thinking_pillar: 系统思维
 category: networking-security
 tags: [Web, HTTP, HTML, 前后端, REST, API, 入门]
-status: stable
+status: needs-review
 version: 1.0
 importance: 3
 related_cards: [11-computer-network, 12-information-security, 21-llm]
@@ -74,7 +74,7 @@ Web 基础稳定。AI 时代趋势：前端成为 LLM 对话界面，后端成�
 - **与工科**：工业物联网平台、船舶/航空航天遥测数据的 Web 可视化面板，都是「传感器→后端→前端图表」的同构。
 - **与安全**：Web 是攻击主战场（XSS/CSRF/注入），见 [`12`](12-information-security.md)。
 
-## 推荐交互式问答
+## 主动学习任务
 
 1. 浏览器输入网址到看到页面，前后端各做了什么？（关联 [`11`](11-computer-network.md)）
 2. HTTP 为什么是无状态的？怎么维持登录状态？

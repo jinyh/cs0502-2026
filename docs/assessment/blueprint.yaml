@@ -1,0 +1,55 @@
+schema_version: 1
+status: template
+course: CS0502 计算机科学导论
+policy:
+  opencode_during_exam: false
+  generated_practice_solution_after_attempt: true
+  graded_work_full_solution: false
+  source_questions_forbidden: true
+calibration:
+  teacher_owner: TBD
+  approved_at: null
+  target_total_minutes: null
+  target_total_points: null
+question_types:
+  - id: concept-compare
+    format: 概念辨析与比较
+    count: null
+    points_each: null
+    target_minutes_each: null
+    cognitive_level: understand
+    assessment_tags: [概念辨析, 结构比较]
+    grading_criteria: [定义准确, 抓住关键差异, 给出边界或反例]
+    common_errors: [只背定义, 混淆逻辑结构与实现]
+  - id: trace-state
+    format: 手工追踪算法、系统或模型状态
+    count: null
+    points_each: null
+    target_minutes_each: null
+    cognitive_level: apply
+    assessment_tags: [操作追踪, 算法追踪, 状态追踪]
+    grading_criteria: [状态完整, 顺序正确, 中间步骤可核查]
+    common_errors: [跳步, 未标访问顺序, 只写最终答案]
+  - id: code-debug
+    format: 代码阅读、补全与调试
+    count: null
+    points_each: null
+    target_minutes_each: null
+    cognitive_level: analyze
+    assessment_tags: [代码追踪, 错误诊断, 测试设计]
+    grading_criteria: [定位根因, 修改最小, 覆盖边界, 能解释]
+    common_errors: [只修症状, 未测试边界]
+  - id: engineering-transfer
+    format: 新工程场景建模与方案选择
+    count: null
+    points_each: null
+    target_minutes_each: null
+    cognitive_level: analyze
+    assessment_tags: [场景建模, 方案比较, 风险分析]
+    grading_criteria: [输入输出明确, 假设合理, 权衡完整, 风险可识别]
+    common_errors: [堆术语, 忽略约束, 把相关当因果]
+topic_weights:
+  computing-thinking: null
+  systems-thinking: null
+  data-thinking: null
+  intelligence-thinking: null

@@ -9,10 +9,11 @@
 1. [`02-intro-to-cs`](../cards/02-intro-to-cs.md) — CS 的边界与四大思维起点
 2. [`03-programming-language`](../cards/03-programming-language.md) — 用形式语言下指令
 3. [`04-data-structure-basics`](../cards/04-data-structure-basics.md) — 组织数据的方式
-4. [`05-data-structure-advanced`](../cards/05-data-structure-advanced.md) — 搜索与哈希
+4. [`05-data-structure-advanced`](../cards/05-data-structure-advanced.md) — 栈、队列、递归、树与堆
 5. [`06-graph-exploration`](../cards/06-graph-exploration.md) — 关系结构的遍历
 6. [`07-greedy-algorithm`](../cards/07-greedy-algorithm.md) — 局部最优策略
 7. [`08-turing-machine`](../cards/08-turing-machine.md) — 可计算性边界
+8. 扩展：[`search-hashing`](../cards/ext-search-hashing.md) · [`complexity`](../cards/ext-complexity.md) · [`recursion-divide-conquer`](../cards/ext-recursion-divide-conquer.md)
 
 ## 系统思维（Systems Thinking）
 

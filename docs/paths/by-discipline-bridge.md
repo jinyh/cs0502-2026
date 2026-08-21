@@ -15,12 +15,12 @@
 - [`09-computer-system-arch`](../cards/09-computer-system-arch.md) — 半导体、散热、摩尔定律
 - [`quantum-computing`](../deep/quantum-computing.md) — 量子力学驱动的计算范式
 - [`11-computer-network`](../cards/11-computer-network.md) — Shannon 信息论极限
-- [`17-machine-learning`](../cards/17-machine-learning.md) — 扩散模型与统计物理
+- [`17-machine-learning`](../cards/17-machine-learning.md) — 优化、泛化与统计建模
 
 ## CS ↔ 生物
 
 - [`06-graph-exploration`](../cards/06-graph-exploration.md) — 蛋白质相互作用网络
-- [`04-data-structure-basics`](../cards/04-data-structure-basics.md) — 生物分类学（树）
+- [`05-data-structure-advanced`](../cards/05-data-structure-advanced.md) — 生物分类学与系统发育树
 - [`18-computer-vision`](../cards/18-computer-vision.md) — CNN 与视觉皮层感受野
 - [`16-artificial-intelligence`](../cards/16-artificial-intelligence.md) — 神经网络与生物神经的源流
 
@@ -64,7 +64,7 @@
 ## CS ↔ 航空航天
 
 - [`10-software-engineering`](../cards/10-software-engineering.md) + [`12-information-security`](../cards/12-information-security.md) — 飞控软件的高可信工程与安全规约
-- [`08-turing-machine`](../cards/08-turing-machine.md) — 轨道与姿态计算、可计算性边界
+- [`07-greedy-algorithm`](../cards/07-greedy-algorithm.md) + [`ext-scientific-computing`](../cards/ext-scientific-computing.md) — 路径规划、数值误差与结果验证
 - [`18-computer-vision`](../cards/18-computer-vision.md) + [`14-data-mining`](../cards/14-data-mining.md) — 遥感影像处理与地学大数据
 
 > 桥接是双向的：既用学生熟悉的学科解释 CS，也提示 CS 如何反哺该学科（如计算成为科研第三范式）。

@@ -292,19 +292,19 @@
             <div class="device producer">
                 <h2>📤 生产者（快速）</h2>
                 <div class="speed">速度: 每0.8秒产生一个数据</div>
-                <div class="status" id="producer-status">等待中...</div>
+                <div class="status" id="producer-status" aria-live="polite">等待中...</div>
             </div>
             
             <div class="device consumer">
                 <h2>📥 消费者（慢速）</h2>
                 <div class="speed">速度: 每1.5秒消费一个数据</div>
-                <div class="status" id="consumer-status">等待中...</div>
+                <div class="status" id="consumer-status" aria-live="polite">等待中...</div>
             </div>
         </div>
         
         <div class="queue-container">
             <div class="queue-title">循环队列缓冲区（容量: 8）</div>
-            <div class="queue" id="queue"></div>
+            <div class="queue" id="queue" aria-label="循环队列槽位"></div>
             <div class="pointers">
                 <div class="pointer">
                     <div class="pointer-box head-pointer"></div>
@@ -332,13 +332,14 @@
             </div>
         </div>
         
-        <div id="message" class="message" style="display: none;"></div>
+        <div id="message" class="message" style="display: none;" aria-live="polite"></div>
         
         <div class="controls">
             <button class="btn-start" id="btn-start">▶️ 开始演示</button>
             <button class="btn-pause" id="btn-pause" disabled>⏸️ 暂停</button>
             <button class="btn-reset" id="btn-reset">🔄 重置</button>
         </div>
+        <p style="text-align:center"><strong>先预测：</strong>生产者比消费者快时，队列何时装满？head 和 tail 会怎样绕回数组开头？</p>
     </div>
     
     <script>

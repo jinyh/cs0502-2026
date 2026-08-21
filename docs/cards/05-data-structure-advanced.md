@@ -1,108 +1,96 @@
 ---
-title: 数据结构进阶
+title: 典型数据结构与算法
 lecture: Slide05-DataStructure2-2025
-aliases: [搜索, 哈希, 散列, 哈希表, 冲突]
+aliases: [栈, 队列, 递归, 树, 堆, 复杂度]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
-tags: [搜索, 哈希, 散列, 哈希表, 入门]
-status: stable
-version: 1.0
-importance: 4
-related_cards: [04-data-structure-basics, 06-graph-exploration, 13-database]
+tags: [栈, 队列, 递归, 二叉树, 优先队列, 二叉堆, 复杂度]
+status: needs-review
+version: 2.0
+importance: 5
+learning_objectives: [按访问规则选择典型结构, 追踪递归与堆操作, 比较算法增长率]
+prerequisites: [04-data-structure-basics]
+estimated_minutes: 55
+assessment_tags: [操作追踪, 递归追踪, 结构选择, 复杂度]
+labs: [lab-01-structures]
+figures: [05-stack-queue-recursion.svg, 05-tree-heap.svg, 05-complexity-growth.svg]
+related_cards: [04-data-structure-basics, 06-graph-exploration, ext-search-hashing]
 related_deep: []
-related_visualizations: [circular_queue]
-last_reviewed: 2026-08-03
+related_visualizations: [stack_expr, circular_queue, binary_heap, Hanoi]
+last_reviewed: 2026-08-21
 ---
 
-# 数据结构进阶：搜索与哈希（Search & Hashing）
+# 典型数据结构与算法（Data Structures and Algorithms）
 
 > 对应讲稿：`Slide05-DataStructure2-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 
-如何在大量数据里快速找到目标？线性搜索 $O(n)$ 太慢，二分搜索靠有序降到 $O(\log n)$，而哈希表（hash table）用「算地址」做到平均 $O(1)$。
+栈、队列、树和堆通过限制访问方式换取清晰语义与高效操作；复杂度描述算法随输入规模增长的资源需求。
+
+## 学完应能做到
+
+- 根据“后进先出、先进先出、层次关系、按优先级取出”选择结构。
+- 手工追踪表达式栈、递归调用栈、循环队列和二叉堆调整。
+- 比较 $O(1)$、$O(\log n)$、$O(n)$、$O(n\log n)$、$O(n^2)$ 的增长趋势。
 
 ## 核心知识点
 
-### 搜索（search）
+### 栈、递归与表达式
 
-- 线性搜索：逐个比对，$O(n)$。
-- 二分搜索（binary search）：**前提：数据有序**。每次折半，$O(\log n)$。
-- 直觉：查字典从中间翻开，根据大小决定往前/往后。
+栈（stack）只在栈顶插入和删除，遵循后进先出（LIFO）。函数调用会把局部状态压入调用栈；递归需要把问题缩小并设置终止条件。
 
-### 哈希（hashing）
+### 队列与循环队列
 
-用一个哈希函数（hash function）$h(key)$ 把键直接映射到存储位置。
-- 理想：查找 / 插入 / 删除平均 $O(1)$。
-- 直觉：图书馆按索书号直接定位书架，而非逐本翻。
+队列（queue）从队尾加入、从队首取出，遵循先进先出（FIFO）。循环队列用取模让固定数组首尾相接，避免出队后反复移动元素。
 
-### 冲突（collision）
+![栈、队列与递归](../../figures/05-stack-queue-recursion.svg)
 
-不同键映射到同一位置——必然发生（鸽笼原理）。
-- 解决方法：
-  - **链地址法（chaining）**：同一位置存链表。
-  - **开放寻址法（open addressing）**：冲突就按规则找下一个空位（线性探测等）。
-- 负载因子（load factor）$\alpha = n/m$（元素数/桶数）过大则性能退化，需扩容 rehash。
+### 树、二叉查找树与堆
 
-### 哈希函数的要求
+树（tree）表示层次关系。二叉查找树用有序关系支持查找，但失衡时会退化。优先队列每次取最高优先级元素；二叉堆用完全二叉树和堆序性质实现，插入与删除堆顶通常为 $O(\log n)$。
 
-- 确定性：同键同结果。
-- 均匀分布：尽量减少冲突。
-- 快速计算。
+![树与二叉堆](../../figures/05-tree-heap.svg)
 
-## 直觉类比
+### 算法与复杂度
 
-| 概念 | 类比 |
-|---|---|
-| 二分搜索 | 按页码查字典 |
-| 哈希表 | 按学号直接定位学生档案柜 |
-| 冲突 | 两人分到同一柜格 |
-| 负载因子 | 柜子塞太满，找东西变慢 |
+算法是有限、明确、可执行的步骤。$O$ 描述渐近上界，$\Omega$ 描述渐近下界，$\Theta$ 描述同阶紧确界。导论阶段先会比较增长率，再理解形式定义。
 
-## 前沿进展注记
+![常见复杂度增长](../../figures/05-complexity-growth.svg)
 
-基础稳定。哈希思想在 ML（LSH 近邻搜索）、密码学（见 `12`）、区块链（见 `deep/quantum-computing` 附录）广泛复用。
+## 工程桥接
 
-## 跨学科联系
+- 实时任务进入就绪队列；紧急告警可用优先队列先处理。
+- 装配体、文件系统和组织结构天然具有树形层次。
+- 递归适合树遍历和分治，但深度过大可能耗尽调用栈。
 
-- 与数学：鸽究原理、概率分析期望。
-- 与医学：病历按 ID 哈希检索；基因序列 k-mer 哈希。
-- 与数据库：哈希索引是 DB 加速的基础（`13`）。
+## 常见误区与边界
 
-## 推荐交互式问答
+- Python 列表 `pop(0)` 会移动后续元素；高效队列使用 `collections.deque`。
+- 堆只保证父子之间的堆序，不保证整个数组完全有序。
+- 大 O 不代表精确时间；输入分布、常数、缓存和实现仍影响性能。
+- 搜索与哈希见 [扩展卡片](ext-search-hashing.md)，不属于本讲主线。
 
-1. 二分搜索的前提是什么？无序数据能用吗？
-2. 哈希表为什么能 $O(1)$？最坏情况退化到多少？
-3. 链地址法 vs 开放寻址法各适合什么场景？
-
-## 代码示例
+## 最小代码观察
 
 ```python
-# 对应 docs/cards/05；二分搜索 + 简易哈希表
-def binary_search(a, x):
-    lo, hi = 0, len(a)-1
-    while lo <= hi:
-        mid = (lo+hi)//2
-        if a[mid] == x: return mid
-        elif a[mid] < x: lo = mid+1
-        else: hi = mid-1
-    return -1
+from collections import deque
 
-class HashTable:
-    def __init__(self, size=8):
-        self.size = size; self.t = [[] for _ in range(size)]
-    def _h(self, k): return hash(k) % self.size
-    def put(self, k, v):
-        for i,(kk,_) in enumerate(self.t[self._h(k)]):
-            if kk == k: self.t[self._h(k)][i] = (k,v); return
-        self.t[self._h(k)].append((k,v))
-    def get(self, k):
-        for kk,vv in self.t[self._h(k)]:
-            if kk == k: return vv
-        return None
+waiting = deque(["A", "B"])
+waiting.append("C")
+print(waiting.popleft())  # A
 ```
+
+完整示例：[05_structures.py](../../code/examples/05_structures.py)。
+
+## 主动学习与考核迁移
+
+1. 画出计算 `3 * (4 + 5)` 时操作数栈和运算符栈的变化。
+2. 追踪 `Hanoi(3)` 的调用树，指出终止条件。
+3. 在堆 `[2,5,4,9,7]` 中插入 `1`，画出上浮过程。
+4. 输入扩大 100 倍时，比较 $O(n)$ 与 $O(n^2)$ 工作量的倍率。
 
 ## 延伸阅读
 
-- 对应讲稿 `Slide05-DataStructure2-2025.pdf`。
-- 关联：`04`（基础结构）、`13`（数据库索引）。
+- [实验 01：数据结构](../../code/labs/lab-01-structures/README.md)
+- [交互可视化说明](../../code/visualizations/README.md)

@@ -1,22 +1,22 @@
 ---
 title: 递归与分治
-lecture: 扩展（无单独讲稿，参考 CS61A / CS106A）
+lecture: Slide05-DataStructure2-2025 补充（参考 CS61A / CS106A）
 aliases: [递归, 分治, 基线条件, 归并排序, 汉诺塔]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
 tags: [递归, 分治, 归并排序, 汉诺塔, 入门]
-status: stable
-version: 1.0
+status: needs-review
+version: 2.0
 importance: 4
-related_cards: [04-data-structure-basics, 06-graph-exploration, 07-greedy-algorithm, ext-complexity]
+related_cards: [05-data-structure-advanced, 06-graph-exploration, 07-greedy-algorithm, ext-complexity]
 related_deep: []
 related_visualizations: [Hanoi]
-last_reviewed: 2026-08-03
+last_reviewed: 2026-08-21
 ---
 
 # 递归与分治（Recursion & Divide-and-Conquer）
 
-> 扩展卡片：Berkeley CS61A 与 Stanford CS106A 的重点主题，21 讲散见于贪心/图遍历，未单独成讲。
+> Slide05 已讲授递归、调用栈和汉诺塔；本卡只补充分治与归并排序。
 
 ## 一句话定位
 
@@ -32,7 +32,7 @@ last_reviewed: 2026-08-03
 
 ### 调用栈与递归
 
-每次递归调用在调用栈压一帧（见 [`04`](04-data-structure-basics.md) 栈）。栈深 = 递归深度，过深会栈溢出。尾递归优化可把部分递归转为迭代。
+每次递归调用在调用栈压一帧（见 [`05`](05-data-structure-advanced.md)）。栈深 = 递归深度，过深会栈溢出。Python 不保证尾递归优化，不应依赖它消除栈深。
 
 ### 分治三步
 
@@ -74,7 +74,7 @@ last_reviewed: 2026-08-03
 - **与生物/医学**：分形结构（血管/肺泡）天然递归；医学影像的八叉树分割。
 - **与机械/材料**：有限元自适应网格细分本质是递归细分。
 
-## 推荐交互式问答
+## 主动学习任务
 
 1. 递归为什么必须有基线条件？没有会怎样？
 2. 归并排序为什么稳定在 $O(n\log n)$，不像快排会退化？

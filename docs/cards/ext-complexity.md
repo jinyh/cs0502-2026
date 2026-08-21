@@ -1,22 +1,22 @@
 ---
 title: 算法复杂度
-lecture: 扩展（无单独讲稿，参考 MIT 6.0001 / CS50）
+lecture: Slide05-DataStructure2-2025 补充（参考 MIT 6.0001 / CS50）
 aliases: [复杂度, Big-O, 时间复杂度, 空间复杂度, 渐近分析, P/NP]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
 tags: [复杂度, Big-O, 渐近分析, P/NP, 入门]
-status: stable
-version: 1.0
+status: needs-review
+version: 2.0
 importance: 4
 related_cards: [06-graph-exploration, 07-greedy-algorithm, 05-data-structure-advanced, 08-turing-machine]
 related_deep: []
 related_visualizations: []
-last_reviewed: 2026-08-03
+last_reviewed: 2026-08-21
 ---
 
 # 算法复杂度（Algorithm Complexity）
 
-> 扩展卡片：21 讲未单独成讲，但 MIT 6.0001 / Harvard CS50 等导论均作重点。补全教学完整性。
+> Slide05 已讲授基本渐近复杂度；本卡只补充最好/最坏/平均情况与复杂度类，不替代主卡片。
 
 ## 一句话定位
 
@@ -76,7 +76,7 @@ $f(n)=O(g(n))$ 表示 $f$ 增长不超过 $g$ 的常数倍。
 - **与船舶/航空航天工程**：CFD/有限元仿真的网格规模动辄上亿，算法复杂度决定能否在算力预算内完成——$O(n)$ 与 $O(n^2)$ 在大网格下是天壤之别。
 - **与医学**：基因比对若用 $O(2^n)$ 不可行，BLAST 等用启发式降到近似线性。
 
-## 推荐交互式问答
+## 主动学习任务
 
 1. 为什么不能直接比「跑几秒」来评判算法？
 2. $O(n\log n)$ 和 $O(n^2)$，$n=1000$ 时差多少倍？
@@ -87,7 +87,7 @@ $f(n)=O(g(n))$ 表示 $f$ 增长不超过 $g$ 的常数倍。
 ## 代码示例
 
 ```python
-# 对应 docs/cards/ext-complexity；直观对比 O(n) vs O(n^2) vs O(2^n)
+# 对应 docs/cards/ext-complexity；直观对比 O(n) 与 O(n^2)
 import time
 
 def linear(n):   # O(n)
@@ -101,10 +101,10 @@ def quadratic(n): # O(n^2)
         for j in range(n): s += 1
     return s
 
-for n in [1000, 10000]:
+for n in [1000, 3000]:
     t = time.perf_counter(); linear(n);    print(f"O(n)    n={n:>6}: {time.perf_counter()-t:.4f}s")
     t = time.perf_counter(); quadratic(n); print(f"O(n^2)   n={n:>6}: {time.perf_counter()-t:.4f}s")
-# n=10000 时 O(n^2) 比 O(n) 慢约 n 倍
+# 运行时间受硬件影响，重点比较增长趋势。
 ```
 
 ## 延伸阅读

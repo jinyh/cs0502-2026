@@ -5,7 +5,7 @@ aliases: [布尔代数, 逻辑门, 真值表, 与或非, 数字逻辑]
 thinking_pillar: 计算思维
 category: fundamentals
 tags: [布尔代数, 逻辑门, 真值表, 数字逻辑, 入门]
-status: stable
+status: needs-review
 version: 1.0
 importance: 3
 related_cards: [08-turing-machine, 09-computer-system-arch, 03-programming-language]
@@ -86,7 +86,7 @@ last_reviewed: 2026-08-03
 - **与医学**：临床决策规则可形式化为布尔表达式（「发热 AND 咳嗽 AND 旅行史 → 检测」）。
 - **与工科**：PLC 与工业控制逻辑本质是布尔/状态机；船舶/化工的联锁保护系统靠逻辑门保证安全。
 
-## 推荐交互式问答
+## 主动学习任务
 
 1. 为什么说「软件的 if 和硬件的与门是同一个东西」？
 2. NAND 为什么是功能完备的？用只用 NAND 搭一个 OR。

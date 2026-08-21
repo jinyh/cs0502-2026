@@ -4,7 +4,7 @@
 
 ## 公共基础（建议所有读者）
 
-[`02`](../cards/02-intro-to-cs.md) → [`03`](../cards/03-programming-language.md) → [`04`](../cards/04-data-structure-basics.md) → [`08`](../cards/08-turing-machine.md) → [`16`](../cards/16-artificial-intelligence.md) → [`21`](../cards/21-llm.md)
+[`02`](../cards/02-intro-to-cs.md) → [`03`](../cards/03-programming-language.md) → [`04`](../cards/04-data-structure-basics.md) → [`05`](../cards/05-data-structure-advanced.md) → [`08`](../cards/08-turing-machine.md) → [`16`](../cards/16-artificial-intelligence.md) → [`21`](../cards/21-llm.md)
 
 建立「计算是什么、AI 是什么」的全局图景。
 
@@ -59,7 +59,7 @@
 重点：高可信软件、轨道计算、遥感数据。
 
 - [`10-software-engineering`](../cards/10-software-engineering.md) + [`12-information-security`](../cards/12-information-security.md) — 飞控软件的高可信工程与安全规约
-- [`08-turing-machine`](../cards/08-turing-machine.md) — 轨道与姿态计算、可计算性边界
+- [`07-greedy-algorithm`](../cards/07-greedy-algorithm.md) + [`ext-scientific-computing`](../cards/ext-scientific-computing.md) — 路径规划、数值误差与验证
 - [`18-computer-vision`](../cards/18-computer-vision.md) + [`14-data-mining`](../cards/14-data-mining.md) — 遥感影像与地学大数据
 - [`ext-complexity`](../cards/ext-complexity.md) — 大规模仿真的复杂度约束
 
@@ -73,3 +73,5 @@
 - [`quantum-computing`](../deep/quantum-computing.md)
 
 > 这是建议而非规定。任意组合均可，关键是带着自己专业的问题来读。
+
+若目标是把知识用于一个真实工程任务，可直接走 [`by-engineering-workflow`](by-engineering-workflow.md)。

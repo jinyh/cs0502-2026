@@ -38,6 +38,7 @@ env/
 # === 构建产物 ===
 site/
 *.log
+student-work/
 
 # === API 密钥/本地配置 ===
 .env

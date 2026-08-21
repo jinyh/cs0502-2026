@@ -1,17 +1,23 @@
 ---
 title: 数据挖掘
 lecture: Slide14-DataMining-2025
-aliases: [数据挖掘, 关联规则, 聚类, 分类, 知识发现]
+aliases: [数据预处理, 关联规则, 聚类, KMeans, DBSCAN, 决策树]
 thinking_pillar: 数据思维
 category: data
-tags: [数据挖掘, 关联规则, 聚类, 分类, KDD, 入门]
-status: stable
-version: 1.0
+tags: [数据挖掘, 预处理, 关联分析, 聚类, 分类, 决策树]
+status: needs-review
+version: 2.0
 importance: 4
-related_cards: [13-database, 17-machine-learning, 15-data-visualization]
+learning_objectives: [识别数据类型与预处理需求, 比较聚类方法, 区分关联分类与聚类任务]
+prerequisites: [13-database]
+estimated_minutes: 45
+assessment_tags: [任务辨析, 数据准备, 算法比较, 结果解释]
+labs: [lab-06-clustering]
+figures: [14-clustering-comparison.svg]
+related_cards: [13-database, 15-data-visualization, 17-machine-learning]
 related_deep: []
 related_visualizations: []
-last_reviewed: 2026-08-03
+last_reviewed: 2026-08-21
 ---
 
 # 数据挖掘（Data Mining）
@@ -20,86 +26,51 @@ last_reviewed: 2026-08-03
 
 ## 一句话定位
 
-数据挖掘（data mining）从海量数据中**发现模式与知识**（KDD：Knowledge Discovery in Databases）。它是机器学习（`17`）在数据密集场景的工程化落地。
+数据挖掘从规模较大的数据中发现可解释、可验证且对任务有用的模式；算法之前的数据理解和准备往往决定结果质量。
+
+## 学完应能做到
+
+- 区分类别、数值、序数和时序等数据，并选择基本预处理。
+- 判断问题属于关联发现、聚类还是分类。
+- 比较 KMeans、层次聚类、DBSCAN 和决策树的适用条件。
 
 ## 核心知识点
 
-### KDD 流程
+### 数据准备
 
-数据清洗 → 集成 → 选择 → 变换 → 挖掘 → 评估 → 展示。
-- 数据准备常占 80% 工作量——脏数据再好的算法也救不了。
+检查缺失值、重复、异常、量纲和采样偏差。距离型算法对尺度敏感，温度与压力等不同量纲直接混用会扭曲结果。
 
-### 主要任务
+### 三类任务
 
-- **分类（classification）**：有监督，预测离散标签（如良/恶性）。
-- **回归（regression）**：有监督，预测连续值。
-- **聚类（clustering）**：无监督，把相似样本分组。
-- **关联规则（association rules）**：找「买 A 也买 B」式共现。经典：啤酒与尿布。
-- **异常检测（anomaly detection）**：找偏离常态的样本。
+- **关联分析**：发现经常共同出现的项，需同时考虑支持度与置信度，避免把偶然共现当因果。
+- **聚类**：没有标签时按相似性分组。KMeans 偏好近似球形簇；层次聚类给出多尺度结构；DBSCAN 能发现非球形簇和噪声。
+- **分类**：从带标签样本学习决策规则；决策树用特征条件逐步划分，直观但可能过拟合。
 
-### 经典算法
+![三种聚类形状与假设](../../figures/14-clustering-comparison.svg)
 
-- 关联：Apriori、FP-Growth。
-- 聚类：K-Means、层次聚类、DBSCAN。
-- 分类：决策树、朴素贝叶斯、SVM、随机森林（与 ML 重叠，见 `17`）。
+### 评价与解释
 
-### 评估
+没有标签时可结合轮廓系数、稳定性和领域意义；有标签时使用留出数据评估。聚类编号本身没有语义，`cluster 0` 和 `cluster 1` 可交换。
 
-- 交叉验证防过拟合。
-- 关联规则：支持度（support）、置信度（confidence）、提升度（lift）。
+## 工程桥接
 
-### 与机器学习的关系
+- 材料信息学可对成分与性能聚类，但必须先处理量纲和实验批次差异。
+- 设备预测维护可从振动特征发现异常簇；聚类只能提示结构，不能自动证明故障原因。
 
-数据挖掘是**任务/流程视角**，机器学习是**方法视角**，二者高度重叠。数据挖掘更强调业务落地与可解释性。
+## 常见误区与边界
 
-## 直觉类比
+- 数据挖掘不是“把算法跑一遍”；问题定义、数据质量和结果验证同样重要。
+- KMeans 的 `k` 需要选择，随机初始化会影响结果，应固定随机种子并检查稳定性。
+- 相关或关联不等于因果。
 
-| 概念 | 类比 |
-|---|---|
-| 聚类 | 把一抽屉混装标本按形态自动分组 |
-| 分类 | 已知良恶性样本，学规则判新样本 |
-| 关联规则 | 超市购物篮分析：哪些商品常一起买 |
-| 异常检测 | 体检指标偏离人群常态预警 |
+完整示例：[14_clustering.py](../../code/examples/14_clustering.py)。
 
-## 前沿进展注记
+## 主动学习与考核迁移
 
-- 大模型参与数据挖掘：用 LLM 做特征提取、文本数据挖掘、零样本分类。
-- 自动化机器学习（AutoML）：自动选模型与调参。
-- 隐私：联邦数据挖掘——数据不动模型动。
-
-## 跨学科联系
-
-- 与医学：疾病模式发现、药物不良反应信号、基因表达聚类。
-- 与商业：推荐（关联 `19`）、客户分群、欺诈检测。
-- 与统计：假设检验、置信区间是评估基础。
-- 与材料/航空航天：材料信息学从高通量计算数据中挖掘「结构-性质」关系加速新材料发现；遥感地学大数据的分类与变化检测。
-
-## 推荐交互式问答
-
-1. 数据挖掘和机器学习有什么区别与联系？
-2. 关联规则的「支持度/置信度/提升度」各衡量什么？为什么光看置信度不够？
-3. KDD 流程里数据清洗为何占大头？
-4. 给定医院就诊记录，如何发现「某症状组合预示某病」？
-
-## 代码示例
-
-```python
-# 对应 docs/cards/14；K-Means 聚类直觉
-import numpy as np
-def kmeans(X, k, iters=10, seed=0):
-    rng = np.random.default_rng(seed)
-    centers = X[rng.choice(len(X), k, replace=False)]
-    for _ in range(iters):
-        labels = np.argmin(((X[:,None]-centers)**2).sum(2), axis=1)
-        centers = np.array([X[labels==i].mean(0) for i in range(k)])
-    return labels, centers
-X = np.vstack([np.random.normal(0,1,(50,2)), np.random.normal(5,1,(50,2))])
-labels, _ = kmeans(X, 2)
-print("聚类标签（应近似前50=0后50=1）:", labels[:5], "...", labels[55:60])
-```
+1. 判断“购物篮共现”“未知样品分组”“故障类型预测”分别属于哪类任务。
+2. 解释为什么经纬度、温度和功率直接放入欧氏距离可能不合理。
+3. 为含噪声的月牙形数据选择 KMeans 或 DBSCAN，并说明理由。
 
 ## 延伸阅读
 
-- 对应讲稿 `Slide14-DataMining-2025.pdf`。
-- 关联：`13`（数据来源）、`17`（方法）、`15`（结果呈现）。
-- 经典：Han, J. et al. (2011). *Data Mining: Concepts and Techniques*.
+- [实验 06：聚类](../../code/labs/lab-06-clustering/README.md)

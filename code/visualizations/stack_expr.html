@@ -212,6 +212,15 @@
             margin-top: 0;
             color: #333;
         }
+
+        @media (max-width: 720px) {
+            body { padding: 8px; }
+            .container { padding: 16px; }
+            .controls { display: grid; gap: 8px; }
+            select, button { width: 100%; margin: 0; }
+            .stack-container { flex-direction: column; align-items: center; }
+            .stack { width: 100%; }
+        }
     </style>
 </head>
 <body>
@@ -219,7 +228,8 @@
         <h1>🔢 栈的表达式求值动画演示</h1>
         
         <div class="controls">
-            <select id="expressionSelect">
+            <label for="expressionSelect" style="position:absolute;left:-9999px;">选择表达式</label>
+            <select id="expressionSelect" aria-label="选择表达式">
                 <option value="5+(6/2)*3">5+(6/2)*3</option>
                 <option value="2+3*4">2+3*4</option>
                 <option value="(1+2)*(3+4)">（1+2）*（3+4）</option>
@@ -230,6 +240,7 @@
             <button onclick="nextStep()" id="nextBtn" disabled>下一步</button>
             <button onclick="resetAnimation()">重置</button>
         </div>
+        <p style="text-align:center"><strong>先预测：</strong>写下最终结果，并指出第一个会入栈的数字和运算符。</p>
 
         <div class="priority-table">
             <h4>🎯 运算符优先级表</h4>
@@ -258,7 +269,7 @@
             </div>
         </div>
 
-        <div class="step-info" id="stepInfo">
+        <div class="step-info" id="stepInfo" aria-live="polite">
             点击"开始演示"来查看栈的工作过程
         </div>
 
@@ -296,35 +307,37 @@
                     const char = this.expression[i];
                     
                     if (this.isDigit(char)) {
+                        const start = i;
                         let num = '';
                         while (i < this.expression.length && this.isDigit(this.expression[i])) {
                             num += this.expression[i];
                             i++;
                         }
                         i--; // 回退一位
-                        this.addStep(`读取数字: ${num}`, `将数字 ${num} 推入操作数栈`, 'push_operand', num);
+                        this.addStep(`读取数字: ${num}`, `将数字 ${num} 推入操作数栈`, 'push_operand', num, start);
                         
                     } else if (char === '(') {
-                        this.addStep(`读取左括号: (`, `将左括号 ( 推入运算符栈`, 'push_operator', char);
+                        this.addStep(`读取左括号: (`, `将左括号 ( 推入运算符栈`, 'push_operator', char, i);
                         
                     } else if (char === ')') {
-                        this.addStep(`读取右括号: )`, `遇到右括号，开始计算直到左括号`, 'right_paren', char);
+                        this.addStep(`读取右括号: )`, `遇到右括号，开始计算直到左括号`, 'right_paren', char, i);
                         
                     } else if (this.isOperator(char)) {
-                        this.addStep(`读取运算符: ${char}`, `处理运算符 ${char}`, 'operator', char);
+                        this.addStep(`读取运算符: ${char}`, `处理运算符 ${char}`, 'operator', char, i);
                     }
                     i++;
                 }
                 
-                this.addStep('表达式结束', '计算栈中剩余的运算符', 'finish', '');
+                this.addStep('表达式结束', '计算栈中剩余的运算符', 'finish', '', -1);
             }
 
-            addStep(action, description, type, token) {
+            addStep(action, description, type, token, position) {
                 this.steps.push({
                     action,
                     description,
                     type,
                     token,
+                    position,
                     operandStack: [...this.operandStack],
                     operatorStack: [...this.operatorStack]
                 });
@@ -441,25 +454,17 @@
 
         function updateExpressionDisplay() {
             const expr = document.getElementById('expressionSelect').value;
-            let displayExpr = '';
-            
             if (evaluator.currentStep < evaluator.steps.length) {
-                const currentToken = evaluator.steps[evaluator.currentStep].token;
-                let tokenIndex = 0;
-                
-                for (let i = 0; i < expr.length; i++) {
-                    if (tokenIndex <= evaluator.currentStep && expr[i] === currentToken) {
-                        displayExpr += `<span class="current-token">${expr[i]}</span>`;
-                        tokenIndex++;
-                    } else {
-                        displayExpr += expr[i];
-                    }
-                }
+                const step = evaluator.steps[evaluator.currentStep];
+                const start = step.position;
+                const end = start + step.token.length;
+                const displayExpr = start >= 0
+                    ? `${expr.slice(0, start)}<span class="current-token">${expr.slice(start, end)}</span>${expr.slice(end)}`
+                    : expr;
+                document.getElementById('expressionDisplay').innerHTML = `表达式: ${displayExpr}`;
             } else {
-                displayExpr = expr;
+                document.getElementById('expressionDisplay').textContent = `表达式: ${expr}`;
             }
-            
-            document.getElementById('expressionDisplay').innerHTML = `表达式: ${displayExpr}`;
         }
 
         function startAnimation() {

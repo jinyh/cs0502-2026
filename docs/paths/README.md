@@ -6,5 +6,6 @@
 - `by-ai-capability.md` — 按 AI 能力形成路径：感知 → 学习 → 推理 → 生成 → Agent
 - `by-reader-goal.md` — 按读者目标：医工 / 信工 / 材料 / 理科
 - `by-discipline-bridge.md` — 按跨学科桥接：CS ↔ 医学 / 物理 / 生物
+- `by-engineering-workflow.md` — 按工程链路：表示 → 算法 → 系统 → 数据 → 模型 → 验证
 
-> 状态：待建设（依赖 cards 与 deep 完成后回填链接）。
+> 各路径只负责导航，概念定义以对应卡片为准。

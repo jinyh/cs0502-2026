@@ -1,82 +1,84 @@
 ---
-title: 计算机系统与架构
+title: 计算机组成与操作系统
 lecture: Slide09-ComputerSystemAndArchitecture-2025
-aliases: [冯诺依曼, CPU, 指令周期, 存储层次, 硬件]
+aliases: [冯诺依曼, CPU, 指令集, 存储层次, 操作系统, 进程]
 thinking_pillar: 系统思维
 category: systems
-tags: [冯诺依曼, CPU, 指令周期, 存储层次, 入门]
-status: stable
-version: 1.0
-importance: 4
+tags: [CPU, ISA, 存储层次, 操作系统, 进程, 调度, 同步, 死锁]
+status: needs-review
+version: 2.0
+importance: 5
+learning_objectives: [追踪指令执行, 解释存储层次, 分析进程调度同步与死锁]
+prerequisites: [08-turing-machine]
+estimated_minutes: 60
+assessment_tags: [系统分层, 指令追踪, 进程状态, 调度, 并发分析]
+labs: []
+figures: [09-computer-os-layers.svg, 09-process-concurrency.svg]
 related_cards: [08-turing-machine, 10-software-engineering, 11-computer-network]
 related_deep: []
-related_visualizations: []
-last_reviewed: 2026-08-03
+related_visualizations: [circular_queue]
+last_reviewed: 2026-08-21
 ---
 
-# 计算机系统与架构（Computer System & Architecture）
+# 计算机组成与操作系统（Computer Architecture and Operating System）
 
 > 对应讲稿：`Slide09-ComputerSystemAndArchitecture-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 
-计算机硬件如何从逻辑门组织成能执行程序的机器？冯诺依曼架构给出了答案：**程序与数据同存内存，CPU 周期取指-译码-执行**。它是图灵机（`08`）的物理实现。
+体系结构规定程序怎样由硬件执行；操作系统（operating system, OS）在硬件与应用之间管理处理器、内存、设备和文件，并提供稳定接口。
 
-## 核心知识点
+## 学完应能做到
 
-### 冯诺依曼架构（von Neumann architecture）
+- 说明 CPU、存储器、输入输出和指令集怎样协作执行程序。
+- 比较寄存器、缓存、内存和外存的速度、容量与成本。
+- 追踪进程状态、轮转调度、临界区竞争和简单死锁。
 
-- 存储程序（stored program）：指令与数据同存内存，可被当作数据处理——这是「计算机能运行自身程序」的关键。
-- 五大部件：运算器、控制器、存储器、输入、输出。
-- 与图灵机对应：内存=纸带，CPU=读写头+控制器。
+## 计算机组成
 
-### 指令周期（instruction cycle）
+冯诺依曼结构把程序和数据存入存储器；CPU 中的运算器、寄存器和控制器按指令集（instruction set architecture, ISA）解释机器指令。典型指令经历取指、译码、执行、访存和写回。
 
-取指（fetch）→ 译码（decode）→ 执行（execute）→ 写回，循环往复。
-- 直觉：厨师看菜谱（取指）、理解步骤（译码）、动手做（执行）、装盘（写回）。
+存储层次用“小而快”到“大而慢”的多级结构缓解速度与容量矛盾。缓存有效依赖时间局部性和空间局部性。
 
-### 存储层次（memory hierarchy）
+![计算机与操作系统分层](../../figures/09-computer-os-layers.svg)
 
-速度与容量矛盾，靠层次结构缓解：
-寄存器（ns）→ 缓存 cache（L1/L2/L3）→ 主存 RAM → SSD → 网络存储。
-- 越上层越快越小越贵。
-- 程序局部性（locality）是缓存有效的基础：最近用的大概率再用（时间局部性）、用 A 大概率用 A 附近（空间局部性）。
+## 操作系统
 
-### CPU 与并行
+### 进程、线程与状态
 
-- 多核、流水线、乱序执行、分支预测。
-- Amdahl 定律：串行部分限制加速比上限。
+程序是静态代码，进程（process）是一次运行及其资源，线程（thread）是进程中的执行流。进程在就绪、运行、阻塞等状态间转换。
 
-## 直觉类比
+### 调度、同步与死锁
 
-| 概念 | 类比 |
-|---|---|
-| 存储程序 | 厨师把菜谱也放厨房，可翻看修改 |
-| 指令周期 | 看一行、懂一行、做一行 |
-| 存储层次 | 桌面（寄存器）→ 抽屉（缓存）→ 柜子（内存）→ 仓库（磁盘） |
-| 局部性 | 最近用的东西放手边，下次好拿 |
+- 调度器选择下一个使用 CPU 的进程；轮转（round robin）按时间片循环。
+- 并发访问共享数据会产生竞争条件；临界区需要互斥锁等同步机制。
+- 多个执行单元彼此等待资源可能死锁；可通过预防、避免、检测或恢复处理。
 
-## 前沿进展注记
+### 其他资源
 
-- 摩尔定律放缓，性能提升转向专用加速器（GPU/TPU/NPU）——AI 算力的基础。
-- 存算一体、近内存计算探索缓解「内存墙」。
+操作系统还负责虚拟内存与保护、设备抽象、文件系统、用户接口及网络服务。
 
-## 跨学科联系
+![进程状态、互斥与死锁](../../figures/09-process-concurrency.svg)
 
-- 与物理：半导体器件、散热；量子退相干限制量子计算（`deep/quantum-computing`）。
-- 与医学：医疗影像 AI 的硬件部署（边缘 vs 云）关乎延迟与隐私。
-- 与工科（船舶/机械/航空航天）：CFD/有限元仿真的算力需求与并行架构是高性能计算的典型场景；飞控等安全攸关系统对硬件可靠性与实时性有苛刻要求。
-- 与 OS：架构决定 OS 抽象（见 `03-operating-system` 可选扩展）。
+## 工程桥接
 
-## 推荐交互式问答
+- CFD、有限元和 AI 训练依赖 CPU/GPU、存储与并行数据流的共同设计。
+- 飞控、机器人和工业控制不仅要求平均性能，还要求实时性、隔离和故障可控。
 
-1. 冯诺依曼「存储程序」为何是革命性的？与之前的「接线编程」对比。
-2. 为什么存储要分层？只用最快的行不行？（成本/容量）
-3. 程序局部性如何让缓存有效？写出局部性差的代码会怎样？
-4. AI 训练为什么从 CPU 转向 GPU/TPU？（数据并行 + 矩阵运算）
+## 常见误区与边界
+
+- 图灵机是计算模型，不是现代 CPU 的部件清单。
+- 进程不等于程序文件；同一程序可以有多个进程。
+- 加锁不是越多越安全：锁顺序错误可能导致死锁，锁粒度过大降低并行度。
+
+## 主动学习与考核迁移
+
+1. 追踪一条 `LOAD-ADD-STORE` 指令序列的数据位置变化。
+2. 给出一个进程从运行转阻塞、再转就绪的真实事件。
+3. 对两个进程的 `count += 1` 分解读、改、写步骤，构造丢失更新。
+4. 画出两把锁导致循环等待的资源图。
 
 ## 延伸阅读
 
-- 对应讲稿 `Slide09-ComputerSystemAndArchitecture-2025.pdf`。
-- 关联：`08`（图灵机理论模型）、`11`（网络：系统向外延伸）。
-- 经典教材：Patterson, D. & Hennessy, J. (2020). *Computer Organization and Design*.
+- [10 软件工程](10-software-engineering.md)
+- [11 计算机网络](11-computer-network.md)

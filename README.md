@@ -1,105 +1,85 @@
-# 计算机科学导论配套知识库 + 交互式智能体
+# 计算机科学导论配套知识库 + 主动学习智能体
 
-> Shanghai Jiao Tong University · CS0502-02 Introduction to Computer Science
-> Open-source companion knowledge base + interactive OpenCode agent for the AI era.
+> Shanghai Jiao Tong University · CS0502 Introduction to Computer Science
+> Open-source companion knowledge base + active-learning OpenCode tutor.
 
-本项目是上海交通大学「计算机科学导论（CS0502-02）」课程（计算机学院课程组承担，面向全校非计算机专业理工及医学科学生）的配套知识库，以 21 个课程讲稿 PDF 为只读锚点，补充**轻量知识点卡片 + 前沿进展注记 + 少数 AI 深度专题 + 多路径索引**，并配套 **OpenCode 交互式智能体**（GLM / DeepSeek）辅助学习，体现 AI+ 课程特色。
+本项目面向上海交通大学非计算机专业理工及医学学生，以 21 份课程讲稿为只读锚点，提供知识点卡片、概念代码、交互可视化、核心实验、考核迁移训练和 OpenCode 学习助教。知识库补充讲稿，不替代课堂与教师发布的正式材料。
 
-## 目录结构
+## 你会在这里找到什么
 
-```
-# 讲稿 PDF 在课程 Canvas，不在公开仓库
-AGENTS.md        Claude Code / Codex / OpenCode 共享项目协作规范
-CLAUDE.md        Claude Code 入口（导入 AGENTS.md）
-docs/
-  cards/          21 讲轻量知识点卡片（一讲一页，对齐 SlideNN）
-  deep/           AI 高价值深度专题（LLM / 强化学习 / 量子计算）
-  frontier/       前沿注记（静态写底 + 智能体联网增量）
-  paths/          多路径索引（按思维支柱 / AI 能力 / 读者目标 / 跨学科桥接）
-  glossary.md     全局术语表（中英对照）
-opencode/         OpenCode 智能体配置
-  AGENTS.md       行为约束（教学红线 / 不代写 / 沙箱安全 / 直觉先行）
-  knowledge.md    知识库检索索引
-  tools.md        工具与 GLM/DeepSeek 接入
-  sandbox-policy.md  沙箱安全策略
-  prompts/        预设提示词
-code/
-  examples/       概念演示 Python（对应卡片编号）
-  visualizations/ 自包含 HTML 交互可视化
-figures/          静态图（SVG 优先）
+```text
+docs/cards/          21 张主线卡片 + 6 张扩展卡片
+docs/deep/           LLM、强化学习、量子计算深度专题
+docs/frontier/       人工审校静态基线 + 学生前沿检索入口
+docs/paths/          5 条学习导航，包括工程问题求解路径
+docs/assessment/     脱敏考核蓝图、项目 rubric、进度 schema
+code/examples/       10 个可独立运行的概念示例
+code/labs/           8 个“预测—实现—测试—解释”核心实验
+code/visualizations/ 5 个自包含交互页面
+figures/             19 张可访问 SVG 概念图
+.opencode/           学生 agent、5 个 skills、8 个 slash commands
+opencode/            教学、安全和知识检索规则
 ```
 
-## AI 协作工具入口
+讲稿 PDF 位于课程 Canvas，不进入公开仓库；`reference/` 是教师敏感工作区，也永不提交。
 
-- 在仓库根目录启动 Codex 或 OpenCode：直接读取 `AGENTS.md`。
-- 在仓库根目录启动 Claude Code：读取 `CLAUDE.md`，并由其导入 `AGENTS.md`。
-- `opencode/AGENTS.md` 是学生课程助教的专用约束，不替代根目录的项目协作规范。
+## 学生快速开始
 
-## 快速开始（学生）
-
-### 1. 浏览知识库
-
-直接阅读 `docs/cards/` 下任意卡片，或从 `docs/paths/` 选一条学习路径切入。
-
-### 2. 用 OpenCode 智能体交互（推荐）
+### 1. 安装依赖并验证示例
 
 ```bash
-# 克隆本仓库
-git clone <repo-url> && cd ComputerIntroduction
-
-# 安装 OpenCode（参见 https://opencode.ai ，按其官方文档安装）
-# 配置模型 API key（环境变量，勿提交）
-export ZHIPU_API_KEY=...        # GLM-4.6
-# export DEEPSEEK_API_KEY=...  # 备选 DeepSeek-V3
-
-# 以 opencode/ 作为项目目录启动，加载其中的学生助教行为约束
-opencode opencode
+uv sync
+uv run pytest
+uv run python code/runner.py code/examples/06_graph_bfs_dfs.py
 ```
 
-智能体会按需读取 `opencode/knowledge.md` 作为知识库索引，可：
-- **问答**：「用医院场景解释 ADT 为什么抽象」（定位到 `docs/cards/04`）
-- **跑沙箱**：运行 `code/examples/` 示例（遵守白名单/超时/禁网）
-- **补前沿**：「LLM 最新进展」→ 读 `docs/frontier/llm-frontier.md` 静态层 + 联网增量
+`code/runner.py` 只接受课程示例、实验和 `student-work/` 下的 Python 文件，并检查路径、导入、危险调用、时间和内存限制。它是可信教学护栏，不是面向恶意代码的硬安全沙箱。
 
-## 预设提示词
+### 2. 启动 OpenCode
 
-| 命令 | 用途 |
+先按 OpenCode 与阿里云百炼官方文档在本机配置 provider 和凭据；凭据只进入环境变量或正式凭据存储，不写入仓库。本课程以用户缺省模型 `qwen3.8-max`（1M context）做主测，但课程 skills 与模型供应商解耦。
+
+```bash
+opencode . --agent course-tutor
+```
+
+不要从“把这一讲讲给我听”开始。选择一个学习动作：
+
+| 命令 | 学生要做的事 |
 |---|---|
-| `explain-concept` | 用直觉类比解释某概念 |
-| `trace-lecture` | 对照某讲稿梳理脉络 |
-| `frontier-update` | 联网补充某主题最新进展 |
-| `homework-guard` | 作业护栏——引导思考但不代写 |
+| `/learn 06 BFS 与 DFS` | 先诊断、预测，再获得分级提示与迁移题 |
+| `/practice 05 栈、队列与树` | 一次完成一道全新同构练习 |
+| `/lab lab-02-graph` | 复制 starter 到 `student-work/` 后预测、实现、测试、解释 |
+| `/review 本周内容` | 基于本地进度做主动回忆和间隔复习 |
+| `/mock 02-15` | 按已批准蓝图模拟；未批准时只称通用课程练习 |
+| `/project 路径规划项目` | 按 rubric 评审已有证据，不代做成品 |
+| `/exam-notes 全课程` | 从已练内容整理静态开卷资料 |
+| `/frontier LLM` | 先写判断，再经同意检索一手来源 |
 
-## 教学红线（智能体行为）
+OpenCode 可以帮助平时学习、作业辅导、项目评审与考前准备；正式期末考试现场禁用。正在计分的任务只提供分级提示、相似新题、测试和 rubric 反馈，不输出可直接提交的完整答案。
 
-详见 `opencode/AGENTS.md`：
-- **不代写作业**：只给思路、同类例题、代码 review，不输出可直接提交的答案。
-- **不触碰敏感数据**：学生名单、成绩、考题不在公开仓库（`reference/` 已 `.gitignore`）。
-- **直觉先行**：先类比再形式化定义。
-- **导论边界**：不引入超纲形式化证明，深入引导到 `docs/deep/`。
+## 推荐学习顺序
 
-## 安全与隐私
+1. 从 [`docs/paths/by-engineering-workflow.md`](docs/paths/by-engineering-workflow.md) 选择一个工程问题。
+2. 阅读相应主卡的“一句话定位”和学习目标，先尝试诊断题。
+3. 用图或交互页面做一次状态预测。
+4. 运行对应 example，再完成 lab 的一个小任务。
+5. 用 `/practice` 做变式迁移，用 `/review` 记录错因。
+6. 考前用 `/exam-notes` 整理个人静态资料，而不是生成未经练习的万能小抄。
 
-`reference/` 目录是教师教务工作区，含学生名单、成绩表、期末考题等敏感数据，**已通过 `.gitignore` 完全隔离，永不进入公开仓库**。每次提交前用 `git status --porcelain` 自检。
+## 教师审核点
 
-## 联调验证清单
+- 21 张主卡已按讲稿重构，但统一标为 `needs-review`；正式发布前需课程教师抽查术语边界与课堂口径。
+- [`docs/assessment/blueprint.yaml`](docs/assessment/blueprint.yaml) 只是脱敏模板。只有教师填写权重、认知层级并把 `status` 改为 `approved` 后，`/mock` 才可宣称按课程考核结构校准。
+- 前沿联网结果写入 `student-work/frontier-notes/`，不自动回写人工审校静态层。
 
-本地配好 OpenCode + API key 后，按以下验证三条主链路：
+## 安全与许可证
 
-1. **问答链路**：问「栈和队列的区别」→ 智能体应定位到 `docs/cards/04` 并引用其内容。
-2. **沙箱链路**：请求运行 `code/examples/04_stack_queue.py`（待建）→ 应在白名单/超时约束下执行。
-3. **前沿链路**：问「LLM 最新进展」→ 应读 `docs/frontier/llm-frontier.md` 静态层，联网追加增量，不修改静态层。
-4. **红线链路**：粘贴一道作业题要求完整答案 → 应拒绝代写，改为引导思路。
-
-静态已验证：21 卡片 + 3 深度专题 + 2 前沿页 + 4 路径 + 术语表 + 8 个 opencode 配置文件齐全，内部链接有效，`reference/` 零命中。
-
-## 许可证
-
-- **文档内容**（`docs/`）：[CC BY-SA 4.0](https://creativecommons.org/licenses/by-sa/4.0/)
-- **代码**（`code/`、`opencode/` 配置）：MIT（见 `LICENSE`）
-- **讲稿 PDF**：归课程组所有，发布在课程 Canvas，不在本仓库。
+- 提交前运行 `git status --porcelain`，确认没有 `reference/`、名单、成绩、考题或凭据。
+- 文档内容使用 CC BY-SA 4.0；代码与 OpenCode 配置使用 MIT，详见 [`LICENSE`](LICENSE)。
+- 讲稿 PDF 版权归课程组所有，不随仓库发布。
 
 ## 致谢
 
-- 知识库组织参考 [Datawhale Path2AGI](https://github.com/datawhalechina/Path2AGI) 的多路径索引与元数据思路。
-- 交互可视化迁移自课程原有 Demo。
+- 知识库导航参考 Datawhale Path2AGI 的多路径组织思路。
+- 交互可视化由课程原有 Demo 迁移并增加预测提示、状态一致性和可访问性修复。

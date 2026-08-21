@@ -198,9 +198,11 @@
     <div class="container">
         <h1>🌳 二叉堆优先队列</h1>
         <p class="subtitle">最小堆实现 - 可视化动画演示</p>
+        <p class="subtitle"><strong>先预测：</strong>插入新值后，它会与哪些父节点比较？再点击操作观察每次交换。</p>
         
         <div class="controls">
-            <input type="number" id="valueInput" placeholder="输入值" min="1" max="99" value="10">
+            <label for="valueInput" style="position:absolute;left:-9999px;">要插入的数值</label>
+            <input type="number" id="valueInput" aria-label="要插入的数值" placeholder="输入值" min="1" max="99" value="10">
             <button class="btn-insert" onclick="insert()">插入元素</button>
             <button class="btn-extract" onclick="extractMin()">取出最小值</button>
             <button class="btn-random" onclick="insertRandom()">随机插入</button>
@@ -218,12 +220,12 @@
             </div>
             <div class="info-item">
                 <div class="info-label">当前操作</div>
-                <div class="info-value" id="currentOp" style="font-size: 1em;">等待中</div>
+                <div class="info-value" id="currentOp" aria-live="polite" style="font-size: 1em;">等待中</div>
             </div>
         </div>
         
         <div class="canvas-container">
-            <canvas id="heapCanvas"></canvas>
+            <canvas id="heapCanvas" role="img" aria-label="最小二叉堆树形结构"></canvas>
         </div>
         
         <div class="array-view">
@@ -446,7 +448,7 @@
             document.getElementById('currentOp').textContent = `插入 ${value}`;
             
             const oldSize = heap.size();
-            heap.insert(value);
+            heap.heap.push(value);
             
             highlightNodes = [oldSize];
             drawHeap();
@@ -460,6 +462,9 @@
                     highlightNodes = [current, parent];
                     drawHeap();
                     await sleep(500);
+                    heap.swap(current, parent);
+                    drawHeap();
+                    await sleep(350);
                     current = parent;
                 } else {
                     break;
@@ -485,7 +490,11 @@
             drawHeap();
             await sleep(500);
             
-            heap.extractMin();
+            if (heap.size() === 1) {
+                heap.heap.pop();
+            } else {
+                heap.heap[0] = heap.heap.pop();
+            }
             
             if (heap.size() > 0) {
                 highlightNodes = [0];
@@ -511,6 +520,9 @@
                         highlightNodes = [current, smallest];
                         drawHeap();
                         await sleep(500);
+                        heap.swap(current, smallest);
+                        drawHeap();
+                        await sleep(350);
                         current = smallest;
                     } else {
                         break;

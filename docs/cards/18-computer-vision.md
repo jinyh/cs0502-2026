@@ -1,17 +1,23 @@
 ---
 title: 计算机视觉
 lecture: Slide18-ComputerVision-2025
-aliases: [计算机视觉, CV, 图像分类, 检测, CNN, 分割]
+aliases: [数字图像, 图像采集, 滤波, 卷积, CNN, 检测, 分割]
 thinking_pillar: 智能思维
 category: ai-ml
-tags: [计算机视觉, CNN, 图像分类, 目标检测, 入门]
-status: stable
-version: 1.0
+tags: [成像, 数字图像, 滤波, 卷积, CNN, 分类, 检测, 分割]
+status: needs-review
+version: 2.0
 importance: 4
-related_cards: [17-machine-learning, 16-artificial-intelligence]
+learning_objectives: [解释从成像到数字像素, 手算小卷积, 区分视觉任务与评价]
+prerequisites: [15-data-visualization, 17-machine-learning]
+estimated_minutes: 40
+assessment_tags: [图像表示, 卷积追踪, 任务辨析, 误差分析]
+labs: []
+figures: [18-convolution.svg]
+related_cards: [15-data-visualization, 17-machine-learning]
 related_deep: [llm-deep-dive]
 related_visualizations: []
-last_reviewed: 2026-08-03
+last_reviewed: 2026-08-21
 ---
 
 # 计算机视觉（Computer Vision）
@@ -20,73 +26,46 @@ last_reviewed: 2026-08-03
 
 ## 一句话定位
 
-计算机视觉（Computer Vision, CV）让机器从图像/视频中提取语义——「看见」并「看懂」。它是深度学习最先取得突破的领域（2012 AlexNet），也是医学影像 AI 的核心技术。
+计算机视觉从光学成像和数字像素中恢复对对象、位置和场景的有用描述；输入质量和成像过程会直接影响模型。
+
+## 学完应能做到
+
+- 说明场景经光学系统、传感器、采样和量化成为数字图像。
+- 手工计算一个小卷积核在局部图像上的输出。
+- 区分分类、检测、分割和跟踪任务。
 
 ## 核心知识点
 
-### 图像的数字表示
+数字图像是像素数组；灰度图每个像素一个强度，彩色图通常有多个通道。模糊、噪声、曝光和设备差异都来自采集链路。
 
-- 图像 = 像素（pixel）阵列；灰度图是 2D 矩阵，彩图是 $H\times W\times 3$（RGB 三通道）。
-- 像素值 0–255（8 bit）。机器「看」到的是数字，不是画面。
+滤波用局部邻域改变图像，可平滑噪声或突出边缘。卷积神经网络把卷积核变成可学习参数，利用局部连接与参数共享逐层提取特征。
 
-### 经典任务
+![局部卷积](../../figures/18-convolution.svg)
 
-- **分类（classification）**：整图打一个标签。
-- **检测（detection）**：定位 + 分类多个目标（边界框）。
-- **分割（segmentation）**：逐像素分类（语义/实例分割）。
-- **生成（generation）**：从文本/草图生成图像。
+- 分类：整张图属于什么类别。
+- 检测：有哪些对象、位置在哪里。
+- 分割：每个像素属于什么区域。
+- 跟踪：对象随时间怎样移动。
 
-### CNN（Convolutional Neural Network）
+评价必须匹配任务，并检查设备、人群、光照和场景分布变化。
 
-卷积神经网络利用图像的**局部性**与**平移不变性**：
-- 卷积层：小核滑窗提取局部特征（边缘→纹理→部件→对象，层次化）。
-- 池化层：降采样，增加感受野与不变性。
-- 深层网络学得从低级到高级的层次特征——这是深度学习优于手工特征的关键。
+## 工程桥接
 
-### 里程碑
+- 工业机器视觉检测表面缺陷，需要把照明、相机标定和模型作为整体设计。
+- 遥感影像关注尺度、波段和地理配准；医学影像受成像物理和设备协议影响。
 
-- AlexNet (2012)：深度学习在 ImageNet 碾压传统方法，开启深度学习时代。
-- ResNet (2015)：残差连接使超深网络可训练。
-- Vision Transformer (ViT, 2020)：把 Transformer 引入视觉，挑战 CNN 主导。
+## 常见误区与边界
 
-### 数据与评估
+- CNN 看到的是数值阵列，不天然理解对象语义。
+- 图像增强可能改善显示但改变测量；科研和医疗场景需保留处理记录。
+- 在同一设备数据上高准确率不保证跨设备有效。
 
-- ImageNet 等大规模标注数据集是关键。
-- 评估：准确率、mAP、IoU。
+## 主动学习与考核迁移
 
-## 直觉类比
-
-| 概念 | 类比 |
-|---|---|
-| 像素阵列 | 马赛克瓷砖的颜色编号 |
-| 卷积核 | 用小放大镜扫描，找特定纹理 |
-| CNN 层次 | 从笔画→偏旁→字→句的层次识别 |
-| 检测 | 不只说「有猫」，还圈出在哪 |
-
-## 前沿进展注记
-
-CV 前沿变化快：
-- 多模态大模型（如 CLIP、GPT-4V）统一视觉与语言。
-- 扩散模型（Diffusion）主导图像生成。
-- 自监督预训练减少标注依赖。
-具体见 [`frontier/cv-frontier.md`](../frontier/cv-frontier.md) 与 [`deep/llm-deep-dive.md`](../deep/llm-deep-dive.md)（多模态部分）。
-
-## 跨学科联系
-
-- 与神经科学：CNN 受视觉皮层感受野启发（Hubel & Wiesel）。
-- 与医学：CT/MRI/病理 AI 辅助诊断——但分布偏移（设备/人群差异）是落地难题。
-- 与物理：成像原理（光学/CT 重建）决定输入数据特性。
-- 与航空航天/地球科学：遥感影像处理（目标识别、变化检测、地学大数据）是 CV 的大规模应用；无人机视觉导航。
-
-## 推荐交互式问答
-
-1. 机器「看」到的图像是什么？和人看到的「画面」有何不同？
-2. CNN 的卷积核为什么比全连接层更适合图像？
-3. 医学影像 AI 在三甲训练，到基层部署可能出什么问题？
-4. 多模态大模型（GPT-4V）和专门 CNN 各有什么优劣？
+1. 手算 $2\times2$ 卷积核在一个 $3\times3$ 图像上的四个输出。
+2. 判断道路车辆计数需要分类、检测、分割还是跟踪。
+3. 列出工业缺陷模型从实验室到生产线可能遇到的三种分布变化。
 
 ## 延伸阅读
 
-- 对应讲稿 `Slide18-ComputerVision-2025.pdf`。
-- 关联：`17`（ML 基础）、`16`（AI 范式）。
-- 经典：Goodfellow, I. et al. (2016). *Deep Learning*, Ch.9.
+- [计算机视觉前沿](../frontier/cv-frontier.md)

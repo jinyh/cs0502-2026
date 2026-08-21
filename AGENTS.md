@@ -2,7 +2,7 @@
 
 ## 概述
 
-上海交通大学「计算机科学导论（CS0502-02）」课程由计算机学院课程组承担，面向全校非计算机专业理工及医学科学生。本项目以 21 个课程讲稿 PDF 为只读锚点，构建一套**混合形态开源知识库**，并配套 **OpenCode 交互式智能体**（GLM / DeepSeek）辅助学习，体现 AI+ 课程新形势。
+上海交通大学「计算机科学导论（CS0502）」课程由计算机学院课程组承担，面向全校非计算机专业理工及医学科学生。本项目以 21 个课程讲稿 PDF 为只读锚点，构建一套**混合形态开源知识库**，并配套以阿里百炼 `qwen3.8-max` 为主测模型、provider-agnostic 的 **OpenCode 主动学习智能体**。
 
 知识库形态（混合方案）：
 
@@ -61,9 +61,9 @@ ComputerIntroduction/
 ├── opencode/                           # OpenCode 智能体入口
 │   ├── AGENTS.md                      # 行为约束（教学红线 / 不代写作业 / 沙箱安全）
 │   ├── knowledge.md                   # 知识库索引（指向 docs/，机器可解析）
-│   ├── tools.md                        # 沙箱 / 联网 / GLM·DeepSeek 接入（写意图不写死配置）
-│   ├── sandbox-policy.md              # 白名单包 / 超时 / 内存 / 禁网
-│   └── prompts/                       # 预设提示词
+│   ├── tools.md                       # OpenCode / Qwen / 沙箱意图与约束
+│   └── sandbox-policy.md              # 白名单包 / 超时 / 内存 / 禁网
+├── .opencode/                         # 学生 agent / skills / slash commands
 ├── code/                               # 代码示例与沙箱
 │   ├── README.md  requirements.txt
 │   ├── examples/                      # 概念演示 Python（文件名前缀对应卡片编号）
@@ -77,7 +77,7 @@ ComputerIntroduction/
 
 凡旧规划主题确有深度展开需要时，在 `docs/deep/` 新建文件并在对应卡片 `related_deep` 字段登记反向链接。
 
-**扩展卡片**（`docs/cards/ext-*.md`）补全 21 讲未单独成讲、但导论应有的要点（算法复杂度、递归与分治、Web 技术基础、布尔逻辑），参考国内外导论（CS50/CS61A/CS106A/6.0001）与旧 45 篇规划。与 01-21 讲稿锚点卡片共模板、共入索引，见 `docs/cards/README.md`。
+**扩展卡片**（`docs/cards/ext-*.md`）补全 21 讲未单独成讲、但导论应有的要点（算法复杂度、递归与分治、搜索与哈希、科学计算、Web 技术基础、布尔逻辑），参考国内外导论（CS50/CS61A/CS106A/6.0001）与旧 45 篇规划。与 01-21 讲稿锚点卡片共模板、共入索引，见 `docs/cards/README.md`。
 
 ## 安全隔离约定（红线）
 
@@ -93,9 +93,9 @@ ComputerIntroduction/
 
 - `AGENTS.md` — 行为约束中枢：角色为课程学习助教；红线为不代写作业只给思路、不触碰敏感数据、导论不引入超范围形式化证明、直觉先行；语言中文为主、语气像助教
 - `knowledge.md` — 知识库检索入口：21 卡片表（编号 | 标题 | Slide | 一句话定位 | tags）+ 深度专题清单 + 跳转索引，机器可解析 + 人类可读
-- `tools.md` — 工具配置：写意图与约束，不写死配置块（避免 OpenCode 版本漂移）；GLM / DeepSeek 走 OpenAI 兼容 endpoint，密钥从环境变量读，不入仓库
-- `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，内存 512MB，沙箱内禁网
-- `prompts/` — 预设提示词：`explain-concept` / `trace-lecture` / `frontier-update` / `homework-guard`
+- `tools.md` — 工具配置：写意图与约束，不保存 provider 密钥；本学期以用户缺省 `qwen3.8-max` 为主测模型
+- `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，Linux 内存 512MB 硬限制，macOS 依赖外层配额，运行代码禁网
+- `.opencode/` — `course-tutor` agent、5 个学习 skill 与 8 个 slash command；优先要求学生预测、追踪、实现和迁移，不直接长问答
 
 ## AI 时代特色
 
@@ -138,7 +138,7 @@ last_reviewed: YYYY-MM-DD
 ## 直觉类比（跨学科桥接）
 ## 前沿进展注记（指向 frontier/）
 ## 跨学科联系
-## 推荐交互式问答（学生可向智能体提问）
+## 主动学习任务（预测 / 追踪 / 迁移 / 反思）
 ## 延伸阅读
 ```
 
@@ -182,15 +182,16 @@ last_reviewed: YYYY-MM-DD
 - 21 个课程讲稿 PDF（课程内部材料，发布在 Canvas，不入仓库）
 - 课程大纲与教务材料（`reference/`，**不公开**，`.gitignore` 隔离）
 - 5 个交互可视化 HTML（`code/visualizations/`，迁移自课程 Demo）
-- 21 张知识点卡片（`docs/cards/`，全部完成初版，`stable`）
+- 21 张知识点卡片（`docs/cards/`，已完成第二版重构，统一为 `needs-review`）+ 6 张扩展卡片
 - 3 个深度专题（`docs/deep/`：LLM / 强化学习 / 量子计算）
 - 2 个前沿注记页（`docs/frontier/`：LLM / CV，双层机制）
-- 多路径索引（`docs/paths/` 四页）与 `glossary.md`
-- OpenCode 配置全套（`opencode/`：AGENTS.md / knowledge.md / tools.md / sandbox-policy.md / 4 prompts）
+- 多路径索引（`docs/paths/` 五页）与 `glossary.md`
+- 10 个概念示例、8 个核心实验、19 张 SVG 配图与跨平台 runner
+- OpenCode 配置全套（`course-tutor` agent / 5 skills / 8 slash commands）
 - `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
 
 ### 待完成
 
-- `code/examples/` 概念演示 Python 脚本（对应卡片编号，部分已在卡片内嵌，待抽为独立可运行文件）
-- 动态联调：本地配 OpenCode + GLM/DeepSeek key，跑通问答 / 沙箱 / 联网补前沿 / 红线四条链路（静态验证已过：结构完整、链接有效、敏感文件零命中）
+- 教师审批 `docs/assessment/blueprint.yaml` 后再启用“按正式考核结构校准”的 `/mock`
+- 发布前由任课教师抽查 21 张 `needs-review` 主卡与新增扩展卡
 - 二期可选：mkdocs 静态站点 + GitHub Pages；英文版；更多深度专题

@@ -1,141 +1,72 @@
 ---
-title: 图的遍历
+title: 图的探索
 lecture: Slide06-GraphExploration-2025
-aliases: [图, BFS, DFS, 广度优先, 深度优先, 连通性]
+aliases: [图, BFS, DFS, 子图, 生成树, 连通性]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
-tags: [图, BFS, DFS, 遍历, 连通分量, 入门]
-status: stable
-version: 1.0
+tags: [图, 邻接表, 邻接矩阵, BFS, DFS, 生成树]
+status: needs-review
+version: 2.0
 importance: 5
+learning_objectives: [识别图与子图等概念, 在两种表示上追踪BFS和DFS, 解释生成树与连通性]
+prerequisites: [05-data-structure-advanced]
+estimated_minutes: 40
+assessment_tags: [图表示, 遍历追踪, 场景建模]
+labs: [lab-02-graph]
+figures: [06-bfs-dfs.svg]
 related_cards: [04-data-structure-basics, 05-data-structure-advanced, 07-greedy-algorithm]
 related_deep: []
 related_visualizations: []
-last_reviewed: 2026-08-03
+last_reviewed: 2026-08-21
 ---
 
-# 图的遍历（Graph Exploration）
+# 图的探索（Graph Exploration）
 
 > 对应讲稿：`Slide06-GraphExploration-2025.pdf`（见课程 Canvas，不在公开仓库）
 
 ## 一句话定位
 
-图（graph）是描述「事物与关系」的最通用结构；遍历（traversal）是系统地访问所有节点的策略。BFS 与 DFS 是一切图算法的基石。
+图（graph）用顶点表示对象、用边表示关系；遍历是在不遗漏也不无谓重复的前提下系统探索网络。
+
+## 学完应能做到
+
+- 区分有向/无向、加权/无权、子图、路径、连通和生成树。
+- 把一个小图写成邻接表或邻接矩阵。
+- 手工追踪 BFS 与 DFS，并说明访问次序为何可能不唯一。
 
 ## 核心知识点
 
-### 图的基本概念
+图写作 $G=(V,E)$。树是连通无环图；生成树（spanning tree）包含原图全部顶点且保持连通但不含环。子图只使用原图中的部分顶点和边。
 
-- 图 $G=(V,E)$：顶点集（vertices）$V$ + 边集（edges）$E$。
-- 有向图 / 无向图：边是否有方向。
-- 权重（weight）：边上的数值，表示距离 / 成本 / 相似度。
-- 度（degree）：与顶点相连的边数。
-- **直觉**：社交网络（人是顶点、好友关系是边）、地铁线路图、蛋白质相互作用网。
+- 邻接表只记录存在的邻居，适合稀疏图。
+- 邻接矩阵用 $n\times n$ 矩阵表示边，检查一条边直接，也便于线性代数分析。
+- BFS 使用队列逐层扩展，在无权图中给出最少边数路径。
+- DFS 使用递归或显式栈，沿一路深入后回退，适合发现连通分量、环和依赖结构。
 
-### 邻接表与邻接矩阵
+![BFS 与 DFS](../../figures/06-bfs-dfs.svg)
 
-两种存储表示：
-- **邻接矩阵**：$n\times n$ 矩阵，$A_{ij}=1$ 表示有边。查边 $O(1)$，空间 $O(n^2)$，适合稠密图。
-- **邻接表**：每个顶点存邻居链表。空间 $O(V+E)$，适合稀疏图，遍历邻居高效。
+遍历顺序受邻居排列影响，因此程序应固定邻居顺序，示例输出才可重复。
 
-### BFS（Breadth-First Search，广度优先搜索）
+## 工程桥接
 
-逐层向外扩展：先访问起点，再访问所有距离 1 的节点，再距离 2……
-- 数据结构：**队列**。
-- 时间复杂度 $O(V+E)$。
-- **特性**：无权图最短路径；层次遍历。
-- **直觉**：往水里投石，涟漪一圈圈向外扩散。
+- 船舶航路、轨道交通和通信网络可建模为加权图。
+- 分子图中顶点是原子、边是化学键；蛋白相互作用构成生物网络。
+- 机械装配依赖或课程先修关系常用有向图表示。
 
-### DFS（Depth-First Search，深度优先搜索）
+## 常见误区与边界
 
-沿一条路走到底再回溯。
-- 数据结构：**栈**（或递归调用栈）。
-- 时间复杂度 $O(V+E)$。
-- **特性**：连通性判断、拓扑排序、环检测、迷宫求解。
-- **直觉**：走迷宫时「一条路走到黑再退回岔路口」。
+- BFS 不自动解决加权最短路径；非负权图见 [07 Dijkstra](07-greedy-algorithm.md)。
+- “遍历次序不同”不一定错误，应检查是否满足算法规则。
+- 图模型只保留所选关系；没有进入图的数据不会被算法考虑。
 
-### 连通分量（Connected Component）
+完整示例：[06_graph_bfs_dfs.py](../../code/examples/06_graph_bfs_dfs.py)。
 
-无向图中互相可达的顶点集合。对每个未访问顶点做一次 BFS/DFS 即可求出全部连通分量——这是图遍历的直接应用。
+## 主动学习与考核迁移
 
-## 直觉类比（跨学科桥接）
-
-| 概念 | 类比 |
-|---|---|
-| BFS | 传染病从源头逐层扩散；微信「可能认识的人」按共同好友层数推荐 |
-| DFS | 走迷宫、深静脉血栓的血管分支追溯 |
-| 连通分量 | 群岛中各自独立的岛屿群；社交网络里的封闭社群 |
-| 邻接表 | 每人手机通讯录（只存认识的人，不存全人类） |
-
-## 前沿进展注记
-
-图算法基础稳定。前沿在**图神经网络（Graph Neural Network, GNN）**——把图的拓扑结构作为归纳偏置做表示学习，用于药物分子性质预测、社交网络分析。详见 `18-computer-vision` 与 `17-machine-learning` 的扩展方向，本卡片不展开。
-
-## 跨学科联系
-
-- **与数学**：图论（Euler 哥尼斯堡七桥问题）；组合优化的基础。
-- **与化学/生物**：分子结构是无标号图（顶点=原子、边=键）；蛋白质相互作用网络分析。
-- 与航空航天/船舶：航路网络与航线规划是最短路径问题的直接应用；机械装配的零件依赖关系用有向图表达。
-
-
-## 推荐交互式问答
-
-1. BFS 用队列、DFS 用栈，如果故意用栈做 BFS 会发生什么？
-2. 无权图最短路径为什么用 BFS 而非 DFS？
-3. 给定社交网络，如何找出所有「封闭小圈子」（连通分量）？
-4. 邻接矩阵和邻接表在什么情况下各有优势？
-
-## 代码示例
-
-```python
-# 对应 docs/cards/06；BFS / DFS / 连通分量
-# 运行：uv run python code/examples/06_graph_bfs_dfs.py
-from collections import defaultdict, deque
-
-def build(edges):
-    g = defaultdict(list)
-    for a, b in edges:
-        g[a].append(b); g[b].append(a)  # 无向图
-    return g
-
-def bfs(g, start):
-    visited = {start}
-    q = deque([start])
-    order = []
-    while q:
-        u = q.popleft()
-        order.append(u)
-        for v in g[u]:
-            if v not in visited:
-                visited.add(v); q.append(v)
-    return order
-
-def dfs(g, start):
-    visited = set(); order = []
-    def go(u):
-        visited.add(u); order.append(u)
-        for v in g[u]:
-            if v not in visited: go(v)
-    go(start)
-    return order
-
-def connected_components(g, nodes):
-    seen = set(); comps = []
-    for n in nodes:
-        if n not in seen:
-            comp = bfs(g, n)
-            seen |= set(comp); comps.append(comp)
-    return comps
-
-if __name__ == "__main__":
-    g = build([(1,2),(1,3),(2,4),(5,6)])
-    print("BFS:", bfs(g, 1))           # [1, 2, 3, 4]
-    print("DFS:", dfs(g, 1))           # [1, 2, 4, 3]
-    print("连通分量:", connected_components(g, {1,2,3,4,5,6}))  # [[1,2,3,4],[5,6]]
-```
+1. 对同一个 6 顶点图分别给出 BFS 和 DFS 次序，并写明邻居访问顺序。
+2. 从 BFS 的父节点关系中画出一棵生成树。
+3. 将“实验设备之间的数据依赖”建模为图，说明边是否有向、是否加权。
 
 ## 延伸阅读
 
-- 对应讲稿 `Slide06-GraphExploration-2025.pdf`。
-- 关联：`04`（栈与队列是 BFS/DFS 的基础）、`07`（图上的贪心：最小生成树、Dijkstra）。
-- 经典教材：Cormen, T. et al. (2009). *Introduction to Algorithms*, Ch.22.（图算法）
+- [实验 02：图探索](../../code/labs/lab-02-graph/README.md)
