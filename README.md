@@ -3,12 +3,13 @@
 > Shanghai Jiao Tong University · CS0502 Introduction to Computer Science
 > Open-source companion knowledge base + active-learning OpenCode tutor.
 
-本项目面向上海交通大学非计算机专业理工及医学学生，以 21 份课程讲稿为只读锚点，提供知识点卡片、概念代码、交互可视化、核心实验、考核迁移训练和 OpenCode 学习助教。知识库补充讲稿，不替代课堂与教师发布的正式材料。
+本项目面向上海交通大学非计算机专业理工及医学学生，以课程讲稿为只读来源锚点，提供 21 讲课程蓝图、概念卡片、概念代码、交互可视化、核心实验、考核迁移训练和 OpenCode 学习助教。教学讲次与卡片是多对多关系：一讲组合多张卡片，一张卡也可跨讲次复用。知识库补充讲稿，不替代课堂与教师发布的正式材料。
 
 ## 你会在这里找到什么
 
 ```text
-docs/cards/          21 张主线卡片 + 6 张扩展卡片
+docs/curriculum/     AI 时代 21 讲课程蓝图 + 旧卡覆盖迁移矩阵
+docs/cards/          27 张迁移基线概念卡（后续按概念拆分，不绑定讲次数量）
 docs/deep/           LLM、强化学习、量子计算深度专题
 docs/frontier/       人工审校静态基线 + 学生前沿检索入口
 docs/paths/          5 条学习导航，包括工程问题求解路径
@@ -61,7 +62,7 @@ OpenCode 可以帮助平时学习、作业辅导、项目评审与考前准备�
 ## 推荐学习顺序
 
 1. 从 [`docs/paths/by-engineering-workflow.md`](docs/paths/by-engineering-workflow.md) 选择一个工程问题。
-2. 阅读相应主卡的“一句话定位”和学习目标，先尝试诊断题。
+2. 从课程蓝图确认本讲目标，再阅读相应概念卡的“一句话定位”和学习目标，先尝试诊断题。
 3. 用图或交互页面做一次状态预测。
 4. 运行对应 example，再完成 lab 的一个小任务。
 5. 用 `/practice` 做变式迁移，用 `/review` 记录错因。
@@ -69,7 +70,7 @@ OpenCode 可以帮助平时学习、作业辅导、项目评审与考前准备�
 
 ## 教师审核点
 
-- 21 张主卡已按讲稿重构，但统一标为 `needs-review`；正式发布前需课程教师抽查术语边界与课堂口径。
+- [`docs/curriculum/21-lecture-blueprint.md`](docs/curriculum/21-lecture-blueprint.md) 是待审批的课程重构提案；现有 27 张卡是迁移基线，统一标为 `needs-review`，不应误解为未来仍须“一讲一卡”。
 - [`docs/assessment/blueprint.yaml`](docs/assessment/blueprint.yaml) 只是脱敏模板。只有教师填写权重、认知层级并把 `status` 改为 `approved` 后，`/mock` 才可宣称按课程考核结构校准。
 - 前沿联网结果写入 `student-work/frontier-notes/`，不自动回写人工审校静态层。
 

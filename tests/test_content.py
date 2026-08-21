@@ -5,7 +5,8 @@ import xml.etree.ElementTree as ET
 
 
 ROOT = Path(__file__).resolve().parents[1]
-MAIN_CARDS = sorted((ROOT / "docs" / "cards").glob("[0-2][0-9]-*.md"))
+ALL_CARDS = sorted(path for path in (ROOT / "docs" / "cards").glob("*.md") if path.name != "README.md")
+LEGACY_ANCHOR_CARDS = sorted(path for path in ALL_CARDS if re.match(r"^\d{2}-", path.name))
 REQUIRED_FIELDS = {
     "title",
     "lecture",
@@ -35,17 +36,41 @@ def frontmatter_fields(text):
     }
 
 
-def test_21_main_cards_have_reviewable_schema_and_stay_lightweight():
-    assert len(MAIN_CARDS) == 21
-    for card in MAIN_CARDS:
+def test_all_concept_cards_are_reviewable_and_stay_lightweight():
+    assert ALL_CARDS
+    for card in ALL_CARDS:
         text = card.read_text(encoding="utf-8")
-        assert REQUIRED_FIELDS <= frontmatter_fields(text), card
+        assert {"title", "status", "tags"} <= frontmatter_fields(text), card
         assert "status: needs-review" in text, card
         assert len(text.splitlines()) <= 300, card
+        assert "## 一句话定位" in text, card
+
+
+def test_legacy_anchor_cards_keep_their_migration_schema():
+    assert LEGACY_ANCHOR_CARDS
+    for card in LEGACY_ANCHOR_CARDS:
+        text = card.read_text(encoding="utf-8")
+        assert REQUIRED_FIELDS <= frontmatter_fields(text), card
         assert "## 学完应能做到" in text, card
         assert "## 主动学习与考核迁移" in text, card
         if not card.name.startswith("01-"):
             assert "## 常见误区与边界" in text, card
+
+
+def test_curriculum_blueprint_has_21_observable_lectures():
+    blueprint = (ROOT / "docs" / "curriculum" / "21-lecture-blueprint.md").read_text(encoding="utf-8")
+    lecture_matches = list(re.finditer(r"^### L(\d{2}) .+$", blueprint, re.MULTILINE))
+    assert [match.group(1) for match in lecture_matches] == [f"{number:02d}" for number in range(1, 22)]
+
+    for index, match in enumerate(lecture_matches):
+        end = lecture_matches[index + 1].start() if index + 1 < len(lecture_matches) else len(blueprint)
+        section = blueprint[match.end():end]
+        assert "**学完应能做到**" in section, match.group(0)
+        assert "**工程场景**" in section, match.group(0)
+        assert "**主动任务**" in section, match.group(0)
+        assert "**跨章迁移**" in section, match.group(0)
+        objectives = re.findall(r"^\d+\. ", section.split("**工程场景**", 1)[0], re.MULTILINE)
+        assert len(objectives) == 3, match.group(0)
 
 
 def test_local_markdown_links_resolve():

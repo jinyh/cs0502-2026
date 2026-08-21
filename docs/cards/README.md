@@ -1,8 +1,10 @@
-# 知识点卡片（docs/cards/）
+# 概念卡片图谱（docs/cards/）
 
-每讲一页轻量卡片，编号与 `SlideNN-*.pdf` 讲稿严格一一对应（讲稿在课程 Canvas，不在公开仓库）。
+卡片是可独立检索、练习和跨讲次复用的轻量概念单元，不要求与讲次或 `SlideNN-*.pdf` 一一对应。21 讲教学序列见 [`docs/curriculum/`](../curriculum/README.md)。
 
-## 21 讲对应表
+当前 `01-*`–`21-*` 是按旧讲稿建立的**迁移基线卡片**，数字前缀为 legacy id；`ext-*` 是同期补充卡。课程组审批新蓝图前保留这些路径，避免链接失效。它们与新讲次的多对多关系见 [`legacy-coverage-matrix.md`](../curriculum/legacy-coverage-matrix.md)。
+
+## 旧 21 张讲稿锚点卡
 
 | 编号 | 卡片文件 | 对应讲稿 | 思维支柱 | 一句话定位 |
 |---|---|---|---|---|
@@ -28,9 +30,9 @@
 | 20 | `20-speech-recognition.md` | Slide20-SpeechRecognition | 智能思维 | 端到端语音识别与 RNN 序列建模 |
 | 21 | `21-llm.md` | Slide21-LLM | 智能思维 | 从 N-gram 到注意力与大语言模型 |
 
-## 扩展卡片（ext- 前缀）
+## 旧扩展卡片（ext- 前缀）
 
-> 01-21 锚定课堂讲稿；`ext-*` 补全教学完整性——参考国内外导论（Harvard CS50 / Berkeley CS61A / Stanford CS106A / MIT 6.0001）与旧 45 篇规划，覆盖交大 21 讲未单独成讲、但导论应有的要点。两者共用模板、共入索引。
+> `ext-*` 补全旧讲稿锚点卡未单独覆盖的导论要点。后续迁移完成后，不再区分“主卡”和“扩展卡”的教学地位。
 
 | 文件 | 主题 | 参考来源 |
 |---|---|---|
@@ -41,12 +43,12 @@
 | `ext-web-technologies.md` | HTTP/HTML/前后端/REST、LLM API 接入 | CS50 Web 模块 |
 | `ext-logic-boolean.md` | 布尔代数、逻辑门、与数字电路和程序逻辑的关系 | Dale Ch4、旧规划 |
 
-## 卡片模板
+## 新卡片模板
 
-每张卡片使用统一 YAML 元数据头 + 正文结构，详见 `04-data-structure-basics.md`。除原有字段外，主卡片必须包含 `learning_objectives / prerequisites / estimated_minutes / assessment_tags / labs / figures`。
+新卡片采用 [`docs/curriculum/README.md`](../curriculum/README.md) 的 `card_id / lecture_refs / source_slides / thinking_pillars` 元数据，把教学用途与讲稿来源分开。迁移期旧卡仍使用原有 `lecture / thinking_pillar` 字段，不做机械替换。
 
-正文结构：一句话定位 → 学完应能做到 → 核心知识点 → 工程桥接 → 常见误区与边界 → 主动学习与考核迁移 → 延伸阅读。前沿内容仅在确有必要时指向 `frontier/`，不为稳定主题强行添加。
+所有卡片正文结构：一句话定位 → 学完应能做到 → 核心知识点 → 工程桥接 → 常见误区与边界 → 主动学习与考核迁移 → 延伸阅读。前沿内容仅在确有必要时指向 `frontier/`，不为稳定主题强行添加。
 
 ## 建设状态
 
-21 张卡片已完成第二版重构，统一标记为 `needs-review`。只有讲稿覆盖、术语、代码、图示、链接和主动学习任务经过教师复核后，才恢复为 `stable`。
+现有 27 张迁移基线卡统一标记为 `needs-review`。下一阶段按覆盖矩阵拆分过载卡、补齐缺失概念；只有课程目标、术语、代码、图示、链接和主动学习任务经过教师复核后，才标记为 `stable`。
