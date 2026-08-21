@@ -60,7 +60,6 @@ ComputerIntroduction/
 │   └── glossary.md                    # 全局术语表（中英对照）
 ├── opencode/                           # OpenCode 智能体入口
 │   ├── AGENTS.md                      # 行为约束（教学红线 / 不代写作业 / 沙箱安全）
-│   ├── CLAUDE.md                      # Claude Code 学生助教入口（导入同目录 AGENTS.md）
 │   ├── knowledge.md                   # 知识库索引（指向 docs/，机器可解析）
 │   ├── tools.md                        # 沙箱 / 联网 / GLM·DeepSeek 接入（写意图不写死配置）
 │   ├── sandbox-policy.md              # 白名单包 / 超时 / 内存 / 禁网
@@ -187,7 +186,7 @@ last_reviewed: YYYY-MM-DD
 - 3 个深度专题（`docs/deep/`：LLM / 强化学习 / 量子计算）
 - 2 个前沿注记页（`docs/frontier/`：LLM / CV，双层机制）
 - 多路径索引（`docs/paths/` 四页）与 `glossary.md`
-- OpenCode 配置全套（`opencode/`：AGENTS.md / CLAUDE.md / knowledge.md / tools.md / sandbox-policy.md / 4 prompts）
+- OpenCode 配置全套（`opencode/`：AGENTS.md / knowledge.md / tools.md / sandbox-policy.md / 4 prompts）
 - `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
 
 ### 待完成

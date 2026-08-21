@@ -19,7 +19,6 @@ docs/
   glossary.md     全局术语表（中英对照）
 opencode/         OpenCode 智能体配置
   AGENTS.md       行为约束（教学红线 / 不代写 / 沙箱安全 / 直觉先行）
-  CLAUDE.md       Claude Code 学生助教入口（导入同目录 AGENTS.md）
   knowledge.md    知识库检索索引
   tools.md        工具与 GLM/DeepSeek 接入
   sandbox-policy.md  沙箱安全策略
@@ -35,7 +34,6 @@ figures/          静态图（SVG 优先）
 - 在仓库根目录启动 Codex 或 OpenCode：直接读取 `AGENTS.md`。
 - 在仓库根目录启动 Claude Code：读取 `CLAUDE.md`，并由其导入 `AGENTS.md`。
 - `opencode/AGENTS.md` 是学生课程助教的专用约束，不替代根目录的项目协作规范。
-- 需要让 Claude Code 或 Codex 进入学生助教模式时，也应将工作目录设为 `opencode/`。
 
 ## 快速开始（学生）
 
@@ -93,7 +91,7 @@ opencode opencode
 3. **前沿链路**：问「LLM 最新进展」→ 应读 `docs/frontier/llm-frontier.md` 静态层，联网追加增量，不修改静态层。
 4. **红线链路**：粘贴一道作业题要求完整答案 → 应拒绝代写，改为引导思路。
 
-静态已验证：21 卡片 + 3 深度专题 + 2 前沿页 + 4 路径 + 术语表 + 9 个 opencode 配置文件齐全，内部链接有效，`reference/` 零命中。
+静态已验证：21 卡片 + 3 深度专题 + 2 前沿页 + 4 路径 + 术语表 + 8 个 opencode 配置文件齐全，内部链接有效，`reference/` 零命中。
 
 ## 许可证
 
