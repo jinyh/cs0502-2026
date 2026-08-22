@@ -19,10 +19,10 @@ code/labs/           8 个“预测—实现—测试—解释”核心实验
 code/visualizations/ 5 个自包含交互页面
 figures/             30 张可访问 SVG 概念图
 .opencode/           学生 agent、5 个项目级 skills、10 个 slash commands
-opencode/            教学、安全和知识检索规则
+opencode/            教学行为、工具和知识检索说明
 ```
 
-讲稿 PDF 位于课程 Canvas，不进入公开仓库；`reference/` 是教师敏感工作区，也永不提交。
+讲稿 PDF 位于课程 Canvas，不进入公开仓库。
 
 ## 学生快速开始
 
@@ -38,7 +38,7 @@ uv run python code/runner.py run code/examples/06_graph_bfs_dfs.py
 
 ### 2. 启动 OpenCode
 
-先按 OpenCode 与阿里云百炼官方文档在本机配置 provider 和凭据；凭据只进入环境变量或正式凭据存储，不写入仓库。本课程以用户缺省模型 `qwen3.8-max`（1M context）做主测，但课程 skills 与模型供应商解耦。
+先按 OpenCode 官方文档在本机选择并连接任一受支持的大模型提供商；课程 skills 与模型供应商解耦。连接流程和提供商示例见 [`opencode/tools.md`](opencode/tools.md)。
 
 ```bash
 opencode . --agent course-tutor
@@ -74,16 +74,8 @@ OpenCode 可以帮助平时学习、作业辅导、项目评审与考前准备�
 5. 用 `/practice` 做变式迁移，用 `/review` 记录错因。
 6. 考前用 `/exam-notes` 整理个人静态资料，而不是生成未经练习的万能小抄。
 
-## 教师审核点
+## 开源许可证
 
-- [`docs/curriculum/21-lecture-blueprint.md`](docs/curriculum/21-lecture-blueprint.md) 与 [`lecture-card-map.yaml`](docs/curriculum/lecture-card-map.yaml) 是待审批的课程重构提案；46 张卡已完成内容迁移并统一标为 `needs-review`，不应误解为“一讲一卡”。
-- [`docs/assessment/blueprint.yaml`](docs/assessment/blueprint.yaml) 只是脱敏模板。只有教师填写权重、认知层级并把 `status` 改为 `approved` 后，`/mock` 才可宣称按课程考核结构校准。
-- 前沿联网结果写入 `student-work/frontier-notes/`，不自动回写人工审校静态层。
-
-## 安全与许可证
-
-- 提交前运行 `git status --porcelain`，确认没有 `reference/`、名单、成绩、考题或凭据。
-- 仓库只分发 `.opencode/skills/` 中的课程专属 skill；用户目录中的全局 skill、provider 与 MCP 配置不得复制或提交。
 - 文档内容使用 CC BY-SA 4.0；代码与 OpenCode 配置使用 MIT，详见 [`LICENSE`](LICENSE)。
 - 讲稿 PDF 版权归课程组所有，不随仓库发布。
 
