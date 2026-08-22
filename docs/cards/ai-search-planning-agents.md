@@ -7,7 +7,7 @@ aliases: [状态空间, 启发式搜索, 知识表示, 规划, 智能体]
 thinking_pillars: [计算思维, 智能思维]
 category: ai-ml
 tags: [状态, 行动, 目标, 代价, 启发式, 知识表示, 规划, Agent]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [把任务建模为状态空间, 比较搜索与规则推理, 解释智能体闭环和边界]

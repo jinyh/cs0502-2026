@@ -5,7 +5,7 @@ aliases: [数据结构, 线性表, 顺序表, 数组, 链表]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
 tags: [数据结构, 逻辑结构, 存储结构, 线性表, 顺序表, 链表]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [区分逻辑结构与存储结构, 追踪顺序表和链表操作, 根据访问与修改模式选择表示]

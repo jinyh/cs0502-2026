@@ -7,7 +7,7 @@ aliases: [AI安全, 提示注入, 越权工具调用, 数据泄漏, 模型供应
 thinking_pillars: [系统思维, 智能思维]
 category: networking-security
 tags: [提示注入, 最小权限, 工具调用, 数据泄漏, 不可信输出, 供应链, 红队]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [为AI应用建立威胁模型, 区分指令数据与不可信内容, 设计最小权限和输出验证]

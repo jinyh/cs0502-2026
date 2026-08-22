@@ -7,7 +7,7 @@ aliases: [泛化, 过拟合, 数据泄漏, 指标, 阈值, 公平, 分布漂移]
 thinking_pillars: [数据思维, 智能思维]
 category: ai-ml
 tags: [训练集, 验证集, 测试集, 过拟合, 数据泄漏, 指标, 阈值, 校准, 偏差, 漂移]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [设计无泄漏数据划分, 按错误代价选择指标阈值, 诊断群体偏差和分布漂移]

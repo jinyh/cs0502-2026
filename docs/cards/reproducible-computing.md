@@ -7,7 +7,7 @@ aliases: [可重复性, 版本控制, 实验记录, 数据版本, 随机种子]
 thinking_pillars: [系统思维, 数据思维]
 category: software-engineering
 tags: [Git, 版本, 环境, 数据来源, 参数, 随机种子, 测试, 可重复性]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [区分重复复现与复核, 记录最小实验清单, 为结果建立主张到证据链]

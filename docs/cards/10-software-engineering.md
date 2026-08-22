@@ -5,7 +5,7 @@ aliases: [软件工程, 需求, 架构, 组件, 测试, 文档]
 thinking_pillar: 系统思维
 category: systems
 tags: [需求分析, 软件架构, 组件, 白盒测试, 黑盒测试, 文档]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [把模糊目标转为可验证需求, 区分架构组件与接口, 设计白盒和黑盒测试]

@@ -1,6 +1,7 @@
 import json
 from pathlib import Path
 import re
+import subprocess
 import xml.etree.ElementTree as ET
 
 
@@ -71,7 +72,7 @@ def test_all_concept_cards_are_reviewable_and_stay_lightweight():
     for card in ALL_CARDS:
         text = card.read_text(encoding="utf-8")
         assert {"title", "status", "tags"} <= frontmatter_fields(text), card
-        assert re.search(r"^status: (needs-review|stable)$", text, re.MULTILINE), card
+        assert re.search(r"^status: (needs-review|ai-reviewed|stable)$", text, re.MULTILINE), card
         assert len(text.splitlines()) <= 300, card
         assert "## 一句话定位" in text, card
 
@@ -85,7 +86,26 @@ def test_stable_cards_require_a_traceable_human_review():
 
     for frontier in (ROOT / "docs" / "frontier").glob("*-frontier.md"):
         text = frontier.read_text(encoding="utf-8")
-        assert re.search(r"^review_status: (needs-human-approval|approved)$", text, re.MULTILINE), frontier
+        review_status = re.search(r"^review_status: (needs-human-approval|approved)$", text, re.MULTILINE)
+        assert review_status, frontier
+        if review_status.group(1) == "approved":
+            fields = frontmatter_fields(text)
+            assert {"human_reviewer", "human_reviewed_at", "human_review_scope"} <= fields, frontier
+
+
+def test_completed_ai_audit_is_traceable_without_claiming_human_approval():
+    report = ROOT / "docs" / "review" / "ai-audit-2026-08-22.md"
+    assert report.is_file()
+    report_text = report.read_text(encoding="utf-8")
+    assert "46 张概念卡" in report_text
+    assert "3 篇深度专题" in report_text
+    for card in ALL_CARDS:
+        text = card.read_text(encoding="utf-8")
+        assert re.search(r"^status: (ai-reviewed|stable)$", text, re.MULTILINE), card
+    for deep in (ROOT / "docs" / "deep").glob("*.md"):
+        if deep.name == "README.md":
+            continue
+        assert re.search(r"^status: (ai-reviewed|stable)$", deep.read_text(encoding="utf-8"), re.MULTILINE), deep
 
 
 def test_legacy_anchor_cards_keep_their_migration_schema():
@@ -227,6 +247,19 @@ def test_assessment_files_are_explicitly_unapproved_and_schema_is_valid():
     assert status.group(1) in {"template", "approved"}
     if status.group(1) == "approved":
         assert not re.search(r":\s*(?:null|TBD)\s*$", blueprint, re.MULTILINE)
+    grading_weights = [
+        int(re.search(rf"^  {field}:\s*(\d+)$", blueprint, re.MULTILINE).group(1))
+        for field in ("final_exam_percent", "group_project_percent", "coursework_percent")
+    ]
+    assert grading_weights == [50, 30, 20]
+    contact_hours = [
+        int(re.search(rf"^  {field}:\s*(\d+)$", blueprint, re.MULTILINE).group(1))
+        for field in ("lecture_topics", "project_presentation_and_defense", "integrative_review")
+    ]
+    assert sum(contact_hours) == 48
+    assert re.search(r"^  paper_materials_during_exam:\s*true$", blueprint, re.MULTILINE)
+    for forbidden in ("opencode_during_exam", "other_llm_during_exam", "network_during_exam", "electronic_materials_during_exam"):
+        assert re.search(rf"^  {forbidden}:\s*false$", blueprint, re.MULTILINE)
     progress_schema = json.loads((ROOT / "docs" / "assessment" / "progress.schema.json").read_text(encoding="utf-8"))
     assert progress_schema["properties"]["schema_version"]["const"] == 2
 
@@ -261,6 +294,39 @@ def test_no_plaintext_provider_credentials_in_tracked_course_files():
         if path.is_file() and suspicious.search(path.read_text(encoding="utf-8")):
             hits.append(path.relative_to(ROOT))
     assert not hits, hits
+
+
+def test_lecture_notes_publish_only_the_inventory_readme():
+    readme = ROOT / "LectureNotes" / "README.md"
+    assert readme.is_file()
+    text = readme.read_text(encoding="utf-8")
+    for number in range(1, 22):
+        assert f"Slide{number:02d}" in text
+
+    ignored_pdf = subprocess.run(
+        ["git", "check-ignore", "LectureNotes/Slide01-Welcome-2025.pdf"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    public_readme = subprocess.run(
+        ["git", "check-ignore", "LectureNotes/README.md"],
+        cwd=ROOT,
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    tracked_pdfs = subprocess.run(
+        ["git", "ls-files", "LectureNotes/*.pdf"],
+        cwd=ROOT,
+        check=True,
+        capture_output=True,
+        text=True,
+    )
+    assert ignored_pdf.returncode == 0
+    assert public_readme.returncode == 1
+    assert not tracked_pdfs.stdout.strip()
 
 
 def test_opencode_learning_surface_is_complete_and_index_first():

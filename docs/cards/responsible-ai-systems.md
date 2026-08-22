@@ -7,7 +7,7 @@ aliases: [负责任AI, AI系统工程, 人本AI, 公平, 问责, 部署门槛]
 thinking_pillars: [计算思维, 系统思维, 数据思维, 智能思维]
 category: ai-ml
 tags: [需求, 证据, 风险, 安全, 隐私, 公平, 可解释, 人类监督, 问责, 监测]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [用四大思维审查AI系统, 建立主张证据风险控制表, 定义部署降级与责任条件]

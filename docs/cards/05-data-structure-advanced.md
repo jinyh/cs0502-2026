@@ -5,7 +5,7 @@ aliases: [栈, 队列, 递归, 树, 堆, 复杂度]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
 tags: [栈, 队列, 递归, 二叉树, 优先队列, 二叉堆, 复杂度]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [按访问规则选择典型结构, 追踪递归与堆操作, 比较算法增长率]

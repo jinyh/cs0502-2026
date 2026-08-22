@@ -5,7 +5,7 @@ aliases: [课程导引, 学习地图]
 thinking_pillar: meta
 category: meta
 tags: [课程导引, 学习方法, OpenCode]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 1
 learning_objectives: [说明课程四条知识主线, 选择合适的学习路径, 遵守课程智能体与考核边界]
@@ -48,13 +48,13 @@ last_reviewed: 2026-08-21
 1. 课后读一张卡片，先完成“主动学习与考核迁移”，再看代码。
 2. 使用 `/learn 主题` 检查理解，使用 `/lab 编号` 完成代码实验。
 3. 使用 `/practice 主题` 做全新变式题；错题记录在本机 `student-work/`。
-4. 每周用 `/review` 主动回忆；考前用 `/mock` 和 `/exam-notes` 整理静态开卷资料。
+4. 每周用 `/review` 主动回忆；考前用 `/mock` 和 `/exam-notes` 整理并打印纸质开卷资料。
 
 ## 考核与诚信边界
 
 - 自生成练习：先作答，之后可以查看完整解析。
 - 正在计分的作业和项目：智能体可以提示、测试和评审，但不提供可直接提交的完整成品。
-- 正式期末：考场禁用 OpenCode，只携带课程规则允许的静态资料。
+- 正式期末：仅允许纸质材料；禁止电子资料、联网、OpenCode 和其他 LLM。
 - 不向智能体提供学生名单、成绩、真实考题或其他敏感信息。
 
 ## 主动学习与考核迁移

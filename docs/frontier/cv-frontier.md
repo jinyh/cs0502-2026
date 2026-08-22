@@ -4,7 +4,11 @@ last_static_review: 2026-08-22
 authoritative_card: 18-computer-vision.md
 deep_dive: null
 status: living
-review_status: needs-human-approval
+review_status: approved
+ai_reviewed_at: 2026-08-22
+human_reviewer: 课程负责人
+human_reviewed_at: 2026-08-22
+human_review_scope: [静态研究基线, 一手来源范围, 教学适切性]
 ---
 
 # 计算机视觉前沿进展注记
@@ -13,7 +17,7 @@ review_status: needs-human-approval
 
 ## 静态写底层（季度检查）
 
-> 本页静态层是带一手来源的编辑基线，尚待课程组批准；引用时应回到原论文核验实验范围。
+> 本页静态层已由课程负责人审核通过；引用时仍应回到原论文核验实验范围。
 
 ### 静态研究基线
 
@@ -45,5 +49,5 @@ review_status: needs-human-approval
 ## 给学生的提示
 
 - 视觉前沿更新快，注意区分「刷榜数字」与「实际可用」。
-- 静态层尚待课程组批准，只能作为检索入口；作业或项目应引用原论文并说明实验范围。
+- 静态层是课程组批准基线，可用于课程学习和检索定位；作业或项目仍应引用原论文并说明实验范围。
 - 医学影像相关进展，务必回到临床验证与监管（如 FDA/NMPA）口径判断成熟度。

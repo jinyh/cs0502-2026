@@ -5,7 +5,7 @@ aliases: [CS导论, 计算机科学, 四大思维]
 thinking_pillar: 计算思维
 category: fundamentals
 tags: [计算机科学, 计算思维, 学科结构, 发展史]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [解释计算机科学的研究对象, 概括学科发展与结构, 用四种思维分析工程问题]

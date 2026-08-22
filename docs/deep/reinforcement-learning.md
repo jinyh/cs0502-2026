@@ -3,7 +3,7 @@ title: 强化学习深度专题
 aliases: [强化学习, RL, MDP, Q-learning, PPO, RLHF, 探索-利用]
 category: ai-ml
 tags: [强化学习, MDP, Q-learning, Policy-Gradient, PPO, RLHF, exploration]
-status: needs-review
+status: ai-reviewed
 version: 1.1
 importance: 4
 authoritative_cards: [16-artificial-intelligence, 17-machine-learning]
@@ -75,7 +75,7 @@ PPO 通过限制新旧策略差异来减少过大更新，是广泛使用的策�
 RLHF（Reinforcement Learning from Human Feedback）把 RL 用于对齐大模型：
 1. 从预训练基座模型出发，经 SFT 得到指令模型。
 2. 训奖励模型 $r_\phi(s,a)$ 拟合人类偏好。
-3. 用 PPO 优化 LLM 策略，最大化 $r_\phi$，同时加 KL 惩罚防止偏离 SFT 太远（对齐税）。
+3. 用 PPO 优化 LLM 策略，最大化 $r_\phi$，同时加 KL 惩罚抑制策略过度偏离 SFT 模型和钻奖励空子。对齐后可能出现的通用能力损失才称为“对齐税”。
 
 RLHF 把人类偏好转换为可优化的训练信号，是现代指令模型后训练的一条重要路线；具体产品能力还共同取决于预训练数据、模型、工程、评测与安全流程。详见 [`llm-deep-dive.md`](llm-deep-dive.md) 第 3.2 节。
 

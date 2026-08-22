@@ -4,13 +4,17 @@ last_static_review: 2026-08-22
 authoritative_card: 21-llm.md
 deep_dive: llm-deep-dive.md
 status: living
-review_status: needs-human-approval
+review_status: approved
+ai_reviewed_at: 2026-08-22
+human_reviewer: 课程负责人
+human_reviewed_at: 2026-08-22
+human_review_scope: [静态研究基线, 一手来源范围, 教学适切性]
 ---
 
 # LLM 前沿进展注记
 
 > 本页采用双层机制，详见 [`frontier/README.md`](README.md)。
-> 静态层是带一手来源的编辑基线，尚待课程组批准；增量区未经审校。两层内容都不能替代学生回到原始论文核验。
+> 静态层已由课程负责人审核通过；增量区未经审校。两层内容都不能替代学生回到原始论文核验。
 
 ## 静态写底层（季度检查）
 
@@ -43,6 +47,6 @@ review_status: needs-human-approval
 
 ## 给学生的提示
 
-- 本页静态层尚待课程组批准，只能作为检索入口；作业或项目应引用对应的**原始论文 / 官方技术报告**，而不是引用本页概括。
+- 本页静态层是课程组批准基线，可用于课程学习和检索定位；作业或项目仍应引用对应的**原始论文 / 官方技术报告**，而不是引用本页概括。
 - 增量区仅供参考与启发；产品能力或“最新”判断必须写明模型版本、评测条件和检索日期。
 - 智能体若无法联网，本页仍以静态层为底，不阻塞学习。

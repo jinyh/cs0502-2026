@@ -3,7 +3,7 @@ title: 量子计算基础深度专题
 aliases: [量子计算, qubit, 叠加, 纠缠, 量子算法, Shor, 后量子密码]
 category: emerging
 tags: [量子计算, qubit, 叠加, 纠缠, Shor, Grover, 后量子密码]
-status: needs-review
+status: ai-reviewed
 version: 1.1
 importance: 3
 authoritative_cards: [08-turing-machine, 12-information-security]

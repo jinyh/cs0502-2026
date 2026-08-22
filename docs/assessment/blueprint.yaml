@@ -3,11 +3,28 @@ status: template
 course: CS0502 计算机科学导论
 policy:
   opencode_during_exam: false
-  opencode_policy_owner: 课程组待批准
-  static_notes_during_exam: TBD
+  other_llm_during_exam: false
+  network_during_exam: false
+  electronic_materials_during_exam: false
+  paper_materials_during_exam: true
+  exam_format: 纸质材料开卷
+  policy_confirmed_at: "2026-08-22"
   generated_practice_solution_after_attempt: true
   graded_work_full_solution: false
   source_questions_forbidden: true
+course_grading:
+  status: confirmed
+  confirmed_at: "2026-08-22"
+  final_exam_percent: 50
+  group_project_percent: 30
+  coursework_percent: 20
+  group_project_accountability: [小组成果, 个人答辩, 个人贡献记录]
+contact_hours:
+  status: confirmed
+  total: 48
+  lecture_topics: 42
+  project_presentation_and_defense: 4
+  integrative_review: 2
 calibration:
   course_group_owner: TBD
   approved_at: null

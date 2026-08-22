@@ -7,7 +7,7 @@ aliases: [复杂度, Big-O, 时间复杂度, 空间复杂度, 渐近分析, P/NP
 thinking_pillars: [计算思维]
 category: data-structures-algorithms
 tags: [复杂度, Big-O, 渐近分析, P/NP, 入门]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [比较常见增长阶, 区分最好最坏平均与摊还, 结合输入规模判断可行性]

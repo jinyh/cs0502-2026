@@ -7,7 +7,7 @@ aliases: [栈, 队列, LIFO, FIFO, 双端队列]
 thinking_pillars: [计算思维, 系统思维]
 category: data-structures-algorithms
 tags: [栈, 队列, LIFO, FIFO, 调用栈, BFS, 调度]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [追踪栈和队列状态, 根据访问纪律选择结构, 识别容量和边界条件]

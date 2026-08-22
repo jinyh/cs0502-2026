@@ -7,7 +7,7 @@ aliases: [二进制, 编码, 位模式, 浮点数, 量化]
 thinking_pillars: [计算思维, 系统思维, 数据思维]
 category: fundamentals
 tags: [二进制, 补码, 浮点数, Unicode, 像素, 采样, 量化]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [解释位模式为何依赖解释规则, 追踪整数文本图像声音的编码, 诊断溢出舍入和量化误差]

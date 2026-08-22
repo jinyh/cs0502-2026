@@ -125,7 +125,7 @@ aliases: [<别名1>, <别名2>]
 thinking_pillars: [<计算思维|系统思维|数据思维|智能思维>]
 category: <分类>
 tags: [<tag1>, <tag2>]
-status: <stable|draft|needs-review>
+status: <draft|needs-review|ai-reviewed|stable>
 version: 1.0
 importance: <1-5>
 learning_objectives: [<可观察目标1>, <可观察目标2>, <可观察目标3>]
@@ -195,17 +195,17 @@ last_reviewed: YYYY-MM-DD
 - 课程大纲与教务材料（`reference/`，**不公开**，`.gitignore` 隔离）
 - 5 个交互可视化 HTML（`code/visualizations/`，迁移自课程 Demo）
 - AI 时代 21 讲课程蓝图、机器资源映射与旧卡覆盖迁移矩阵（`docs/curriculum/`，待课程组审批）
-- 46 张卡片（`docs/cards/`，含 21 张来源锚点/概览卡和 25 张语义概念卡，统一为 `needs-review`）
+- 46 张卡片（`docs/cards/`，含 21 张来源锚点/概览卡和 25 张语义概念卡，已完成 AI 全量审核，统一为 `ai-reviewed`）
 - 3 个深度专题（`docs/deep/`：LLM / 强化学习 / 量子计算）
 - 2 个前沿注记页（`docs/frontier/`：LLM / CV，双层机制）
 - 多路径索引（`docs/paths/` 五页）与 `glossary.md`
 - 18 个概念示例、8 个核心实验、30 张 SVG 配图与跨平台 runner
-- OpenCode 配置全套（`course-tutor` agent / 5 skills / 8 slash commands）
+- OpenCode 配置全套（`course-tutor` agent / 5 skills / 10 slash commands）
 - `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
 
 ### 待完成
 
-- 教师审批 `docs/assessment/blueprint.yaml` 后再启用“按正式考核结构校准”的 `/mock`
+- 期末 50% / 项目 30% / 平时 20% 已确认；教师补齐题型细目并审批 `docs/assessment/blueprint.yaml` 后再启用“按正式考核结构校准”的 `/mock`
 - 课程组审批 21 讲蓝图与 `lecture-card-map.yaml`
-- 发布前由任课教师抽查全部 `needs-review` 概念卡
+- 任课教师按 `docs/review/ai-audit-2026-08-22.md` 抽查 `ai-reviewed` 卡片；高风险内容再交相应领域专家
 - 二期可选：mkdocs 静态站点 + GitHub Pages；英文版；更多深度专题

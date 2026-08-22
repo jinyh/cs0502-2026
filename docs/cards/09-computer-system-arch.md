@@ -5,7 +5,7 @@ aliases: [冯诺依曼, CPU, 指令集, 存储层次, 操作系统, 进程]
 thinking_pillar: 系统思维
 category: systems
 tags: [CPU, ISA, 存储层次, 操作系统, 进程, 调度, 同步, 死锁]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [追踪指令执行, 解释存储层次, 分析进程调度同步与死锁]

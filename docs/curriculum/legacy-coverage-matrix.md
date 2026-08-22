@@ -89,4 +89,5 @@
 - [x] 新增表示、概率/不确定性、数据治理、HCI/无障碍、分布式、AI 安全与系统工程卡。
 - [x] 将 CV、语音、推荐定位为可跨 L18–L21 复用的应用案例卡。
 - [x] 在 `lecture-card-map.yaml` 登记 `core_cards / supporting_cards / preview_cards / extension_cards / examples / labs / visualizations / figures / assessment_tags`。
-- [ ] 教师逐卡复核后，再把 `status` 从 `needs-review` 改为 `stable`。
+- [x] AI 全量审核后，把 46 张卡的 `status` 从 `needs-review` 改为 `ai-reviewed`。
+- [ ] 教师按审核分级抽查后，再把通过的卡片从 `ai-reviewed` 改为 `stable`。

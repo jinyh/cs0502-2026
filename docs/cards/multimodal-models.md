@@ -7,7 +7,7 @@ aliases: [多模态, 计算机视觉, 语音识别, 表示对齐, 模态融合]
 thinking_pillars: [数据思维, 智能思维]
 category: ai-ml
 tags: [图像, 语音, 文本, 多模态, 编码器, 融合, 对齐, 评价]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 4
 learning_objectives: [比较不同模态的采样与误差, 解释编码对齐和融合流程, 为多模态任务设计分层评价]

@@ -7,7 +7,7 @@ aliases: [分布式系统, 云计算, 副本, 一致性, 超时, 重试, 幂等]
 thinking_pillars: [系统思维]
 category: systems
 tags: [分布式, 云服务, API, 超时, 重试, 幂等, 副本, 一致性, 部分失败]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 4
 learning_objectives: [解释部分失败和不确定性, 设计安全的超时重试与幂等, 比较副本一致性可用性权衡]

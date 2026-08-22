@@ -7,7 +7,7 @@ aliases: [HCI, 用户界面, 可用性, 无障碍, 人机协作, 校准信任]
 thinking_pillars: [系统思维, 数据思维, 智能思维]
 category: human-computer-interaction
 tags: [HCI, 可用性, 反馈, 可发现性, 认知负荷, 无障碍, 人类监督, 校准信任]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 4
 learning_objectives: [用反馈和可发现性分析交互, 设计基本无障碍替代, 评价AI界面中的信任与接管]

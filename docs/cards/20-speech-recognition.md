@@ -5,7 +5,7 @@ aliases: [ASR, 序列数据, 端到端模型, RNN, 隐藏状态, WER]
 thinking_pillar: 智能思维
 category: ai-ml
 tags: [语音识别, 序列, 端到端, RNN, 隐藏状态, 词错误率]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 3
 learning_objectives: [解释语音序列表示, 追踪RNN隐藏状态, 计算并解释WER]

@@ -7,7 +7,7 @@ aliases: [条件概率, 贝叶斯, 基率, 抽样, 置信区间, 相关与因果
 thinking_pillars: [数据思维, 智能思维]
 category: data
 tags: [概率, 条件概率, 基率, 抽样, 混淆矩阵, 不确定性, 相关, 因果]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [用基率解释条件概率, 区分样本证据与总体结论, 报告效应不确定性和限制]

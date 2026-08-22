@@ -5,7 +5,7 @@ aliases: [图灵机, 纸带, 状态转移, 可计算性]
 thinking_pillar: 计算思维
 category: fundamentals
 tags: [图灵机, 状态, 转移函数, 多带图灵机, 可计算性]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [识别图灵机组成, 逐步执行转移规则, 解释模型等价与计算边界]

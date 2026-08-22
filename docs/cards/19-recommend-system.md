@@ -5,7 +5,7 @@ aliases: [内容推荐, 余弦相似度, 协同过滤, 图嵌入, 冷启动]
 thinking_pillar: 智能思维
 category: ai-ml
 tags: [推荐系统, 内容向量, 相似度, 协同过滤, 图嵌入, 冷启动, 过滤气泡]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 3
 learning_objectives: [计算内容相似度, 比较内容推荐与协同过滤, 分析离线指标和系统影响]

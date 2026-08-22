@@ -3,7 +3,7 @@ title: LLM 深度专题
 aliases: [大语言模型, Transformer, 预训练, 对齐, RLHF, Agent, 多模态]
 category: ai-ml
 tags: [LLM, Transformer, 预训练, SFT, RLHF, DPO, Agent, 多模态, 涌现]
-status: needs-review
+status: ai-reviewed
 version: 1.1
 importance: 5
 authoritative_cards: [21-llm, 16-artificial-intelligence, 17-machine-learning]

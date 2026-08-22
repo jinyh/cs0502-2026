@@ -7,7 +7,7 @@ aliases: [数据生命周期, 数据来源, 数据质量, 数据治理, 数据�
 thinking_pillars: [数据思维, 系统思维]
 category: data
 tags: [采集, 清洗, 标注, provenance, 数据质量, 许可, 隐私, 版本, 删除]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [绘制数据全生命周期, 诊断质量偏差与泄漏, 记录来源许可版本和责任]

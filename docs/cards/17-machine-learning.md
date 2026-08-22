@@ -5,7 +5,7 @@ aliases: [机器学习, 感知器, MLP, CNN, RNN, Transformer, 泛化]
 thinking_pillar: 智能思维
 category: ai-ml
 tags: [监督学习, 无监督学习, 泛化, 感知器, MLP, CNN, RNN, Transformer]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [解释学习与泛化, 追踪感知器和多层网络, 比较CNN RNN Transformer的结构偏置]

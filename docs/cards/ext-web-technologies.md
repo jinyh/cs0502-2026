@@ -7,7 +7,7 @@ aliases: [Web, HTTP, HTML, 前后端, REST, API]
 thinking_pillars: [系统思维]
 category: networking-security
 tags: [Web, HTTP, HTML, 前后端, REST, API, 入门]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 3
 learning_objectives: [追踪HTTP请求响应, 区分前端后端与API, 分析状态安全和失败]

@@ -7,7 +7,7 @@ aliases: [布尔代数, 逻辑门, 真值表, 与或非, 数字逻辑]
 thinking_pillars: [计算思维, 系统思维]
 category: fundamentals
 tags: [布尔代数, 逻辑门, 真值表, 数字逻辑, 入门]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 3
 learning_objectives: [构造和解释真值表, 使用德摩根律变换条件, 连接程序条件与逻辑门]

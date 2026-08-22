@@ -7,7 +7,7 @@ aliases: [递归, 分治, 基线条件, 归并排序, 汉诺塔]
 thinking_pillars: [计算思维]
 category: data-structures-algorithms
 tags: [递归, 分治, 归并排序, 汉诺塔, 入门]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [追踪递归调用栈, 检查基线与规模缩小, 解释分治及其合并代价]

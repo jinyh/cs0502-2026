@@ -5,7 +5,7 @@ aliases: [关系模型, 主键, 外键, 关系代数, SQL, DBMS]
 thinking_pillar: 数据思维
 category: data
 tags: [数据库, 关系模型, 键, 关系代数, SQL, 查询优化, DBMS]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [设计简单关系表和键, 把查询映射为关系操作, 解释DBMS怎样执行查询]

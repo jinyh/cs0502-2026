@@ -7,7 +7,7 @@ aliases: [搜索, 排序, 分治, 贪心, 动态规划, 算法设计]
 thinking_pillars: [计算思维]
 category: data-structures-algorithms
 tags: [搜索, 排序, 分治, 贪心, 动态规划, 不变量, 反例, Big-O]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [比较典型算法策略, 用不变量或反例检查正确性, 结合规模与约束选择算法]

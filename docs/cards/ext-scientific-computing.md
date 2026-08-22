@@ -7,7 +7,7 @@ aliases: [浮点误差, 数值稳定性, 科学计算, 可重复性]
 thinking_pillars: [计算思维, 数据思维]
 category: scientific-computing
 tags: [浮点数, 舍入误差, 数值稳定性, 随机种子, 可重复研究]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 4
 learning_objectives: [识别浮点和测量误差, 比较稳定与不稳定计算, 记录可重复实验条件]

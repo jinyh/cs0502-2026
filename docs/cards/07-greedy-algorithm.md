@@ -5,7 +5,7 @@ aliases: [贪心, 活动调度, 背包, Dijkstra, 最优子结构]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
 tags: [贪心算法, 活动选择, 背包, Dijkstra, 反例]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [识别贪心选择, 用反例检验策略, 追踪活动调度和Dijkstra]

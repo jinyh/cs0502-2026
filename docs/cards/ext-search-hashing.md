@@ -7,7 +7,7 @@ aliases: [线性搜索, 二分搜索, 哈希, 散列, 冲突]
 thinking_pillars: [计算思维, 数据思维]
 category: data-structures-algorithms
 tags: [搜索, 二分搜索, 哈希表, 冲突, 负载因子]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 3
 learning_objectives: [比较线性与二分搜索, 追踪哈希冲突处理, 根据查询类型选择结构]

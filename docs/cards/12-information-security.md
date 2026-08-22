@@ -5,7 +5,7 @@ aliases: [CIA, 对称加密, 公钥加密, 哈希, 数字签名, 社会工程]
 thinking_pillar: 系统思维
 category: networking-security
 tags: [机密性, 完整性, 可用性, 加密, 哈希, 签名, 恶意软件, 隐私]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [用CIA分析资产风险, 区分加密哈希与签名, 为场景建立基本威胁模型]

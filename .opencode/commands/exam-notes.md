@@ -1,5 +1,5 @@
 ---
-description: 整理个人静态开卷复习资料
+description: 整理个人可打印的纸质开卷复习资料
 agent: course-tutor
 ---
 

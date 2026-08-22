@@ -7,7 +7,7 @@ aliases: [操作系统, 进程, 线程, 调度, 同步, 死锁, 虚拟内存]
 thinking_pillars: [系统思维]
 category: systems
 tags: [进程, 线程, 调度, 竞态, 锁, 死锁, 虚拟内存, 隔离, 沙箱]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [解释OS的抽象和隔离, 追踪进程状态与并发交错, 识别竞态死锁和资源边界]

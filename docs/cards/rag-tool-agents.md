@@ -7,7 +7,7 @@ aliases: [RAG, 检索增强生成, function calling, tool use, AI Agent]
 thinking_pillars: [系统思维, 数据思维, 智能思维]
 category: ai-ml
 tags: [LLM, RAG, 检索, 引用, 工具调用, Agent, 权限, 评价, 可观察性]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [区分参数上下文检索与工具, 追踪RAG和Agent链路, 设计来源权限日志和评价]

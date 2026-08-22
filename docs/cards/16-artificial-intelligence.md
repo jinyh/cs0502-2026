@@ -5,7 +5,7 @@ aliases: [AI, 符号主义, 连接主义, 行为主义, 图灵测试, 智能体]
 thinking_pillar: 智能思维
 category: ai-ml
 tags: [人工智能, 发展史, 符号主义, 连接主义, 行为主义, 智能体, 伦理]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [比较AI定义与范式, 识别感知决策行动闭环, 分析能力边界与责任]

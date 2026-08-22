@@ -5,7 +5,7 @@ aliases: [数据预处理, 关联规则, 聚类, KMeans, DBSCAN, 决策树]
 thinking_pillar: 数据思维
 category: data
 tags: [数据挖掘, 预处理, 关联分析, 聚类, 分类, 决策树]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [识别数据类型与预处理需求, 比较聚类方法, 区分关联分类与聚类任务]

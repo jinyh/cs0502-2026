@@ -7,7 +7,7 @@ aliases: [树, 二叉树, 堆, 优先队列, 层次结构]
 thinking_pillars: [计算思维, 数据思维]
 category: data-structures-algorithms
 tags: [树, 二叉树, 遍历, 堆, 优先队列, 堆序性质]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [区分树的结构和遍历顺序, 追踪堆的插入删除, 根据操作需求选择树或堆]

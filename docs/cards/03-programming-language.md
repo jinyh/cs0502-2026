@@ -5,7 +5,7 @@ aliases: [编程语言, 编译, 解释, 类型, 字节码]
 thinking_pillar: 计算思维
 category: fundamentals
 tags: [编程语言, 语法, 语义, 编译, 解释, 类型]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [区分语法与语义, 追踪源程序到执行结果的路径, 比较编译解释与混合执行]

@@ -5,7 +5,7 @@ aliases: [图, BFS, DFS, 子图, 生成树, 连通性]
 thinking_pillar: 计算思维
 category: data-structures-algorithms
 tags: [图, 邻接表, 邻接矩阵, BFS, DFS, 生成树]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [识别图与子图等概念, 在两种表示上追踪BFS和DFS, 解释生成树与连通性]

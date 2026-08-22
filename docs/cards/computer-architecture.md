@@ -7,7 +7,7 @@ aliases: [计算机组成, 冯诺依曼, ISA, 缓存, GPU, NPU]
 thinking_pillars: [系统思维]
 category: systems
 tags: [CPU, 指令, ISA, 存储层次, 缓存, 局部性, GPU, NPU, 数据移动]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [追踪指令执行和数据流, 用局部性解释存储层次, 比较CPU GPU NPU的工作负载]

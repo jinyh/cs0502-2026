@@ -7,7 +7,7 @@ aliases: [神经网络, 反向传播, CNN, RNN, 注意力, Transformer]
 thinking_pillars: [智能思维, 系统思维]
 category: ai-ml
 tags: [神经元, 层, 激活, 损失, 梯度, CNN, RNN, attention, Transformer]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [追踪小型网络前向计算, 比较CNN RNN Transformer结构偏置, 分析训练推理和资源代价]

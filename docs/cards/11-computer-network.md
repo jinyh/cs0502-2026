@@ -5,7 +5,7 @@ aliases: [网络边缘, 接入网, 核心网, 分层, TCP/IP, IoT]
 thinking_pillar: 系统思维
 category: networking-security
 tags: [网络, 分层, 封装, 带宽, 时延, TCP/IP, IoT, 5G]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [描述端到端网络路径, 追踪分层封装, 比较带宽时延吞吐与可靠性]

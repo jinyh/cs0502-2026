@@ -1,6 +1,6 @@
 ---
 name: retrieval-review
-description: 基于本地进度进行主动回忆、间隔复习、错因追踪和静态开卷资料整理；适用于每周复习、考前复盘和exam-notes
+description: 基于本地进度进行主动回忆、间隔复习、错因追踪和可打印纸质开卷资料整理；适用于每周复习、考前复盘和exam-notes
 license: MIT
 compatibility: opencode
 metadata:
@@ -24,7 +24,7 @@ metadata:
 
 ## 开卷资料
 
-`/exam-notes` 输出到 `student-work/exam-notes.md`。只收录学生已经练习过的：
+`/exam-notes` 输出到 `student-work/exam-notes.md`，供学生在考前自行检查并打印；考试现场只允许纸质材料。只收录学生已经练习过的：
 
 - 概念间关键差异；
 - 算法/系统状态追踪模板；

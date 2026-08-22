@@ -5,7 +5,7 @@ aliases: [图表选择, 视觉编码, EDA, 不确定性, 误导性图表]
 thinking_pillar: 数据思维
 category: data
 tags: [可视化, 图表, 视觉编码, EDA, 不确定性, 伦理]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 3
 learning_objectives: [按任务选择图表, 解释视觉编码优先级, 识别误导并表达不确定性]

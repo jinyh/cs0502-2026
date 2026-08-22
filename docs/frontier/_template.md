@@ -5,6 +5,7 @@ authoritative_card: <对应卡片，如 21-llm.md>
 deep_dive: <对应深度专题，如 llm-deep-dive.md>
 status: living
 review_status: needs-human-approval
+ai_reviewed_at: null
 ---
 
 # <主题> 前沿进展注记

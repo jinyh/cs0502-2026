@@ -5,7 +5,7 @@ aliases: [语言模型, N-gram, 词嵌入, 位置编码, 注意力, GPT, DeepSee
 thinking_pillar: 智能思维
 category: ai-ml
 tags: [语言模型, N-gram, 词嵌入, 位置编码, 注意力, 文本生成, GPT, 幻觉]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 5
 learning_objectives: [追踪语言模型演进, 解释嵌入位置与注意力, 分析生成能力与可靠性边界]

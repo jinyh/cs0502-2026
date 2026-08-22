@@ -7,7 +7,7 @@ aliases: [可计算性, 可判定性, 停机问题, P与NP, 自动化边界]
 thinking_pillars: [计算思维, 系统思维, 智能思维]
 category: fundamentals
 tags: [图灵机, 可判定性, 停机问题, P, NP, 启发式, 验证]
-status: needs-review
+status: ai-reviewed
 version: 1.0
 importance: 5
 learning_objectives: [区分三类计算边界, 解释不可判定性的直觉, 为自动化输出选择相称验证]

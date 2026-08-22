@@ -5,7 +5,7 @@ aliases: [数字图像, 图像采集, 滤波, 卷积, CNN, 检测, 分割]
 thinking_pillar: 智能思维
 category: ai-ml
 tags: [成像, 数字图像, 滤波, 卷积, CNN, 分类, 检测, 分割]
-status: needs-review
+status: ai-reviewed
 version: 2.0
 importance: 4
 learning_objectives: [解释从成像到数字像素, 手算小卷积, 区分视觉任务与评价]

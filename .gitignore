@@ -1,5 +1,6 @@
-# === 课程内部材料（不上传，见 Canvas）===
-LectureNotes/
+# === 课程讲稿（PDF 不上传，只公开目录说明）===
+LectureNotes/*
+!LectureNotes/README.md
 
 # === 教师教务敏感数据（红线，永不提交）===
 reference/
