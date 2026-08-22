@@ -23,25 +23,28 @@
 
 从 `knowledge.md` 定位卡片。每轮只读取当前卡片、必要前置和一个关联实验/图示，长上下文是容量上限，不是一次加载整个知识库的理由。
 
-## Python 实验
+## Python 实验（PAI-DSW）
 
-唯一入口：
+本机 OpenCode 不执行课程 Python。学生在支持 `/mnt/workspace` 持久化的 PAI-DSW 中运行 [`../notebooks/modelscope/CS0502-quickstart.ipynb`](../notebooks/modelscope/CS0502-quickstart.ipynb)，使用：
 
-```bash
-uv run python code/runner.py run code/examples/06_graph_bfs_dfs.py
-uv run python code/runner.py lab init lab-02-graph
-uv run python code/runner.py lab test lab-02-graph
+```python
+run_example("06_graph_bfs_dfs.py")
+init_lab("lab-02-graph")
+test_lab("lab-02-graph")
+show_visualization("binary_heap.html")
 ```
 
-运行器检查路径、AST 导入与危险调用，并限制 CPU 时间、墙钟时间和内存。它是面向可信学生代码的教学护栏，不是抵御恶意用户的容器或虚拟机。
+OpenCode 先要求预测，再给 helper 调用；学生只贴回 `[CS0502_RESULT]` 摘要。运行器检查路径、AST 导入与危险调用，并限制 CPU 时间、墙钟时间和内存。它是面向可信学生代码的教学护栏，PAI-DSW 外层环境负责资源隔离。
 
 ## 本地学习进度
 
-学生明确同意后，智能体只通过 `uv run python code/progress.py ...` 管理 `student-work/progress.json`。不把身份、成绩、原始作业或考试内容写入进度文件。
+学生明确同意后，智能体只通过 `uv run --no-project python code/progress.py ...` 管理本机 `student-work/progress.json`，无需安装云端代码依赖。不把身份、成绩、原始作业或考试内容写入进度文件。
 
 ## 配置隐私
 
 项目配置默认拒绝未列出的工具和全局 MCP。不要在课堂投屏、共享日志或 issue 中输出 OpenCode 合并后的有效配置；该输出可能包含用户级 provider 或 MCP 凭据。
+
+模型凭据只配置在学生自己的电脑上。不要把 API Key 注入 PAI-DSW、写入 Notebook、`student-work/` 或运行摘要。
 
 ## 联网
 

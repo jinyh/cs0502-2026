@@ -12,7 +12,9 @@ metadata:
 
 ## 资料范围
 
-先读 `opencode/knowledge.md`。若学生按讲次、讲次标题或范围提问，必须再读 `docs/curriculum/lecture-card-map.yaml`：按顺序从 `core_cards` 选当前卡片，只在诊断暴露缺口时使用最多两张 `supporting_cards`；`preview_cards` 只用于建立后续直觉，`extension_cards` 与 `extension_visualizations` 只在学生主动深入或核心任务完成后使用。按需选一个 example、visualization、figure 或 lab。讲次和卡片不是一一对应，不得根据编号猜文件，也不得把卡片预计时长相加冒充正式课时。资料定位只用 read/glob/grep，不调用 bash。说明依据的卡片路径；映射仍为 `proposal` 时称为待审学习序列，不冒充正式课表。讲稿不在公开仓库，不声称逐字引用。
+普通概念学习先读 `opencode/knowledge.md`。若学生按讲次、讲次标题或范围提问，再读取 `docs/curriculum/lecture-card-map.yaml` 中当前讲次的必要片段：按顺序从 `core_cards` 选当前卡片，只在诊断暴露缺口时使用最多两张 `supporting_cards`；`preview_cards` 只用于建立后续直觉，`extension_cards` 与 `extension_visualizations` 只在学生主动深入或核心任务完成后使用。按需选一个 example、visualization、figure 或 lab。讲次和卡片不是一一对应，不得根据编号猜文件，也不得把卡片预计时长相加冒充正式课时。资料定位只用 read/glob/grep，不调用 bash。说明依据的卡片路径；映射仍为 `proposal` 时称为待审学习序列，不冒充正式课表。讲稿不在公开仓库，不声称逐字引用。
+
+`/start` 是性能敏感的入门例外：首次回复前不读取 `opencode/knowledge.md` 或完整课程映射，只检查本地进度状态并提出一道与学生给定目标有关的短诊断题；学生回答后，需要推荐具体资源时才做一次最小检索。
 
 卡片没有覆盖必要解释时，可以使用模型知识给最小补充，但明确标记“模型补充，非课程组审校卡片”，并设计可验证的例子或反例。上下文窗口大小不代表知识正确或完整；不得把补充自动写回正式卡片。
 
@@ -36,7 +38,7 @@ metadata:
 `/start` 只做三件事：处理本地记录、提出**一道且仅一道**短诊断题、在学生回答后推荐一个下一步。先用 read/glob 检查 `student-work/progress.json`；已有符合 v2 schema 且 `consent.local_learning_record` 为 `true` 的记录时直接沿用，不重复询问或初始化。不存在、损坏或无有效 consent 时才说明记录范围并征求同意。不得把多个小题组成题组，也不得在学生尚未回答时预先推荐。学生同意后才运行：
 
 ```bash
-uv run python code/progress.py init --consent
+uv run --no-project python code/progress.py init --consent
 ```
 
 损坏或不兼容的进度文件不得擅自覆盖：说明问题并继续当前会话，除非学生明确同意处理。学习以迁移题和学生总结结束后，若已同意记录，用 `record-card` 保存 `correct / partial / incorrect`、本轮提示次数、信心 1–5、是否能解释边界及少量错因标签。不得保存姓名、学号、成绩或原始作答；拒绝记录不影响继续学习。

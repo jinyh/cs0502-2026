@@ -170,6 +170,28 @@ def test_runner_limits_output_and_times_out(tmp_path, monkeypatch):
         runner.run(runner.validate_path(str(looping)), timeout_seconds=1)
 
 
+def test_runner_uses_a_managed_modelscope_profile_without_forwarding_provider_keys(monkeypatch):
+    runner = load_runner()
+    monkeypatch.setenv("CS0502_RUNTIME", "modelscope")
+    monkeypatch.setenv("DASHSCOPE_API_KEY", "must-not-leak")
+    monkeypatch.setenv("LD_LIBRARY_PATH", "/managed/runtime/lib")
+    settings = runner.memory_settings()
+    assert settings == {"default_memory_mb": 2048, "max_memory_mb": 2048}
+    arguments = runner.argument_parser().parse_args(["run", "code/examples/06_graph_bfs_dfs.py"])
+    assert arguments.memory_mb == 2048
+    environment = runner.sandbox_environment()
+    assert environment["OPENBLAS_NUM_THREADS"] == "1"
+    assert environment["LD_LIBRARY_PATH"] == "/managed/runtime/lib"
+    assert "DASHSCOPE_API_KEY" not in environment
+
+
+def test_runner_rejects_an_unknown_runtime_profile(monkeypatch):
+    runner = load_runner()
+    monkeypatch.setenv("CS0502_RUNTIME", "unknown")
+    with pytest.raises(ValueError, match="未知运行环境"):
+        runner.memory_settings()
+
+
 def test_progress_requires_consent_and_schedules_mastery(tmp_path, monkeypatch):
     progress = load_progress()
     progress_path = tmp_path / "student-work" / "progress.json"

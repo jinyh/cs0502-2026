@@ -15,8 +15,9 @@ docs/frontier/       人工审校静态基线 + 学生前沿检索入口
 docs/paths/          5 条学习导航，包括工程问题求解路径
 docs/assessment/     脱敏考核蓝图、项目 rubric、进度 schema
 code/examples/       18 个可独立运行的概念示例
-code/labs/           8 个“预测—实现—测试—解释”核心实验
+code/labs/           8 个“预测—实现—测试—解释”形成性核心实验
 code/visualizations/ 5 个自包含交互页面
+notebooks/modelscope/ PAI-DSW 一键环境与课程运行 helper
 figures/             30 张可访问 SVG 概念图
 .opencode/           学生 agent、5 个项目级 skills、10 个 slash commands
 opencode/            教学行为、工具和知识检索说明
@@ -26,23 +27,31 @@ opencode/            教学行为、工具和知识检索说明
 
 ## 学生快速开始
 
-### 1. 安装依赖并验证示例
+### 1. 在自己电脑上启动 OpenCode
 
-```bash
-uv sync
-uv run pytest
-uv run python code/runner.py run code/examples/06_graph_bfs_dfs.py
-```
-
-`code/runner.py` 只接受课程示例、实验和 `student-work/` 下的 Python 文件，并负责初始化、测试 Lab。它检查路径、导入、危险调用、时间和内存限制，是可信教学护栏而不是面向恶意代码的硬安全沙箱。
-
-### 2. 启动 OpenCode
-
-先按 OpenCode 官方文档在本机选择并连接任一受支持的大模型提供商；课程 skills 与模型供应商解耦。连接流程和提供商示例见 [`opencode/tools.md`](opencode/tools.md)。
+先按 OpenCode 官方文档在本机安装 OpenCode，并选择、连接任一受支持的大模型提供商；课程 skills 与模型供应商解耦。连接流程和提供商示例见 [`opencode/tools.md`](opencode/tools.md)。克隆本仓库后在根目录运行：
 
 ```bash
 opencode . --agent course-tutor
 ```
+
+本机 OpenCode 负责知识检索、预测、分级提示与复盘，不执行课程 Python。匿名学习进度是可选功能；只有选择启用时才需要本机安装 `uv`，且不会安装 NumPy 等云端依赖。
+
+### 2. 在 PAI-DSW 运行代码
+
+按照 [ModelScope Notebook 说明](https://modelscope.cn/docs/notebook/intro) 创建支持 `/mnt/workspace` 持久化的 PAI-DSW CPU Notebook，选择 Python 3.11 或更高版本的镜像，上传并从头运行 [`CS0502-quickstart.ipynb`](notebooks/modelscope/CS0502-quickstart.ipynb)。Notebook 会获取课程仓库、创建持久化虚拟环境并加载以下入口：
+
+```python
+run_example("06_graph_bfs_dfs.py")
+init_lab("lab-02-graph")
+test_lab("lab-02-graph")
+show_visualization("binary_heap.html")
+export_student_work()
+```
+
+推荐同时打开本机 OpenCode 和云端 Notebook：先在 OpenCode 完成预测，再执行它给出的 helper，把 Notebook 输出的 `[CS0502_RESULT]` 摘要复制回 OpenCode。云端不配置或保存模型 API Key。
+
+若教学环境不能访问 GitHub，先把课程组发布的仓库 ZIP 上传并解压为 `/mnt/workspace/CS0502`，再重新运行 Notebook；不需要改变后续 helper。
 
 不要从“把这一讲讲给我听”开始。选择一个学习动作：
 
@@ -50,9 +59,9 @@ opencode . --agent course-tutor
 |---|---|
 | `/start L06` | 了解匿名本地记录范围，做一个诊断并获得一个下一步 |
 | `/learn L06 算法策略与复杂度` | 按讲次组合核心卡，先诊断、预测，再获得分级提示与迁移题 |
-| `/demo L05 图遍历` | 用 example / 可视化完成预测—验证—迁移 |
+| `/demo L05 图遍历` | 预测后获得 PAI-DSW helper，用云端证据完成迁移 |
 | `/practice L05 图遍历与堆` | 一次完成一道全新同构练习 |
-| `/lab lab-02-graph` | 初始化学生副本后预测、实现、运行公开测试、解释 |
+| `/lab lab-02-graph` | 预测后在 PAI-DSW 初始化、实现、运行公开测试、解释 |
 | `/review 本周内容` | 基于本地进度做主动回忆和间隔复习 |
 | `/mock L02-L15` | 按已批准蓝图模拟；未批准时只称通用课程练习 |
 | `/project 路径规划项目` | 按 rubric 评审已有证据，不代做成品 |
@@ -61,7 +70,11 @@ opencode . --agent course-tutor
 
 OpenCode 可以帮助平时学习、作业辅导、项目评审与考前准备；正式期末为纸质材料开卷，现场禁止电子资料、联网、OpenCode 和其他 LLM。正在计分的任务只提供分级提示、相似新题、测试和 rubric 反馈，不输出可直接提交的完整答案。
 
+全学期原则上约 4 次正式计分作业，不按周布置。仓库中的 8 个 Lab 默认用于辅助学习和自测，可以被教师选作某次作业的全部、部分或准备练习，也可以不进入任何作业；是否计分只以正式作业说明为准。详见 [`assignment-plan.md`](docs/assessment/assignment-plan.md)。
+
 首次使用 `/start` 时可选择是否启用匿名本地学习记录。记录只保存在被 Git 忽略的 `student-work/progress.json`，不包含姓名、学号、成绩或原始作答；拒绝记录不影响其他学习功能。
+
+同一 OpenCode 会话越来越长时可使用 `/compact`，不同主题优先开启新会话。课程命令只读取当前讲次的最小索引和必要卡片，不会因为模型支持长上下文就一次加载整个知识库。
 
 完整的命令选择、学习闭环、降级行为和本地文件说明见 [`docs/student-guide.md`](docs/student-guide.md)；全部 example、Lab 与可视化用法见 [`code/README.md`](code/README.md)。
 

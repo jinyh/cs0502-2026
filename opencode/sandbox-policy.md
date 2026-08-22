@@ -19,7 +19,8 @@
 ## 资源限制
 
 - **超时**：单次运行 30 秒，超时即终止。
-- **内存**：Linux runner 以 `RLIMIT_AS` 限制为 512MB；macOS 的 `RLIMIT_DATA/RLIMIT_AS` 在子进程启动阶段不可可靠降低，需由外层容器或教学账户配额限制。
+- **内存**：本机 Linux profile 以 `RLIMIT_AS` 限制为 512MB；`CS0502_RUNTIME=modelscope` 使用 2GB，以容纳 Notebook 镜像中的 NumPy/scikit-learn 原生运行库，并由 PAI-DSW 外层资源配额继续隔离。macOS 的 `RLIMIT_DATA/RLIMIT_AS` 在子进程启动阶段不可可靠降低，需由外层环境控制。
+- **原生线程**：OpenBLAS、MKL、OpenMP 与 NumExpr 固定为单线程，避免小实验占用大量线程与虚拟地址空间。
 - **禁网**：运行器拒绝网络、进程和系统相关导入；环境本身不是硬隔离，故只运行可信教学代码。
 - **磁盘**：学生输出仅写 `student-work/`；课程仓库保持只读。
 
@@ -33,8 +34,8 @@
 
 ## 优先级
 
-1. 优先运行 `code/examples/` 中已验证示例——这些已确认安全且可运行。
-2. Lab 通过 `code/runner.py lab init/test` 创建副本并调用只读公开测试。
+1. 学生先在本机 OpenCode 预测，再在 PAI-DSW Quickstart 调用 `run_example(...)`；这些示例已通过仓库自动测试。
+2. Lab 在 PAI-DSW 通过 `init_lab(...)` / `test_lab(...)` 创建副本并调用只读公开测试。
 3. 其他学生自写代码：先 review 是否触发禁止项，再运行。
 4. 触发禁止项 → 解释为何不能运行，建议安全改写或本地运行。
 
@@ -47,6 +48,6 @@
 
 ## 失败降级
 
-沙箱不可用时：
+PAI-DSW 或 runner 不可用时：
 - 不强行执行，改为**逐行解释代码逻辑**与预期输出。
-- 建议学生本地用 `uv run python <file>` 运行（见 `code/README.md`）。
+- 明确说明“尚未运行”，等待云端环境恢复；本地运行仅作为教师开发或无云环境时的降级方案（见 `code/README.md`）。

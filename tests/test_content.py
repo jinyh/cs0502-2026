@@ -211,6 +211,65 @@ def test_lecture_card_map_covers_21_lectures_and_resolves_resources():
         learned_core.update(ordered_core)
 
 
+def test_runtime_index_matches_the_curriculum_mapping():
+    mapping = (ROOT / "docs" / "curriculum" / "lecture-card-map.yaml").read_text(encoding="utf-8")
+    status = re.search(r"^status:\s*(\S+)$", mapping, re.MULTILINE).group(1)
+    lecture_matches = list(re.finditer(r"^  - id: (L\d{2})$", mapping, re.MULTILINE))
+    indexed = [
+        json.loads(line)
+        for line in (ROOT / "opencode" / "lecture-runtime-index.jsonl").read_text(encoding="utf-8").splitlines()
+        if line.strip()
+    ]
+    assert [item["id"] for item in indexed] == [match.group(1) for match in lecture_matches]
+
+    list_fields = (
+        "core_cards",
+        "supporting_cards",
+        "examples",
+        "labs",
+        "visualizations",
+        "extension_visualizations",
+        "figures",
+    )
+    for index, match in enumerate(lecture_matches):
+        end = lecture_matches[index + 1].start() if index + 1 < len(lecture_matches) else len(mapping)
+        section = mapping[match.start():end]
+        item = indexed[index]
+        assert item["mapping_status"] == status
+        assert item["title"] == re.search(r"^    title:\s*(.+)$", section, re.MULTILINE).group(1)
+        for field in list_fields:
+            raw = re.search(rf"^    {field}:\s*\[(.*)\]$", section, re.MULTILINE)
+            expected = [value.strip() for value in raw.group(1).split(",") if value.strip()] if raw else []
+            assert item[field] == expected, f"{item['id']} {field}"
+
+
+def test_lab_catalog_is_formative_and_covers_every_lab():
+    catalog = json.loads((ROOT / "code" / "labs" / "catalog.json").read_text(encoding="utf-8"))
+    assert catalog["schema_version"] == 1
+    assert catalog["default_role"] == "formative"
+    assert catalog["graded_only_when"] == "explicitly-designated-by-course-staff"
+
+    lab_directories = sorted(path.name for path in (ROOT / "code" / "labs").glob("lab-*") if path.is_dir())
+    catalog_ids = [item["id"] for item in catalog["labs"]]
+    assert catalog_ids == lab_directories
+
+    mapping = (ROOT / "docs" / "curriculum" / "lecture-card-map.yaml").read_text(encoding="utf-8")
+    mapped_labs = set(re.findall(r"lab-\d{2}-[a-z0-9-]+", mapping))
+    assert set(catalog_ids) == mapped_labs
+    for item in catalog["labs"]:
+        assert item["role"] == "formative"
+        assert item["lecture_refs"]
+        assert isinstance(item["assignment_links"], list)
+        for link in item["assignment_links"]:
+            assert set(link) == {"assignment", "usage", "note"}
+            assert re.fullmatch(r"HW\d+", link["assignment"])
+
+    assignment_plan = (ROOT / "docs" / "assessment" / "assignment-plan.md").read_text(encoding="utf-8")
+    assert "约 4 次正式计分作业" in assignment_plan
+    assert "不按周布置" in assignment_plan
+    assert "assignment_links" in assignment_plan
+
+
 def test_local_markdown_links_resolve():
     excluded = {"reference", ".venv", "node_modules", ".git", ".pytest_cache"}
     markdown_files = [path for path in ROOT.rglob("*.md") if not excluded & set(path.parts)]
@@ -360,6 +419,9 @@ def test_opencode_learning_surface_is_complete_and_index_first():
     for skill_name in ("guided-learning", "code-lab-coach", "retrieval-review"):
         text = (ROOT / ".opencode" / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
         assert "docs/curriculum/lecture-card-map.yaml" in text, skill_name
+    code_skill = (ROOT / ".opencode" / "skills" / "code-lab-coach" / "SKILL.md").read_text(encoding="utf-8")
+    assert "opencode/lecture-runtime-index.jsonl" in code_skill
+    assert "[CS0502_RESULT]" in code_skill
 
 
 def test_opencode_defaults_to_deny_and_does_not_vendor_global_skills():
@@ -367,8 +429,9 @@ def test_opencode_defaults_to_deny_and_does_not_vendor_global_skills():
     assert config["permission"]["*"] == "deny"
     agent = (ROOT / ".opencode" / "agents" / "course-tutor.md").read_text(encoding="utf-8")
     assert '  "*": deny' in agent
-    assert '"uv run python code/runner.py *": allow' in agent
-    assert '"uv run python code/progress.py *": allow' in agent
+    assert '"uv run python code/runner.py *": allow' not in agent
+    assert '"uv run --no-project python code/progress.py *": allow' in agent
+    assert "本机 OpenCode 不执行课程 Python" in agent
     assert agent.index('  "*": deny') < agent.index("  read:")
 
     assert not (ROOT / ".agents" / "skills").exists()

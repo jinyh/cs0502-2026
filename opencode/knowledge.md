@@ -2,6 +2,10 @@
 
 > 智能体检索入口。本页机器可解析 + 人类可读。先定位教学目标，再按概念选择最少必要卡片；不得把讲次编号和卡片编号视为一一对应。
 
+> 代码快速路径：`/demo` 与 `/lab` 按讲次定位时只检索 [`lecture-runtime-index.jsonl`](lecture-runtime-index.jsonl) 的对应单行；概念学习才按需进入下列完整索引与课程映射。
+>
+> Lab 默认是形成性学习资源，不自动等于作业。公开作业关联见 [`../code/labs/catalog.json`](../code/labs/catalog.json)，最终以教师正式作业说明为准。
+
 ## 21 讲教学序列速查
 
 完整目标、工程场景与主动任务见 [`docs/curriculum/21-lecture-blueprint.md`](../docs/curriculum/21-lecture-blueprint.md)；精确资源映射见 [`lecture-card-map.yaml`](../docs/curriculum/lecture-card-map.yaml)。一讲组合多卡，一卡可以服务多讲。映射中的 `core_cards` 按学习顺序排列；支持卡用于补救，预览卡只建立后续直觉，扩展卡/可视化不属于当讲必做。

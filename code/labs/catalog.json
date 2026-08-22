@@ -1,0 +1,63 @@
+{
+  "schema_version": 1,
+  "default_role": "formative",
+  "graded_only_when": "explicitly-designated-by-course-staff",
+  "labs": [
+    {
+      "id": "lab-01-structures",
+      "title": "典型数据结构",
+      "lecture_refs": ["L04", "L05"],
+      "role": "formative",
+      "assignment_links": []
+    },
+    {
+      "id": "lab-02-graph",
+      "title": "图探索",
+      "lecture_refs": ["L05", "L17"],
+      "role": "formative",
+      "assignment_links": []
+    },
+    {
+      "id": "lab-03-greedy",
+      "title": "贪心与 Dijkstra",
+      "lecture_refs": ["L06"],
+      "role": "formative",
+      "assignment_links": []
+    },
+    {
+      "id": "lab-04-turing-machine",
+      "title": "图灵机",
+      "lecture_refs": ["L07"],
+      "role": "formative",
+      "assignment_links": []
+    },
+    {
+      "id": "lab-05-database",
+      "title": "关系数据库",
+      "lecture_refs": ["L13"],
+      "role": "formative",
+      "assignment_links": []
+    },
+    {
+      "id": "lab-06-clustering",
+      "title": "KMeans 与数据尺度",
+      "lecture_refs": ["L14"],
+      "role": "formative",
+      "assignment_links": []
+    },
+    {
+      "id": "lab-07-machine-learning",
+      "title": "泛化与过拟合",
+      "lecture_refs": ["L18", "L19"],
+      "role": "formative",
+      "assignment_links": []
+    },
+    {
+      "id": "lab-08-language-model",
+      "title": "N-gram 语言模型",
+      "lecture_refs": ["L20"],
+      "role": "formative",
+      "assignment_links": []
+    }
+  ]
+}

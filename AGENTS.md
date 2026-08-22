@@ -63,12 +63,15 @@ ComputerIntroduction/
 ├── opencode/                           # OpenCode 智能体入口
 │   ├── AGENTS.md                      # 行为约束（教学红线 / 不代写作业 / 沙箱安全）
 │   ├── knowledge.md                   # 知识库索引（指向 docs/，机器可解析）
+│   ├── lecture-runtime-index.jsonl    # /demo、/lab 单行快速资源索引
 │   ├── tools.md                       # OpenCode / Qwen / 沙箱意图与约束
 │   └── sandbox-policy.md              # 白名单包 / 超时 / 内存 / 禁网
 ├── .opencode/                         # 学生 agent / skills / slash commands
+├── notebooks/modelscope/              # PAI-DSW 一键环境与课程运行 helper
 ├── code/                               # 代码示例与沙箱
 │   ├── README.md  requirements.txt
 │   ├── examples/                      # 概念演示 Python（映射见 curriculum YAML）
+│   ├── labs/                          # 8 个默认形成性 Lab + catalog.json 可选作业关联
 │   └── visualizations/               # 自包含 HTML 交互可视化（迁移自课程 Demo）
 └── figures/                           # 静态图（SVG 优先）
 ```
@@ -95,9 +98,12 @@ ComputerIntroduction/
 
 - `AGENTS.md` — 行为约束中枢：角色为课程学习助教；红线为不代写作业只给思路、不触碰敏感数据、导论不引入超范围形式化证明、直觉先行；语言中文为主、语气像助教
 - `knowledge.md` — 知识库检索入口：先定位课程讲次与学习目标，再按概念 tags 选择必要卡片、实验和深度专题
+- `lecture-runtime-index.jsonl` — `/demo`、`/lab` 的单行快速索引；由测试保证与课程 YAML 一致，避免每次加载完整映射
 - `tools.md` — 工具配置：写意图与约束，不保存 provider 密钥；本学期以用户缺省 `qwen3.8-max` 为主测模型
-- `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，Linux 内存 512MB 硬限制，macOS 依赖外层配额，运行代码禁网
+- `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，本机 Linux 512MB、ModelScope 2GB，运行代码禁网
 - `.opencode/` — `course-tutor` agent、5 个项目级学习 skill 与 10 个 slash command；优先要求学生预测、追踪、实现和迁移，不直接长问答
+- 学生本机运行 OpenCode，代码统一在 PAI-DSW Quickstart 中运行；两端只通过 helper 指令与 `[CS0502_RESULT]` 摘要手动交接，不建立远程执行 API
+- 全学期原则上约 4 次正式作业，不按周布置；Lab 默认形成性，只有教师正式指定时才通过 `code/labs/catalog.json` 的 `assignment_links` 公开关联作业
 - 全局 skill 属于用户环境，永不复制、链接、提交或推送；仓库只维护 `.opencode/skills/` 中的课程专属 skill
 
 ## AI 时代特色
@@ -106,7 +112,7 @@ ComputerIntroduction/
 
 - **四大思维支柱对齐**：课程蓝图与卡片元数据共同对齐计算思维 / 系统思维 / 数据思维 / 智能思维，支撑 `paths/by-thinking-pillar.md`
 - **前沿进展机制**：`docs/frontier/` 双层结构——静态写底层（带一手来源，只有 `review_status: approved` 才称课程组批准基线）+ 智能体联网增量区（每条标注检索日期与来源 URL，未经审校，学生批判性阅读）。仅对高变动 AI 主题建前沿页
-- **交互式智能体**：OpenCode 加载知识库做问答、跑代码沙箱、联网补充最新前沿，超越静态阅读
+- **交互式智能体**：本机 OpenCode 加载知识库做主动学习与前沿检索，PAI-DSW 提供一致代码环境，通过预测—云端验证—复盘闭环超越静态阅读
 - **跨学科桥接**：卡片「直觉类比」与「跨学科联系」字段主动关联医学 / 物理 / 生物，适配非 CS 专业背景
 
 ## 写作规范
@@ -200,6 +206,7 @@ last_reviewed: YYYY-MM-DD
 - 2 个前沿注记页（`docs/frontier/`：LLM / CV，双层机制）
 - 多路径索引（`docs/paths/` 五页）与 `glossary.md`
 - 18 个概念示例、8 个核心实验、30 张 SVG 配图与跨平台 runner
+- PAI-DSW Quickstart Notebook（持久化环境、example/Lab/可视化 helper 与学生工作备份）
 - OpenCode 配置全套（`course-tutor` agent / 5 skills / 10 slash commands）
 - `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
 

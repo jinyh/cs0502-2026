@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import os
 from pathlib import Path
 import re
 import resource
@@ -25,6 +26,22 @@ ALLOWED_ROOTS = (EXAMPLES_ROOT, LABS_ROOT, STUDENT_WORK_ROOT)
 ALLOWED_IMPORTS = {"collections", "heapq", "itertools", "math", "statistics", "sqlite3", "pathlib", "numpy", "pandas", "sklearn", "matplotlib", "networkx"}
 BLOCKED_CALLS = {"eval", "exec", "compile", "__import__", "open", "breakpoint"}
 MAX_OUTPUT_CHARS = 64 * 1024
+RUNTIME_PROFILES = {
+    "local": {"default_memory_mb": 512, "max_memory_mb": 512},
+    "modelscope": {"default_memory_mb": 2048, "max_memory_mb": 2048},
+}
+
+
+def runtime_profile() -> str:
+    profile = os.environ.get("CS0502_RUNTIME", "local").strip().lower()
+    if profile not in RUNTIME_PROFILES:
+        allowed = ", ".join(sorted(RUNTIME_PROFILES))
+        raise ValueError(f"未知运行环境 CS0502_RUNTIME={profile!r}；允许值: {allowed}")
+    return profile
+
+
+def memory_settings():
+    return RUNTIME_PROFILES[runtime_profile()]
 
 
 def display_path(path: Path):
@@ -74,12 +91,21 @@ def limits(memory_mb: int, cpu_seconds: int):
 
 
 def sandbox_environment():
-    return {
-        "PATH": "/usr/bin:/bin",
+    environment = {
+        "PATH": f"{Path(sys.executable).parent}:/usr/bin:/bin",
         "MPLBACKEND": "Agg",
         "PYTHONHASHSEED": "0",
         "PYTEST_DISABLE_PLUGIN_AUTOLOAD": "1",
+        "OMP_NUM_THREADS": "1",
+        "OPENBLAS_NUM_THREADS": "1",
+        "MKL_NUM_THREADS": "1",
+        "NUMEXPR_NUM_THREADS": "1",
     }
+    # 托管 Notebook 镜像中的本地动态库可能依赖该路径；不继承其他环境变量，
+    # 尤其不把 provider 凭据或 PYTHONPATH 传入学生代码。
+    if "LD_LIBRARY_PATH" in os.environ:
+        environment["LD_LIBRARY_PATH"] = os.environ["LD_LIBRARY_PATH"]
+    return environment
 
 
 def run_process(command, cwd: Path, timeout_seconds: int, memory_mb: int):
@@ -95,7 +121,8 @@ def run_process(command, cwd: Path, timeout_seconds: int, memory_mb: int):
     )
 
 
-def run(path: Path, timeout_seconds: int = 30, memory_mb: int = 512) -> subprocess.CompletedProcess[str]:
+def run(path: Path, timeout_seconds: int = 30, memory_mb: int | None = None) -> subprocess.CompletedProcess[str]:
+    memory_mb = memory_settings()["default_memory_mb"] if memory_mb is None else memory_mb
     validate_source(path)
     return run_process(
         [sys.executable, "-I", str(path)],
@@ -131,7 +158,8 @@ def initialize_lab(lab_id: str) -> Path:
     return destination
 
 
-def test_lab(lab_id: str, timeout_seconds: int = 30, memory_mb: int = 512):
+def test_lab(lab_id: str, timeout_seconds: int = 30, memory_mb: int | None = None):
+    memory_mb = memory_settings()["default_memory_mb"] if memory_mb is None else memory_mb
     lab = lab_directory(lab_id)
     solution = student_solution(lab_id)
     if not solution.is_file():
@@ -163,8 +191,14 @@ def truncate_output(text: str) -> str:
 
 
 def add_limits(parser):
+    settings = memory_settings()
     parser.add_argument("--timeout", type=int, default=30, choices=range(1, 31))
-    parser.add_argument("--memory-mb", type=int, default=512, choices=range(64, 513))
+    parser.add_argument(
+        "--memory-mb",
+        type=int,
+        default=settings["default_memory_mb"],
+        choices=range(64, settings["max_memory_mb"] + 1),
+    )
 
 
 def argument_parser():
@@ -190,8 +224,8 @@ def main(argv=None) -> int:
     # 兼容旧入口：runner.py <path> 等价于 runner.py run <path>。
     if raw_arguments and raw_arguments[0] not in {"run", "lab"}:
         raw_arguments.insert(0, "run")
-    arguments = argument_parser().parse_args(raw_arguments)
     try:
+        arguments = argument_parser().parse_args(raw_arguments)
         if arguments.command == "run":
             path = validate_path(arguments.path)
             result = run(path, arguments.timeout, arguments.memory_mb)
