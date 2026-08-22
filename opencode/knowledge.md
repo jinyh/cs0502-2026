@@ -131,9 +131,11 @@
 ## 检索提示（给智能体）
 
 - 学生按讲次学习 → 先查“21 讲教学序列速查”和蓝图中的可观察目标，再按 tags 选择 1–3 张必要概念卡；不要按相同编号猜卡片。
+- 学生要代码或演示 → 从 `lecture-card-map.yaml` 依次选择最小 example、interactive visualization、figure 或卡片主动任务；先预测再验证。
 - 学生问某概念 → 先匹配 tags，只读当前卡片与必要前置；加载 `guided-learning`，先让学生预测或追踪。
 - 卡片内容不足 → 可以给简短的模型生成解释或新例子，但必须标记“模型补充，非课程组审校卡片”，不得声称模型会自动补全或持久更新知识库。
 - 学生要练习/模拟 → 读 `docs/assessment/blueprint.yaml`；未批准时只能称“通用课程练习”。
 - 学生问“最新/进展” → 加载 `frontier-literacy`，经同意联网，草稿只写 `student-work/`。
 - 学生要深入 → 引导到 `deep/` 对应专题，而非自创内容。
 - 学生问跨学科 → 读卡片“工程桥接”+ `paths/by-discipline-bridge`。
+- 学生要持续复习 → 先征得同意，再用 `code/progress.py` 维护匿名本地记录；拒绝记录时仍可进行当前会话学习。

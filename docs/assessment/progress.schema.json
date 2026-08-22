@@ -2,9 +2,18 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "title": "CS0502 本地学习进度",
   "type": "object",
-  "required": ["schema_version", "cards", "labs"],
+  "required": ["schema_version", "consent", "cards", "labs"],
   "properties": {
-    "schema_version": {"const": 1},
+    "schema_version": {"const": 2},
+    "consent": {
+      "type": "object",
+      "required": ["local_learning_record", "recorded_at"],
+      "properties": {
+        "local_learning_record": {"const": true},
+        "recorded_at": {"type": "string", "format": "date-time"}
+      },
+      "additionalProperties": false
+    },
     "current_card": {"type": ["string", "null"]},
     "cards": {
       "type": "object",
@@ -18,6 +27,7 @@
           "confidence": {"type": ["integer", "null"], "minimum": 1, "maximum": 5},
           "error_tags": {"type": "array", "items": {"type": "string"}},
           "last_reviewed": {"type": ["string", "null"], "format": "date-time"},
+          "next_review_at": {"type": ["string", "null"], "format": "date-time"},
           "unhinted_successes": {"type": "integer", "minimum": 0}
         },
         "additionalProperties": false

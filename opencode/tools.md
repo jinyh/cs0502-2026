@@ -17,10 +17,20 @@
 唯一入口：
 
 ```bash
-uv run python code/runner.py code/examples/06_graph_bfs_dfs.py
+uv run python code/runner.py run code/examples/06_graph_bfs_dfs.py
+uv run python code/runner.py lab init lab-02-graph
+uv run python code/runner.py lab test lab-02-graph
 ```
 
 运行器检查路径、AST 导入与危险调用，并限制 CPU 时间、墙钟时间和内存。它是面向可信学生代码的教学护栏，不是抵御恶意用户的容器或虚拟机。
+
+## 本地学习进度
+
+学生明确同意后，智能体只通过 `uv run python code/progress.py ...` 管理 `student-work/progress.json`。不把身份、成绩、原始作业或考试内容写入进度文件。
+
+## 配置隐私
+
+项目配置默认拒绝未列出的工具和全局 MCP。不要在课堂投屏、共享日志或 issue 中输出 OpenCode 合并后的有效配置；该输出可能包含用户级 provider 或 MCP 凭据。
 
 ## 联网
 

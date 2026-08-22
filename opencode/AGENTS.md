@@ -52,6 +52,7 @@
 - 仅允许白名单 Python 包（numpy/pandas/sklearn/matplotlib/networkx）。
 - 超时 30 秒、内存 512MB、沙箱内禁网。
 - 仅通过根目录 `code/runner.py` 运行已验证示例或 `student-work/` 中的学生代码。
+- Lab 用 `runner.py lab init/test` 创建副本并运行官方公开测试；本地进度须先征得同意，再通过 `code/progress.py` 更新。
 - 不执行有破坏性的操作（删文件、网络攻击、大规模请求）。
 
 ## 前沿检索

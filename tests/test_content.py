@@ -71,7 +71,7 @@ def test_all_concept_cards_are_reviewable_and_stay_lightweight():
     for card in ALL_CARDS:
         text = card.read_text(encoding="utf-8")
         assert {"title", "status", "tags"} <= frontmatter_fields(text), card
-        assert "status: needs-review" in text, card
+        assert re.search(r"^status: (needs-review|stable)$", text, re.MULTILINE), card
         assert len(text.splitlines()) <= 300, card
         assert "## 一句话定位" in text, card
 
@@ -140,6 +140,7 @@ def test_lecture_card_map_covers_21_lectures_and_resolves_resources():
     mapping = (ROOT / "docs" / "curriculum" / "lecture-card-map.yaml").read_text(encoding="utf-8")
     lecture_matches = list(re.finditer(r"^  - id: (L\d{2})$", mapping, re.MULTILINE))
     assert [match.group(1) for match in lecture_matches] == [f"L{number:02d}" for number in range(1, 22)]
+    assert re.search(r"^schema_version:\s*2$", mapping, re.MULTILINE)
     assert re.search(r"^status:\s*proposal$", mapping, re.MULTILINE)
 
     card_stems = {card.stem for card in ALL_CARDS}
@@ -148,6 +149,7 @@ def test_lecture_card_map_covers_21_lectures_and_resolves_resources():
         ("supporting_cards", ROOT / "docs" / "cards", ".md"),
         ("examples", ROOT / "code" / "examples", ""),
         ("labs", ROOT / "code" / "labs", ""),
+        ("visualizations", ROOT / "code" / "visualizations", ""),
         ("figures", ROOT / "figures", ""),
     ):
         for raw_items in re.findall(rf"^    {field}:\s*\[(.*)\]$", mapping, re.MULTILINE):
@@ -189,8 +191,29 @@ def test_svg_assets_are_accessible_and_self_contained():
 
 def test_assessment_files_are_explicitly_unapproved_and_schema_is_valid():
     blueprint = (ROOT / "docs" / "assessment" / "blueprint.yaml").read_text(encoding="utf-8")
-    assert re.search(r"^status:\s*template\s*$", blueprint, re.MULTILINE)
-    json.loads((ROOT / "docs" / "assessment" / "progress.schema.json").read_text(encoding="utf-8"))
+    status = re.search(r"^status:\s*(\S+)\s*$", blueprint, re.MULTILINE)
+    assert status
+    assert status.group(1) in {"template", "approved"}
+    if status.group(1) == "approved":
+        assert not re.search(r":\s*(?:null|TBD)\s*$", blueprint, re.MULTILINE)
+    progress_schema = json.loads((ROOT / "docs" / "assessment" / "progress.schema.json").read_text(encoding="utf-8"))
+    assert progress_schema["properties"]["schema_version"]["const"] == 2
+
+
+def test_student_guide_covers_commands_and_code_catalog():
+    commands = {path.stem for path in (ROOT / ".opencode" / "commands").glob("*.md")}
+    guide = (ROOT / "docs" / "student-guide.md").read_text(encoding="utf-8")
+    for command in commands:
+        assert f"`/{command}" in guide, command
+
+    examples = {path.name for path in (ROOT / "code" / "examples").glob("*.py")}
+    code_readme = (ROOT / "code" / "README.md").read_text(encoding="utf-8")
+    assert len(examples) == 18
+    for example in examples:
+        assert f"`{example}`" in code_readme, example
+
+    assert len(list((ROOT / "code" / "labs").glob("lab-*"))) == 8
+    assert len(list((ROOT / "code" / "visualizations").glob("*.html"))) == 5
 
 
 def test_no_plaintext_provider_credentials_in_tracked_course_files():
@@ -210,9 +233,59 @@ def test_no_plaintext_provider_credentials_in_tracked_course_files():
 
 
 def test_opencode_learning_surface_is_complete_and_index_first():
-    assert len(list((ROOT / ".opencode" / "commands").glob("*.md"))) == 8
+    commands = {path.stem for path in (ROOT / ".opencode" / "commands").glob("*.md")}
+    assert commands == {
+        "start",
+        "learn",
+        "demo",
+        "practice",
+        "lab",
+        "review",
+        "mock",
+        "project",
+        "exam-notes",
+        "frontier",
+    }
     skills = sorted((ROOT / ".opencode" / "skills").glob("*/SKILL.md"))
     assert len(skills) == 5
+    for skill in skills:
+        text = skill.read_text(encoding="utf-8")
+        name = re.search(r"^name:\s*(.+)$", text, re.MULTILINE)
+        description = re.search(r"^description:\s*(.+)$", text, re.MULTILINE)
+        assert name and name.group(1).strip() == skill.parent.name, skill
+        assert description and description.group(1).strip(), skill
+
     assessment_skill = (ROOT / ".opencode" / "skills" / "assessment-practice" / "SKILL.md").read_text(encoding="utf-8")
     assert "先读取 `opencode/knowledge.md`" in assessment_skill
-    assert "不得根据编号猜测文件名" in assessment_skill
+    assert "docs/curriculum/lecture-card-map.yaml" in assessment_skill
+    for question_type in ("概念比较", "状态追踪", "代码调试", "工程迁移"):
+        assert question_type in assessment_skill
+    for skill_name in ("guided-learning", "code-lab-coach", "retrieval-review"):
+        text = (ROOT / ".opencode" / "skills" / skill_name / "SKILL.md").read_text(encoding="utf-8")
+        assert "docs/curriculum/lecture-card-map.yaml" in text, skill_name
+
+
+def test_opencode_defaults_to_deny_and_does_not_vendor_global_skills():
+    config = json.loads((ROOT / "opencode.json").read_text(encoding="utf-8"))
+    assert config["permission"]["*"] == "deny"
+    agent = (ROOT / ".opencode" / "agents" / "course-tutor.md").read_text(encoding="utf-8")
+    assert '  "*": deny' in agent
+    assert '"uv run python code/runner.py *": allow' in agent
+    assert '"uv run python code/progress.py *": allow' in agent
+    assert agent.index('  "*": deny') < agent.index("  read:")
+
+    assert not (ROOT / ".agents" / "skills").exists()
+    assert not (ROOT / ".claude" / "skills").exists()
+    for skill_path in (ROOT / ".opencode" / "skills").rglob("*"):
+        assert not skill_path.is_symlink(), skill_path
+
+    forbidden_reference = re.compile(r"(?:/Users/[^/]+|~)/(?:\.agents|\.codex|\.config/opencode)/skills")
+    excluded = {"reference", "LectureNotes", ".git", ".venv", "node_modules", ".pytest_cache"}
+    for path in ROOT.rglob("*"):
+        if not path.is_file() or excluded & set(path.parts):
+            continue
+        try:
+            text = path.read_text(encoding="utf-8")
+        except UnicodeDecodeError:
+            continue
+        assert not forbidden_reference.search(text), path

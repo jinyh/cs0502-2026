@@ -9,11 +9,12 @@
 - `numpy` — 数值计算
 - `pandas` — 数据处理
 - `scikit-learn`（`sklearn`）— 机器学习
-- `matplotlib` — 绘图（输出存到 `figures/`）
+- `matplotlib` — 绘图（学生输出存到 `student-work/`）
 - `networkx` — 图算法
 - 标准库白名单：`collections`、`heapq`、`itertools`、`math`、`statistics`、`sqlite3`、`pathlib`
 
 > 不在白名单的包需向学生说明风险并拒绝，或引导学生在本地环境自行安装运行。
+> `pytest` 只由运行器加载仓库内的只读公开测试，不属于学生代码导入白名单。
 
 ## 资源限制
 
@@ -33,12 +34,14 @@
 ## 优先级
 
 1. 优先运行 `code/examples/` 中已验证示例——这些已确认安全且可运行。
-2. 学生自写代码：先 review 是否触发禁止项，再运行。
-3. 触发禁止项 → 解释为何不能运行，建议安全改写或本地运行。
+2. Lab 通过 `code/runner.py lab init/test` 创建副本并调用只读公开测试。
+3. 其他学生自写代码：先 review 是否触发禁止项，再运行。
+4. 触发禁止项 → 解释为何不能运行，建议安全改写或本地运行。
 
 ## 输出
 
 - 控制台输出直接回给学生。
+- 超过约 64K 字符的控制台输出在返回对话前截断。
 - matplotlib 图保存到 `student-work/`，回相对路径。
 - 不在对话中嵌入大段二进制。
 

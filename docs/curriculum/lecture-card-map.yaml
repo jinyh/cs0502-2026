@@ -1,4 +1,4 @@
-schema_version: 1
+schema_version: 2
 status: proposal
 course: CS0502
 card_model: many-to-many
@@ -13,6 +13,7 @@ lectures:
     supporting_cards: [responsible-ai-systems]
     examples: []
     labs: []
+    visualizations: []
     figures: []
     assessment_tags: [课程地图, 场景建模, 人机协作]
   - id: L02
@@ -21,6 +22,7 @@ lectures:
     supporting_cards: [ext-scientific-computing]
     examples: [02_data_representation.py]
     labs: []
+    visualizations: []
     figures: [02-data-representation.svg]
     assessment_tags: [表示转换, 位模式解释, 误差诊断]
   - id: L03
@@ -29,6 +31,7 @@ lectures:
     supporting_cards: [ext-logic-boolean, reproducible-computing]
     examples: []
     labs: []
+    visualizations: []
     figures: [03-language-pipeline.svg]
     assessment_tags: [执行追踪, 接口设计, 测试构造]
   - id: L04
@@ -37,6 +40,7 @@ lectures:
     supporting_cards: [ext-complexity]
     examples: [04_linear_list.py, 05_structures.py]
     labs: [lab-01-structures]
+    visualizations: [circular_queue.html, stack_expr.html]
     figures: [04-linear-storage.svg, 05-stack-queue-recursion.svg]
     assessment_tags: [操作追踪, 结构选择, 哈希冲突]
   - id: L05
@@ -45,6 +49,7 @@ lectures:
     supporting_cards: [stack-queue]
     examples: [05_structures.py, 06_graph_bfs_dfs.py]
     labs: [lab-01-structures, lab-02-graph]
+    visualizations: [Hanoi.html, binary_heap.html]
     figures: [05-tree-heap.svg, 06-bfs-dfs.svg]
     assessment_tags: [递归追踪, 堆操作, 图遍历]
   - id: L06
@@ -53,6 +58,7 @@ lectures:
     supporting_cards: [ext-search-hashing, ext-recursion-divide-conquer, 07-greedy-algorithm]
     examples: [06_algorithm_strategies.py, 07_greedy_dijkstra.py]
     labs: [lab-03-greedy]
+    visualizations: []
     figures: [05-complexity-growth.svg, 06-algorithm-strategies.svg, 07-greedy-dijkstra.svg]
     assessment_tags: [复杂度分析, 策略选择, 反例构造]
   - id: L07
@@ -61,6 +67,7 @@ lectures:
     supporting_cards: [ext-complexity, algorithm-strategies]
     examples: [08_turing_machine.py]
     labs: [lab-04-turing-machine]
+    visualizations: [TuringMachine.html]
     figures: [08-turing-transition.svg]
     assessment_tags: [状态追踪, 边界辨析, 验证设计]
   - id: L08
@@ -69,6 +76,7 @@ lectures:
     supporting_cards: [data-representation, ext-logic-boolean]
     examples: [08_cache_locality.py]
     labs: []
+    visualizations: []
     figures: [09-computer-os-layers.svg]
     assessment_tags: [指令追踪, 局部性, 架构选择]
   - id: L09
@@ -77,6 +85,7 @@ lectures:
     supporting_cards: [computer-architecture, stack-queue]
     examples: [09_interleavings.py]
     labs: []
+    visualizations: []
     figures: [09-process-concurrency.svg]
     assessment_tags: [进程状态, 并发交错, 资源安全]
   - id: L10
@@ -85,6 +94,7 @@ lectures:
     supporting_cards: [operating-systems]
     examples: [10_retry_idempotency.py]
     labs: []
+    visualizations: []
     figures: [11-network-encapsulation.svg, 10-distributed-request.svg]
     assessment_tags: [分层追踪, API设计, 部分失败]
   - id: L11
@@ -93,6 +103,7 @@ lectures:
     supporting_cards: [ext-scientific-computing]
     examples: []
     labs: []
+    visualizations: []
     figures: [11-reproducibility-chain.svg]
     assessment_tags: [测试设计, 版本追踪, 证据审查]
   - id: L12
@@ -101,6 +112,7 @@ lectures:
     supporting_cards: [operating-systems, distributed-systems]
     examples: []
     labs: []
+    visualizations: []
     figures: [12-public-key-signature.svg, 12-ai-threat-model.svg]
     assessment_tags: [威胁建模, 机制选择, 工具权限]
   - id: L13
@@ -109,6 +121,7 @@ lectures:
     supporting_cards: [ext-search-hashing, distributed-systems]
     examples: [13_database.py]
     labs: [lab-05-database]
+    visualizations: []
     figures: [13-relational-query.svg]
     assessment_tags: [模式设计, SQL追踪, 查询分析]
   - id: L14
@@ -117,6 +130,7 @@ lectures:
     supporting_cards: [13-database, 14-data-mining, reproducible-computing]
     examples: [14_clustering.py]
     labs: [lab-06-clustering]
+    visualizations: []
     figures: [14-data-lifecycle.svg, 14-clustering-comparison.svg]
     assessment_tags: [数据审计, 质量诊断, 治理设计]
   - id: L15
@@ -125,6 +139,7 @@ lectures:
     supporting_cards: [14-data-mining, ext-scientific-computing]
     examples: [15_bayes_base_rate.py]
     labs: []
+    visualizations: []
     figures: [15-base-rate.svg]
     assessment_tags: [概率计算, 证据解释, 结论边界]
   - id: L16
@@ -133,6 +148,7 @@ lectures:
     supporting_cards: [probability-uncertainty]
     examples: [15_visualization.py]
     labs: []
+    visualizations: []
     figures: [15-chart-selection.svg, 16-human-ai-loop.svg]
     assessment_tags: [图表诊断, 交互设计, 无障碍改进]
   - id: L17
@@ -141,6 +157,7 @@ lectures:
     supporting_cards: [06-graph-exploration, algorithm-strategies]
     examples: [06_graph_bfs_dfs.py, 07_greedy_dijkstra.py]
     labs: [lab-02-graph]
+    visualizations: []
     figures: [06-bfs-dfs.svg, 07-greedy-dijkstra.svg]
     assessment_tags: [状态建模, 搜索追踪, Agent设计]
   - id: L18
@@ -149,6 +166,7 @@ lectures:
     supporting_cards: [data-lifecycle-governance, probability-uncertainty, 19-recommend-system]
     examples: [17_generalization.py, 18_model_evaluation.py]
     labs: [lab-07-machine-learning]
+    visualizations: []
     figures: [17-neural-learning.svg, 18-evaluation-pipeline.svg]
     assessment_tags: [泛化诊断, 指标选择, 漂移监测]
   - id: L19
@@ -157,6 +175,7 @@ lectures:
     supporting_cards: [18-computer-vision, 20-speech-recognition, 21-llm]
     examples: [17_generalization.py, 21_ngram.py]
     labs: [lab-07-machine-learning]
+    visualizations: []
     figures: [17-neural-learning.svg, 18-convolution.svg, 20-rnn-asr.svg]
     assessment_tags: [模型追踪, 架构比较, 模态评价]
   - id: L20
@@ -165,6 +184,7 @@ lectures:
     supporting_cards: [ext-web-technologies, distributed-systems, ai-security, hci-accessibility]
     examples: [20_rag_pipeline.py, 21_ngram.py]
     labs: [lab-08-language-model]
+    visualizations: []
     figures: [20-rag-agent-loop.svg, 21-language-model-evolution.svg]
     assessment_tags: [系统追踪, 引用核验, 工具评价]
   - id: L21
@@ -173,5 +193,6 @@ lectures:
     supporting_cards: [computability-limits, reproducible-computing, data-lifecycle-governance, ml-evaluation, ai-security, hci-accessibility, rag-tool-agents]
     examples: []
     labs: []
+    visualizations: []
     figures: [21-responsible-ai-system.svg]
     assessment_tags: [综合设计, 证据论证, 风险评审, 责任分配]

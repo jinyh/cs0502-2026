@@ -97,7 +97,8 @@ ComputerIntroduction/
 - `knowledge.md` — 知识库检索入口：先定位课程讲次与学习目标，再按概念 tags 选择必要卡片、实验和深度专题
 - `tools.md` — 工具配置：写意图与约束，不保存 provider 密钥；本学期以用户缺省 `qwen3.8-max` 为主测模型
 - `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，Linux 内存 512MB 硬限制，macOS 依赖外层配额，运行代码禁网
-- `.opencode/` — `course-tutor` agent、5 个学习 skill 与 8 个 slash command；优先要求学生预测、追踪、实现和迁移，不直接长问答
+- `.opencode/` — `course-tutor` agent、5 个项目级学习 skill 与 10 个 slash command；优先要求学生预测、追踪、实现和迁移，不直接长问答
+- 全局 skill 属于用户环境，永不复制、链接、提交或推送；仓库只维护 `.opencode/skills/` 中的课程专属 skill
 
 ## AI 时代特色
 

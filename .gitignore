@@ -48,3 +48,6 @@ opencode/local/
 
 # === Claude/Agent 本地状态 ===
 .claude/settings.local.json
+# 本项目只分发 .opencode/skills/；禁止复制兼容/全局 skill 到仓库
+.agents/skills/
+.claude/skills/
