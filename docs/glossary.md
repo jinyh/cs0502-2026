@@ -25,7 +25,7 @@
 | 队列 | Queue | FIFO 线性结构 |
 | 顺序表 | Sequential List | 用连续存储位置实现的线性表 |
 | 链表 | Linked List | 指针串接的非连续结构 |
-| 树 | Tree | 表达层次关系的无环结构 |
+| 树 | Tree | 图论中指连通无环图；指定根后可表达层次关系 |
 | 二叉堆 | Binary Heap | 满足堆序的完全二叉树，常用数组实现优先队列 |
 | 递归 | Recursion | 问题或过程调用自身，必须有基例并向其推进 |
 | 广度优先搜索 | Breadth-First Search, BFS | 逐层扩展，用队列 |
@@ -33,7 +33,7 @@
 | 哈希表 | Hash Table | 在合适哈希函数与负载因子下支持平均常数时间查找 |
 | 时间复杂度 | Time Complexity | 输入规模增长时运行步骤数量级的变化 |
 | 贪心算法 | Greedy Algorithm | 每步局部最优 |
-| 最优子结构 | Optimal Substructure | 子问题最优→整体最优 |
+| 最优子结构 | Optimal Substructure | 一个问题的最优解可由其相关子问题的最优解组合得到；是否成立需证明 |
 | 分治 | Divide-and-Conquer | 分解为较独立子问题，求解后合并 |
 | 动态规划 | Dynamic Programming | 复用重叠子问题结果的算法策略 |
 | 循环不变量 | Loop Invariant | 每次迭代前后保持成立、用于连接局部步骤与整体正确性的性质 |
@@ -69,7 +69,7 @@
 | 关系代数 | Relational Algebra | 以选择、投影、连接等运算组合关系查询 |
 | 数据库管理系统 | Database Management System, DBMS | 管理存储、查询、事务、并发与恢复的软件系统 |
 | 结构化查询语言 | SQL | 声明式数据库查询语言 |
-| 事务 | Transaction | ACID 不可分割操作组 |
+| 事务 | Transaction | 作为一个逻辑工作单元执行的一组操作；数据库可用 ACID 等性质约束其行为 |
 | 关联规则 | Association Rule | 「买 A 也买 B」式共现 |
 | 聚类 | Clustering | 无监督分组 |
 | 数值稳定性 | Numerical Stability | 算法不会无谓放大输入误差与舍入误差 |
@@ -85,7 +85,7 @@
 | 监督学习 | Supervised Learning | 带标签学映射 |
 | 无监督学习 | Unsupervised Learning | 无标签找结构 |
 | 强化学习 | Reinforcement Learning, RL | 从反馈信号学习策略 |
-| 过拟合 | Overfitting | 记住噪声，泛化差 |
+| 过拟合 | Overfitting | 模型过度贴合训练数据中的偶然、噪声或特有模式，导致未见数据表现下降 |
 | 泛化 | Generalization | 模型在未见数据上的有效表现 |
 | 分布漂移 | Distribution Shift | 部署数据或输入输出关系相对训练/验证条件发生变化 |
 | 校准 | Calibration | 预测概率与相应事件实际频率的一致程度 |
@@ -98,9 +98,9 @@
 | Transformer | Transformer | 以注意力为核心处理序列和多模态表示的神经网络架构 |
 | 词元 | Token | 模型处理文本时使用的离散单位，可是字、词或子词片段 |
 | 大语言模型 | Large Language Model, LLM | 大规模预训练语言模型 |
-| 对齐 | Alignment | 让模型有用/诚实/无害 |
+| 对齐 | Alignment | 使模型或 AI 系统的可观察行为更符合指定意图、偏好、规范与安全约束；目标之间可能冲突 |
 | 基于人类反馈的强化学习 | RLHF | 用人类偏好作奖励优化 |
-| 幻觉 | Hallucination | 生成看似合理但错误的内容 |
+| 幻觉 | Hallucination | 生成流畅但错误、无依据或无法由给定证据支持的内容 |
 | 智能体 | Agent | 感知-决策-行动的闭环 |
 | 检索增强生成 | Retrieval-Augmented Generation, RAG | 检索外部知识拼入上下文 |
 | 提示注入 | Prompt Injection | 用不可信内容诱导模型偏离系统目标或越权行动 |
@@ -118,5 +118,5 @@
 | 量子比特 | Qubit | 叠加态信息单元 |
 | 叠加 | Superposition | 同时含 0/1 成分 |
 | 纠缠 | Entanglement | 不可分离的联合态 |
-| 退相干 | Decoherence | 环境致量子态塌缩 |
+| 退相干 | Decoherence | 量子系统与环境相互作用导致相位相干性衰减，不宜简单等同于测量塌缩 |
 | 后量子密码学 | Post-Quantum Cryptography, PQC | 抗量子攻击的密码 |

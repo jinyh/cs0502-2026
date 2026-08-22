@@ -13,10 +13,13 @@ class ExperimentService:
 
     def submit_idempotently(self, request_id, payload):
         if request_id in self.processed_requests:
-            return self.processed_requests[request_id]
+            original_payload, job_id = self.processed_requests[request_id]
+            if payload != original_payload:
+                raise ValueError("同一 request_id 不能对应不同 payload")
+            return job_id
         job_id = len(self.jobs) + 1
         self.jobs.append((job_id, payload))
-        self.processed_requests[request_id] = job_id
+        self.processed_requests[request_id] = (payload, job_id)
         return job_id
 
 

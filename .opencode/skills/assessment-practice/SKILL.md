@@ -12,11 +12,12 @@ metadata:
 
 ## 使用蓝图
 
-先读取 `opencode/knowledge.md`。学生给出讲次或范围时，再读取 `docs/curriculum/lecture-card-map.yaml`，用 `core_cards` 与 `assessment_tags` 解析真实卡片；随后读取 `docs/assessment/blueprint.yaml`。不得根据编号猜文件，也不得为找文件调用 shell。只有蓝图 `status: approved`，且 owner、批准日期、总时间、总分、每类题数/分值/时间和全部主题权重均已填写，才视为可校准；其他状态明确称为“通用课程练习”，不得声称与正式课表或考试等难。绝不读取 `reference/`，也不要求学生提供历年或当前考题。
+先读取 `opencode/knowledge.md`。学生给出讲次或范围时，再读取 `docs/curriculum/lecture-card-map.yaml`，按顺序用 `core_cards` 与 `assessment_tags` 解析真实卡片；随后读取 `docs/assessment/blueprint.yaml`。不得根据编号猜文件，也不得为找文件调用 shell。只有蓝图 `status: approved`，且 course group owner、批准日期、总时间、总分、每类题数/分值/时间、主题权重和校准证据均已填写，才视为可校准；其他状态明确称为“通用课程练习”，不得声称与正式课表或考试等难。绝不读取 `reference/`，也不要求学生提供历年或当前考题。
 
 ## 出题约束
 
-- 题目必须来自 cards 的学习目标和 `assessment_tags`，但改变数字、结构、工程情境和干扰项。
+- 题目必须来自 cards 的学习目标和 `assessment_tags`，并遵守蓝图 `difficulty_levels` 与 `variant_rules`：保持认知操作，但改变结构或工程情境，不能只换数字。
+- 每道变式使用独立 rubric；不得复用来源题面、答案或可识别情境。
 - 优先考解释、追踪、调试和迁移，避免只考术语背诵。
 - 单项练习一次一题；模拟题先给题面、总分和建议时间，不给答案。
 - 为每题内部建立评分点与常见错误，但在学生作答前不展示。

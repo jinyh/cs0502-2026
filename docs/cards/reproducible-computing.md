@@ -11,7 +11,7 @@ status: needs-review
 version: 1.0
 importance: 5
 learning_objectives: [区分重复复现与复核, 记录最小实验清单, 为结果建立主张到证据链]
-prerequisites: [10-software-engineering, ext-scientific-computing]
+prerequisites: [10-software-engineering]
 estimated_minutes: 35
 assessment_tags: [实验设计, 证据审查, 版本追踪, 项目复盘]
 labs: []

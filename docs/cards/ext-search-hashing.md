@@ -11,7 +11,7 @@ status: needs-review
 version: 1.0
 importance: 3
 learning_objectives: [比较线性与二分搜索, 追踪哈希冲突处理, 根据查询类型选择结构]
-prerequisites: [04-data-structure-basics, ext-complexity]
+prerequisites: [04-data-structure-basics]
 estimated_minutes: 35
 assessment_tags: [搜索追踪, 哈希计算, 冲突处理, 结构选择]
 labs: []

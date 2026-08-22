@@ -1,16 +1,20 @@
-schema_version: 2
+schema_version: 3
 status: proposal
 course: CS0502
 card_model: many-to-many
 notes:
   - 讲次编号是教学序列，卡片文件名是概念标识，两者不得按编号猜测。
-  - core_cards 为当讲必读；supporting_cards 按诊断结果与场景选择。
+  - core_cards 按建议学习顺序排列；supporting_cards 只用于补救或复习，不引入新的必备先修。
+  - preview_cards 用于建立后续主题直觉；extension_cards 为选学延伸，均不计入当讲必读负担。
+  - estimated_minutes 是单卡完整学习估计，不应直接相加解释为正式课时。
   - status 改为 approved 前，不宣称这是已生效的正式课表。
 lectures:
   - id: L01
     title: 计算机科学、四种思维与人机协作
     core_cards: [01-welcome, 02-intro-to-cs]
-    supporting_cards: [responsible-ai-systems]
+    supporting_cards: []
+    preview_cards: [responsible-ai-systems]
+    extension_cards: []
     examples: []
     labs: []
     visualizations: []
@@ -18,8 +22,10 @@ lectures:
     assessment_tags: [课程地图, 场景建模, 人机协作]
   - id: L02
     title: 数据表示、编码、布尔逻辑与数值误差
-    core_cards: [data-representation, ext-logic-boolean]
-    supporting_cards: [ext-scientific-computing]
+    core_cards: [ext-logic-boolean, data-representation]
+    supporting_cards: []
+    preview_cards: []
+    extension_cards: [ext-scientific-computing]
     examples: [02_data_representation.py]
     labs: []
     visualizations: []
@@ -28,7 +34,9 @@ lectures:
   - id: L03
     title: 程序、语言、抽象与问题求解
     core_cards: [03-programming-language]
-    supporting_cards: [ext-logic-boolean, reproducible-computing]
+    supporting_cards: [ext-logic-boolean]
+    preview_cards: [reproducible-computing]
+    extension_cards: []
     examples: []
     labs: []
     visualizations: []
@@ -37,7 +45,9 @@ lectures:
   - id: L04
     title: 线性结构、栈、队列与哈希
     core_cards: [04-data-structure-basics, stack-queue, ext-search-hashing]
-    supporting_cards: [ext-complexity]
+    supporting_cards: []
+    preview_cards: [ext-complexity]
+    extension_cards: []
     examples: [04_linear_list.py, 05_structures.py]
     labs: [lab-01-structures]
     visualizations: [circular_queue.html, stack_expr.html]
@@ -54,7 +64,7 @@ lectures:
     assessment_tags: [递归追踪, 堆操作, 图遍历]
   - id: L06
     title: 搜索、排序、算法策略与复杂度
-    core_cards: [algorithm-strategies, ext-complexity]
+    core_cards: [ext-complexity, algorithm-strategies]
     supporting_cards: [ext-search-hashing, ext-recursion-divide-conquer, 07-greedy-algorithm]
     examples: [06_algorithm_strategies.py, 07_greedy_dijkstra.py]
     labs: [lab-03-greedy]
@@ -63,11 +73,12 @@ lectures:
     assessment_tags: [复杂度分析, 策略选择, 反例构造]
   - id: L07
     title: 可计算性、复杂性与自动化边界
-    core_cards: [computability-limits, 08-turing-machine]
+    core_cards: [08-turing-machine, computability-limits]
     supporting_cards: [ext-complexity, algorithm-strategies]
     examples: [08_turing_machine.py]
     labs: [lab-04-turing-machine]
-    visualizations: [TuringMachine.html]
+    visualizations: []
+    extension_visualizations: [TuringMachine.html]
     figures: [08-turing-transition.svg]
     assessment_tags: [状态追踪, 边界辨析, 验证设计]
   - id: L08

@@ -4,7 +4,7 @@
 
 ## 21 讲教学序列速查
 
-完整目标、工程场景与主动任务见 [`docs/curriculum/21-lecture-blueprint.md`](../docs/curriculum/21-lecture-blueprint.md)；精确资源映射见 [`lecture-card-map.yaml`](../docs/curriculum/lecture-card-map.yaml)。一讲组合多卡，一卡可以服务多讲。
+完整目标、工程场景与主动任务见 [`docs/curriculum/21-lecture-blueprint.md`](../docs/curriculum/21-lecture-blueprint.md)；精确资源映射见 [`lecture-card-map.yaml`](../docs/curriculum/lecture-card-map.yaml)。一讲组合多卡，一卡可以服务多讲。映射中的 `core_cards` 按学习顺序排列；支持卡用于补救，预览卡只建立后续直觉，扩展卡/可视化不属于当讲必做。
 
 | 讲次 | 主题 | 现有入口 / 检索 tag |
 |---|---|---|
@@ -13,8 +13,8 @@
 | L03 | 程序、语言、抽象与问题求解 | `03-programming-language`；语法/语义/编译/接口/测试 |
 | L04 | 线性结构、栈、队列与哈希 | `04-data-structure-basics`、`stack-queue`、`ext-search-hashing` |
 | L05 | 递归、树、堆、图与遍历 | `ext-recursion-divide-conquer`、`trees-heaps`、`06-graph-exploration` |
-| L06 | 搜索、排序、算法策略与复杂度 | `algorithm-strategies`、`ext-complexity` |
-| L07 | 可计算性、复杂性与自动化边界 | `computability-limits`、`08-turing-machine` |
+| L06 | 搜索、排序、算法策略与复杂度 | `ext-complexity`、`algorithm-strategies` |
+| L07 | 可计算性、复杂性与自动化边界 | `08-turing-machine`、`computability-limits` |
 | L08 | 体系结构、存储与 AI 加速器 | `computer-architecture`、`data-representation` |
 | L09 | OS、进程、并发与资源管理 | `operating-systems`、`computer-architecture` |
 | L10 | 网络、Web、API、云与分布式 | `11-computer-network`、`ext-web-technologies`、`distributed-systems` |
@@ -124,7 +124,7 @@
 
 ## 可视化资源
 
-见 [`code/visualizations/`](../code/visualizations/)：二叉堆、循环队列、汉诺塔、栈表达式、图灵机。
+见 [`code/visualizations/`](../code/visualizations/)：二叉堆、循环队列、汉诺塔、栈表达式；多带图灵机页面为 L07 选学扩展。
 
 ---
 
@@ -135,7 +135,7 @@
 - 学生问某概念 → 先匹配 tags，只读当前卡片与必要前置；加载 `guided-learning`，先让学生预测或追踪。
 - 卡片内容不足 → 可以给简短的模型生成解释或新例子，但必须标记“模型补充，非课程组审校卡片”，不得声称模型会自动补全或持久更新知识库。
 - 学生要练习/模拟 → 读 `docs/assessment/blueprint.yaml`；未批准时只能称“通用课程练习”。
-- 学生问“最新/进展” → 加载 `frontier-literacy`，经同意联网，草稿只写 `student-work/`。
+- 学生问“最新/进展” → 加载 `frontier-literacy`，先检查静态页 `review_status`，经同意联网，草稿只写 `student-work/`。
 - 学生要深入 → 引导到 `deep/` 对应专题，而非自创内容。
 - 学生问跨学科 → 读卡片“工程桥接”+ `paths/by-discipline-bridge`。
 - 学生要持续复习 → 先征得同意，再用 `code/progress.py` 维护匿名本地记录；拒绝记录时仍可进行当前会话学习。

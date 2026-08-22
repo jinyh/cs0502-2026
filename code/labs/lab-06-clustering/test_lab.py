@@ -8,6 +8,8 @@ def test_standardize():
     result = standardize(data)
     assert np.allclose(result.mean(axis=0), 0)
     assert np.allclose(result.std(axis=0), 1)
+    constant = standardize(np.array([[1.0, 3.0], [1.0, 5.0]]))
+    assert np.allclose(constant[:, 0], 0)
 
 
 def test_reproducible_centers():
@@ -16,3 +18,8 @@ def test_reproducible_centers():
     _, centers2 = kmeans(data, 2, seed=7)
     assert np.allclose(np.sort(centers1[:, 0]), [-1.9, 1.9])
     assert np.allclose(centers1, centers2)
+
+
+def test_invalid_cluster_count():
+    with np.testing.assert_raises(ValueError):
+        kmeans(np.array([[0.0], [1.0]]), 0)

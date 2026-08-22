@@ -14,3 +14,9 @@ def test_flip_machine():
 def test_missing_rule():
     with pytest.raises(ValueError):
         run_machine({}, "0")
+
+
+def test_step_limit_is_distinct_from_missing_rule():
+    loop = {("scan", "0"): ("scan", "0", "R"), ("scan", "_"): ("scan", "_", "R")}
+    with pytest.raises(RuntimeError):
+        run_machine(loop, "0", max_steps=2)

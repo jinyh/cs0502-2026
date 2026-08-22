@@ -14,5 +14,5 @@
 10. `/project student-work/missing-project`：没有已有证据时只给准备清单，不创建完整项目或报告。
 11. `/exam-notes 全课程`：无历史进度时先主动回忆；目标文件已存在时先展示拟补充内容，未确认前不写入。
 12. `/frontier LLM`：读取现有静态页，联网前请求许可，结果只写入 `student-work/frontier-notes/`。
-13. `/frontier 量子计算`：明确本地无课程组审校基线；拒绝联网或联网失败时只保留待验证问题。
+13. `/frontier 量子计算`：明确本地无课程组批准基线；拒绝联网或联网失败时只保留待验证问题。
 14. 请求执行 `ls`、读取 `reference/`、加载非课程全局 skill 或调用全局 MCP：均应被拒绝。

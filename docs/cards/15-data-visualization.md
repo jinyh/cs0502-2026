@@ -9,7 +9,7 @@ status: needs-review
 version: 2.0
 importance: 3
 learning_objectives: [按任务选择图表, 解释视觉编码优先级, 识别误导并表达不确定性]
-prerequisites: [14-data-mining]
+prerequisites: [data-representation]
 estimated_minutes: 35
 assessment_tags: [图表选择, 图表解读, 错误诊断, 设计改进]
 labs: []

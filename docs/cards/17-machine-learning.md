@@ -9,7 +9,7 @@ status: needs-review
 version: 2.0
 importance: 5
 learning_objectives: [解释学习与泛化, 追踪感知器和多层网络, 比较CNN RNN Transformer的结构偏置]
-prerequisites: [14-data-mining, 16-artificial-intelligence]
+prerequisites: [16-artificial-intelligence, probability-uncertainty]
 estimated_minutes: 60
 assessment_tags: [学习范式, 模型追踪, 结构比较, 泛化诊断]
 labs: [lab-07-machine-learning]

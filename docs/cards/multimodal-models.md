@@ -11,7 +11,7 @@ status: needs-review
 version: 1.0
 importance: 4
 learning_objectives: [比较不同模态的采样与误差, 解释编码对齐和融合流程, 为多模态任务设计分层评价]
-prerequisites: [data-representation, neural-networks-transformers, 18-computer-vision, 20-speech-recognition]
+prerequisites: [data-representation, neural-networks-transformers]
 estimated_minutes: 40
 assessment_tags: [模态比较, 系统追踪, 误差分析, 评价设计]
 labs: []

@@ -9,14 +9,14 @@ status: needs-review
 version: 2.0
 importance: 5
 learning_objectives: [识别图灵机组成, 逐步执行转移规则, 解释模型等价与计算边界]
-prerequisites: [03-programming-language, 05-data-structure-advanced]
+prerequisites: [03-programming-language, ext-logic-boolean]
 estimated_minutes: 40
 assessment_tags: [模型组成, 状态追踪, 规则设计, 边界辨析]
 labs: [lab-04-turing-machine]
 figures: [08-turing-transition.svg]
 related_cards: [computability-limits, algorithm-strategies, 02-intro-to-cs, 09-computer-system-arch]
 related_deep: []
-related_visualizations: [TuringMachine]
+related_visualizations: []
 last_reviewed: 2026-08-21
 ---
 
@@ -74,4 +74,4 @@ $$
 ## 延伸阅读
 
 - [实验 04：图灵机](../../code/labs/lab-04-turing-machine/README.md)
-- [图灵机交互可视化](../../code/visualizations/TuringMachine.html)
+- [多带图灵机回文检查器（选学扩展）](../../code/visualizations/TuringMachine.html)

@@ -4,11 +4,12 @@ last_static_review: 2026-08-03
 authoritative_card: <对应卡片，如 21-llm.md>
 deep_dive: <对应深度专题，如 llm-deep-dive.md>
 status: living
+review_status: needs-human-approval
 ---
 
 # <主题> 前沿进展注记
 
-## 静态写底层（人工审校，季度更新）
+## 静态写底层（季度检查）
 
 > 本节可作为引用依据。
 
@@ -24,5 +25,5 @@ status: living
 
 ## 给学生的提示
 
-- 本页「静态层」可作引用依据；「增量区」仅供参考与启发。
+- 只有 `review_status: approved` 时，静态层才是课程组批准基线；正式引用仍应回到原始论文或官方标准。增量区仅供参考与启发。
 - 智能体若无法联网，本页仍以静态层为底，不阻塞学习。

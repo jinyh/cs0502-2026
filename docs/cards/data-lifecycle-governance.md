@@ -11,7 +11,7 @@ status: needs-review
 version: 1.0
 importance: 5
 learning_objectives: [绘制数据全生命周期, 诊断质量偏差与泄漏, 记录来源许可版本和责任]
-prerequisites: [13-database, 14-data-mining, 12-information-security]
+prerequisites: [13-database, 12-information-security]
 estimated_minutes: 40
 assessment_tags: [数据审计, 质量诊断, 治理设计, 风险分析]
 labs: []

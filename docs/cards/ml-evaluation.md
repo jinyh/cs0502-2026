@@ -11,7 +11,7 @@ status: needs-review
 version: 1.0
 importance: 5
 learning_objectives: [设计无泄漏数据划分, 按错误代价选择指标阈值, 诊断群体偏差和分布漂移]
-prerequisites: [14-data-mining, probability-uncertainty, data-lifecycle-governance]
+prerequisites: [17-machine-learning, probability-uncertainty, data-lifecycle-governance]
 estimated_minutes: 50
 assessment_tags: [评价设计, 泄漏诊断, 指标计算, 部署决策]
 labs: [lab-06-clustering, lab-07-machine-learning]

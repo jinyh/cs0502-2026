@@ -7,7 +7,7 @@
 - [`12-information-security`](../cards/12-information-security.md) — 医疗数据隐私、基因数据敏感性
 - [`data-lifecycle-governance`](../cards/data-lifecycle-governance.md) — 跨医院数据来源、许可与重新识别风险
 - [`probability-uncertainty`](../cards/probability-uncertainty.md) + [`ml-evaluation`](../cards/ml-evaluation.md) — 基率、患者级划分与临床外推
-- [`13-database`](../cards/13-database.md) — 电子病历、PACS 影像库
+- [`13-database`](../cards/13-database.md) — 用关系、键与约束组织患者、检查和测量记录；真实病历/PACS 还涉及专门标准与治理
 - [`18-computer-vision`](../cards/18-computer-vision.md) — 医学影像 AI 与分布偏移
 - [`rag-tool-agents`](../cards/rag-tool-agents.md) + [`ai-security`](../cards/ai-security.md) — 医学问答的引用、权限与幻觉风险
 - [`08-turing-machine`](../cards/08-turing-machine.md) — 「不可预测」的逻辑边界类比
@@ -16,7 +16,7 @@
 
 - [`computer-architecture`](../cards/computer-architecture.md) — 半导体、存储层次、散热与加速器
 - [`quantum-computing`](../deep/quantum-computing.md) — 量子力学驱动的计算范式
-- [`11-computer-network`](../cards/11-computer-network.md) — Shannon 信息论极限
+- [`11-computer-network`](../cards/11-computer-network.md) — 传播、排队、带宽与吞吐的物理和系统约束
 - [`17-machine-learning`](../cards/17-machine-learning.md) — 优化、泛化与统计建模
 - [`ext-scientific-computing`](../cards/ext-scientific-computing.md) — 数值稳定、误差传播与可重复实验
 
@@ -58,9 +58,9 @@
 
 ## CS ↔ 机械动力
 
-- [`09-computer-system-arch`](../cards/09-computer-system-arch.md) + [`10-software-engineering`](../cards/10-software-engineering.md) — CAD/CAM、数字孪生的建模与工程化
+- [`computer-architecture`](../cards/computer-architecture.md) + [`10-software-engineering`](../cards/10-software-engineering.md) — 仿真与控制软件中的算力、接口、测试和可维护性
 - [`16-artificial-intelligence`](../cards/16-artificial-intelligence.md) + [`reinforcement-learning`](../deep/reinforcement-learning.md) — 机器人学与运动控制（传感-决策-执行闭环）
-- [`12-information-security`](../cards/12-information-security.md) — 工业控制系统（SCADA/PLC）的安全联锁
+- [`12-information-security`](../cards/12-information-security.md) — 工业控制系统的资产、可用性、最小权限与安全停机分析
 - [`operating-systems`](../cards/operating-systems.md) + [`ml-evaluation`](../cards/ml-evaluation.md) — 实时并发、设备泛化与漂移监测
 
 ## CS ↔ 生物医药
@@ -76,5 +76,13 @@
 - [`responsible-ai-systems`](../cards/responsible-ai-systems.md) — 失效降级、人工接管与责任分配
 - [`07-greedy-algorithm`](../cards/07-greedy-algorithm.md) + [`ext-scientific-computing`](../cards/ext-scientific-computing.md) — 路径规划、数值误差与结果验证
 - [`18-computer-vision`](../cards/18-computer-vision.md) + [`14-data-mining`](../cards/14-data-mining.md) — 遥感影像处理与地学大数据
+
+## CS ↔ 电子信息与电气控制
+
+- [`data-representation`](../cards/data-representation.md) + [`ext-logic-boolean`](../cards/ext-logic-boolean.md) — 采样、量化、位模式与数字逻辑
+- [`computer-architecture`](../cards/computer-architecture.md) + [`operating-systems`](../cards/operating-systems.md) — 嵌入式处理器、实时任务、并发和资源约束
+- [`11-computer-network`](../cards/11-computer-network.md) + [`distributed-systems`](../cards/distributed-systems.md) — 传感网络、时延、丢包、重试与部分失败
+- [`probability-uncertainty`](../cards/probability-uncertainty.md) + [`ml-evaluation`](../cards/ml-evaluation.md) — 检测误报、校准、漂移和闭环控制中的证据边界
+- [`ai-security`](../cards/ai-security.md) — 联网控制与 AI 工具调用的权限、输入信任和审计
 
 > 桥接是双向的：既用学生熟悉的学科解释 CS，也提示 CS 如何反哺该学科（如计算成为科研第三范式）。

@@ -5,8 +5,9 @@
 ## 文件
 
 - [`21-lecture-blueprint.md`](21-lecture-blueprint.md) — AI 时代 21 讲课程蓝图：边界、目标、场景、主动任务与跨章迁移。
-- [`lecture-card-map.yaml`](lecture-card-map.yaml) — 机器可读的讲次—核心卡—支持卡—示例—实验—交互可视化—配图—考核标签映射。
+- [`lecture-card-map.yaml`](lecture-card-map.yaml) — 机器可读的讲次—核心卡—支持/预览/扩展卡—示例—实验—交互可视化—配图—考核标签映射。
 - [`legacy-coverage-matrix.md`](legacy-coverage-matrix.md) — 现有 21 张讲稿锚点卡片与 6 张扩展卡片迁移到新序列的覆盖矩阵。
+- [`../review/README.md`](../review/README.md) — 必须由课程组或主题专家人工确认的决策与 `stable` 状态规则。
 
 ## 三层关系
 
@@ -23,6 +24,7 @@
 - 新增或拆分卡片时，以“能被单独检索、练习和复用的概念”为粒度，不为了凑齐 21 张而合并主题。
 - 新卡使用 `lecture_refs: [Lxx, ...]` 表示教学使用位置；`source_slides: [SlideNN-*, ...]` 只记录来源。迁移前的 `lecture` 字段暂时保留。
 - 一讲的核心概念、课前卡、实验和迁移题以课程蓝图为准；卡片路径以 `opencode/knowledge.md` 为检索入口。
+- `core_cards` 按学习顺序读取；`supporting_cards` 只做补救或复习，`preview_cards` 只建立后续直觉，`extension_cards` 供选学。不能把四类卡片的预计时长机械相加为正式课时。
 - 课程组先审批蓝图，再分批拆卡与重写讲稿；本目录不覆盖 Canvas 中的只读 PDF。
 
 ## 新概念卡片最小元数据

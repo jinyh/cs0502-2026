@@ -76,6 +76,18 @@ def test_all_concept_cards_are_reviewable_and_stay_lightweight():
         assert "## 一句话定位" in text, card
 
 
+def test_stable_cards_require_a_traceable_human_review():
+    for card in ALL_CARDS:
+        text = card.read_text(encoding="utf-8")
+        if re.search(r"^status: stable$", text, re.MULTILINE):
+            fields = frontmatter_fields(text)
+            assert {"human_reviewer", "human_reviewed_at", "human_review_scope"} <= fields, card
+
+    for frontier in (ROOT / "docs" / "frontier").glob("*-frontier.md"):
+        text = frontier.read_text(encoding="utf-8")
+        assert re.search(r"^review_status: (needs-human-approval|approved)$", text, re.MULTILINE), frontier
+
+
 def test_legacy_anchor_cards_keep_their_migration_schema():
     assert LEGACY_ANCHOR_CARDS
     for card in LEGACY_ANCHOR_CARDS:
@@ -114,6 +126,8 @@ def test_card_relationships_and_declared_figures_resolve():
     card_stems = {card.stem for card in ALL_CARDS}
     for card in ALL_CARDS:
         text = card.read_text(encoding="utf-8")
+        for prerequisite in inline_list(text, "prerequisites"):
+            assert prerequisite in card_stems, f"{card.name}: prerequisite {prerequisite}"
         for related in inline_list(text, "related_cards"):
             assert related in card_stems, f"{card.name}: {related}"
         for figure in inline_list(text, "figures"):
@@ -140,24 +154,41 @@ def test_lecture_card_map_covers_21_lectures_and_resolves_resources():
     mapping = (ROOT / "docs" / "curriculum" / "lecture-card-map.yaml").read_text(encoding="utf-8")
     lecture_matches = list(re.finditer(r"^  - id: (L\d{2})$", mapping, re.MULTILINE))
     assert [match.group(1) for match in lecture_matches] == [f"L{number:02d}" for number in range(1, 22)]
-    assert re.search(r"^schema_version:\s*2$", mapping, re.MULTILINE)
+    assert re.search(r"^schema_version:\s*3$", mapping, re.MULTILINE)
     assert re.search(r"^status:\s*proposal$", mapping, re.MULTILINE)
 
     card_stems = {card.stem for card in ALL_CARDS}
     for field, root, suffix in (
         ("core_cards", ROOT / "docs" / "cards", ".md"),
         ("supporting_cards", ROOT / "docs" / "cards", ".md"),
+        ("preview_cards", ROOT / "docs" / "cards", ".md"),
+        ("extension_cards", ROOT / "docs" / "cards", ".md"),
         ("examples", ROOT / "code" / "examples", ""),
         ("labs", ROOT / "code" / "labs", ""),
         ("visualizations", ROOT / "code" / "visualizations", ""),
+        ("extension_visualizations", ROOT / "code" / "visualizations", ""),
         ("figures", ROOT / "figures", ""),
     ):
         for raw_items in re.findall(rf"^    {field}:\s*\[(.*)\]$", mapping, re.MULTILINE):
             for item in [value.strip() for value in raw_items.split(",") if value.strip()]:
-                if field in {"core_cards", "supporting_cards"}:
+                if field in {"core_cards", "supporting_cards", "preview_cards", "extension_cards"}:
                     assert item in card_stems, f"{field}: {item}"
                 else:
                     assert (root / f"{item}{suffix}").exists(), f"{field}: {item}"
+
+    learned_core = set()
+    for index, match in enumerate(lecture_matches):
+        end = lecture_matches[index + 1].start() if index + 1 < len(lecture_matches) else len(mapping)
+        section = mapping[match.start():end]
+        raw_core = re.search(r"^    core_cards:\s*\[(.*)\]$", section, re.MULTILINE)
+        assert raw_core, match.group(1)
+        ordered_core = [value.strip() for value in raw_core.group(1).split(",") if value.strip()]
+        for card_index, card_id in enumerate(ordered_core):
+            card_text = (ROOT / "docs" / "cards" / f"{card_id}.md").read_text(encoding="utf-8")
+            available = learned_core | set(ordered_core[:card_index])
+            missing = set(inline_list(card_text, "prerequisites")) - available
+            assert not missing, f"{match.group(1)} {card_id}: core prerequisites not taught: {sorted(missing)}"
+        learned_core.update(ordered_core)
 
 
 def test_local_markdown_links_resolve():

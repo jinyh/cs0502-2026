@@ -18,7 +18,7 @@ labs: [lab-04-turing-machine]
 figures: [08-turing-transition.svg]
 related_cards: [08-turing-machine, ext-complexity, algorithm-strategies, reproducible-computing, rag-tool-agents, responsible-ai-systems]
 related_deep: [quantum-computing]
-related_visualizations: [TuringMachine]
+related_visualizations: []
 last_reviewed: 2026-08-21
 ---
 
@@ -81,7 +81,7 @@ last_reviewed: 2026-08-21
 ## 主动学习与考核迁移
 
 - **分类**：将若干任务分为“不可一般判定、指数代价、常规可算、结果需外部证据”，并解释依据。
-- **追踪**：使用 [`TuringMachine.html`](../../code/visualizations/TuringMachine.html) 追踪一个小规则，说明状态与符号如何共同决定下一步。
+- **选学扩展**：掌握单带转移后，可使用 [`TuringMachine.html`](../../code/visualizations/TuringMachine.html) 比较多带实现为何更方便、却不扩大可计算问题的集合。
 - **迁移**：为 AI 生成的医疗计算函数设计分层保证：输入约束、单元测试、性质测试、审阅和运行监控。
 - **反思**：解释“候选答案易验证”为何仍不等于“答案易找到”。
 

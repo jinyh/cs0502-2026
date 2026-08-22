@@ -9,7 +9,7 @@ status: needs-review
 version: 2.0
 importance: 4
 learning_objectives: [把模糊目标转为可验证需求, 区分架构组件与接口, 设计白盒和黑盒测试]
-prerequisites: [03-programming-language, 09-computer-system-arch]
+prerequisites: [03-programming-language]
 estimated_minutes: 35
 assessment_tags: [需求评审, 架构分析, 测试设计, 项目复盘]
 labs: []

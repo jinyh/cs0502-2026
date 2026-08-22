@@ -7,12 +7,14 @@ def wrap_unsigned(value, bits):
 
 
 def quantize_unit_interval(value, bits):
-    """把 [0, 1] 测量值映射到有限个等级。"""
+    """把 [0, 1] 测量值映射到包含两个端点的均匀等级。"""
     if not 0 <= value <= 1:
         raise ValueError("value 必须位于 [0, 1]")
-    levels = 2**bits
-    code = min(int(value * levels), levels - 1)
-    reconstructed = code / (levels - 1)
+    if bits < 1:
+        raise ValueError("bits 必须至少为 1")
+    max_code = 2**bits - 1
+    code = int(value * max_code + 0.5)
+    reconstructed = code / max_code
     return code, reconstructed
 
 

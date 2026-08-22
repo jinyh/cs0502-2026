@@ -11,7 +11,7 @@ status: needs-review
 version: 1.0
 importance: 5
 learning_objectives: [用基率解释条件概率, 区分样本证据与总体结论, 报告效应不确定性和限制]
-prerequisites: [data-representation, 14-data-mining]
+prerequisites: [data-representation]
 estimated_minutes: 50
 assessment_tags: [概率计算, 证据解释, 指标辨析, 结论边界]
 labs: []

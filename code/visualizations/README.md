@@ -10,7 +10,7 @@
 | `circular_queue.html` | 循环队列的入队出队 | `05-data-structure-advanced` | 同上 |
 | `Hanoi.html` | 汉诺塔递归过程 | `05-data-structure-advanced` | 同上 |
 | `stack_expr.html` | 栈与表达式求值 | `05-data-structure-advanced` | 同上 |
-| `TuringMachine.html` | 图灵机执行过程 | `08-turing-machine` | 同上 |
+| `TuringMachine.html` | 多带图灵机回文检查器（选学扩展） | `08-turing-machine` | 同上 |
 
 ## 使用
 
@@ -30,3 +30,5 @@ start code\visualizations\binary_heap.html
 在 OpenCode 中输入 `/demo L05 二叉堆`，智能体会返回匹配页面的相对路径；课程 agent 不代替你调用系统打开命令。打开页面后先回答顶部的预测任务，再操作控件。动画是验证推理的工具，不替代手工追踪。
 
 页面为自包含 HTML，不需要启动 Web 服务器或联网。支持键盘聚焦控件，并提供移动端布局或可横向阅读区域。
+
+`TuringMachine.html` 展示多带实现，适合在掌握单带状态追踪后比较“模型更方便但可计算能力不因此增加”。它不属于 L07 核心任务，不能替代单带转移表练习。

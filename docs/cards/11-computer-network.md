@@ -9,7 +9,7 @@ status: needs-review
 version: 2.0
 importance: 4
 learning_objectives: [描述端到端网络路径, 追踪分层封装, 比较带宽时延吞吐与可靠性]
-prerequisites: [09-computer-system-arch]
+prerequisites: [operating-systems]
 estimated_minutes: 40
 assessment_tags: [分层映射, 报文追踪, 性能辨析, 场景设计]
 labs: []

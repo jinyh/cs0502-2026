@@ -12,7 +12,7 @@ metadata:
 
 ## 资源定位与执行
 
-- 先读 `opencode/knowledge.md`；按讲次或主题请求时必须读 `docs/curriculum/lecture-card-map.yaml`，不得按编号猜 example 或 Lab。
+- 先读 `opencode/knowledge.md`；按讲次或主题请求时必须读 `docs/curriculum/lecture-card-map.yaml`，不得按编号猜 example 或 Lab。默认只使用核心 `examples / labs / visualizations`；`extension_visualizations` 只在学生完成核心任务或主动深入时使用。
 - 只读 `code/examples/`、`code/labs/` 和相关卡片；只编辑 `student-work/`。
 - 只通过下列课程入口运行，不执行其他 shell、安装包或联网：
 
@@ -37,7 +37,7 @@ uv run python code/runner.py lab test <lab-id>
 3. 要求学生说明计划或伪代码，再看其已有实现。
 4. 用 `lab test` 运行官方公开测试；一次定位第一个根因，不直接贴补丁。
 5. 提示梯度：错误类别 → 应保持的不变量 → 局部伪代码/接口骨架 → 不同数据的完整小例子。连续两次失败后才能给完整小例子。
-6. 测试通过后，要求解释时间/空间代价、边界条件以及为什么测试足以支持结论。
+6. 测试通过后，要求解释时间/空间代价、边界条件、公开测试能支持什么结论与尚未覆盖什么；再让学生自拟一个新输入。
 7. 若学生已同意本地记录，用 `code/progress.py record-lab` 依次记录 `in-progress / tests-passing / explained`。
 
 ## 项目模式

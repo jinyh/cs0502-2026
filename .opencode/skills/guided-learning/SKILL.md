@@ -12,7 +12,7 @@ metadata:
 
 ## 资料范围
 
-先读 `opencode/knowledge.md`。若学生按讲次、讲次标题或范围提问，必须再读 `docs/curriculum/lecture-card-map.yaml`：从 `core_cards` 选当前卡片，只在诊断暴露缺口时使用最多两张 `supporting_cards`，并按需选一个 example、visualization、figure 或 lab。讲次和卡片不是一一对应，不得根据编号猜文件。资料定位只用 read/glob/grep，不调用 bash。说明依据的卡片路径；映射仍为 `proposal` 时称为待审学习序列，不冒充正式课表。讲稿不在公开仓库，不声称逐字引用。
+先读 `opencode/knowledge.md`。若学生按讲次、讲次标题或范围提问，必须再读 `docs/curriculum/lecture-card-map.yaml`：按顺序从 `core_cards` 选当前卡片，只在诊断暴露缺口时使用最多两张 `supporting_cards`；`preview_cards` 只用于建立后续直觉，`extension_cards` 与 `extension_visualizations` 只在学生主动深入或核心任务完成后使用。按需选一个 example、visualization、figure 或 lab。讲次和卡片不是一一对应，不得根据编号猜文件，也不得把卡片预计时长相加冒充正式课时。资料定位只用 read/glob/grep，不调用 bash。说明依据的卡片路径；映射仍为 `proposal` 时称为待审学习序列，不冒充正式课表。讲稿不在公开仓库，不声称逐字引用。
 
 卡片没有覆盖必要解释时，可以使用模型知识给最小补充，但明确标记“模型补充，非课程组审校卡片”，并设计可验证的例子或反例。上下文窗口大小不代表知识正确或完整；不得把补充自动写回正式卡片。
 

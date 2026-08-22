@@ -9,7 +9,7 @@ status: needs-review
 version: 2.0
 importance: 5
 learning_objectives: [追踪语言模型演进, 解释嵌入位置与注意力, 分析生成能力与可靠性边界]
-prerequisites: [03-programming-language, 17-machine-learning, 20-speech-recognition]
+prerequisites: [probability-uncertainty, neural-networks-transformers]
 estimated_minutes: 55
 assessment_tags: [概率计算, 架构追踪, 方法比较, 风险分析]
 labs: [lab-08-language-model]

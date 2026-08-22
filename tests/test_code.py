@@ -29,6 +29,14 @@ def load_progress():
     return module
 
 
+def load_example(filename):
+    spec = importlib.util.spec_from_file_location(filename.removesuffix(".py"), ROOT / "code" / "examples" / filename)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader
+    spec.loader.exec_module(module)
+    return module
+
+
 def test_examples_run_independently():
     environment = os.environ.copy()
     environment["MPLBACKEND"] = "Agg"
@@ -44,6 +52,26 @@ def test_examples_run_independently():
         )
         assert result.returncode == 0, f"{example.name}\n{result.stdout}\n{result.stderr}"
         assert result.stdout.strip(), example.name
+
+
+def test_unit_interval_quantizer_uses_consistent_endpoint_levels():
+    example = load_example("02_data_representation.py")
+    assert example.quantize_unit_interval(0.0, 2) == (0, 0.0)
+    assert example.quantize_unit_interval(1.0, 2) == (3, 1.0)
+    assert example.quantize_unit_interval(0.5, 2) == (2, pytest.approx(2 / 3))
+    assert example.quantize_unit_interval(1 / 6, 2) == (1, pytest.approx(1 / 3))
+    with pytest.raises(ValueError, match="至少"):
+        example.quantize_unit_interval(0.5, 0)
+
+
+def test_idempotency_key_rejects_a_different_payload():
+    example = load_example("10_retry_idempotency.py")
+    service = example.ExperimentService()
+    assert service.submit_idempotently("request-42", "sample-A") == 1
+    assert service.submit_idempotently("request-42", "sample-A") == 1
+    with pytest.raises(ValueError, match="不同 payload"):
+        service.submit_idempotently("request-42", "sample-B")
+    assert service.jobs == [(1, "sample-A")]
 
 
 def test_lab_starters_and_tests_are_syntactically_valid():

@@ -9,7 +9,7 @@ status: needs-review
 version: 2.0
 importance: 5
 learning_objectives: [识别图与子图等概念, 在两种表示上追踪BFS和DFS, 解释生成树与连通性]
-prerequisites: [05-data-structure-advanced]
+prerequisites: [stack-queue]
 estimated_minutes: 40
 assessment_tags: [图表示, 遍历追踪, 场景建模]
 labs: [lab-02-graph]

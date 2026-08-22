@@ -1,16 +1,33 @@
-schema_version: 1
+schema_version: 2
 status: template
 course: CS0502 计算机科学导论
 policy:
   opencode_during_exam: false
+  opencode_policy_owner: 课程组待批准
+  static_notes_during_exam: TBD
   generated_practice_solution_after_attempt: true
   graded_work_full_solution: false
   source_questions_forbidden: true
 calibration:
-  teacher_owner: TBD
+  course_group_owner: TBD
   approved_at: null
   target_total_minutes: null
   target_total_points: null
+  pilot_sample_size: null
+  required_evidence: [学习目标覆盖表, 独立试做时间, 题目难度分布, 评分一致性检查]
+difficulty_levels:
+  - id: foundational
+    definition: 单一概念的识别、解释或一步追踪
+  - id: standard
+    definition: 在同类但未见过的材料上完成二至三步操作并解释边界
+  - id: transfer
+    definition: 在新工程场景中整合多个概念、比较方案并论证风险
+variant_rules:
+  same_cognitive_operations: true
+  require_new_context_or_structure: true
+  changing_numbers_only_is_sufficient: false
+  independent_rubric_required: true
+  source_question_reuse_forbidden: true
 question_types:
   - id: concept-compare
     format: 概念辨析与比较
@@ -18,6 +35,7 @@ question_types:
     points_each: null
     target_minutes_each: null
     cognitive_level: understand
+    allowed_difficulty: [foundational, standard]
     assessment_tags: [概念辨析, 结构比较]
     grading_criteria: [定义准确, 抓住关键差异, 给出边界或反例]
     common_errors: [只背定义, 混淆逻辑结构与实现]
@@ -27,6 +45,7 @@ question_types:
     points_each: null
     target_minutes_each: null
     cognitive_level: apply
+    allowed_difficulty: [foundational, standard, transfer]
     assessment_tags: [操作追踪, 算法追踪, 状态追踪]
     grading_criteria: [状态完整, 顺序正确, 中间步骤可核查]
     common_errors: [跳步, 未标访问顺序, 只写最终答案]
@@ -36,6 +55,7 @@ question_types:
     points_each: null
     target_minutes_each: null
     cognitive_level: analyze
+    allowed_difficulty: [standard, transfer]
     assessment_tags: [代码追踪, 错误诊断, 测试设计]
     grading_criteria: [定位根因, 修改最小, 覆盖边界, 能解释]
     common_errors: [只修症状, 未测试边界]
@@ -45,6 +65,7 @@ question_types:
     points_each: null
     target_minutes_each: null
     cognitive_level: analyze
+    allowed_difficulty: [standard, transfer]
     assessment_tags: [场景建模, 方案比较, 风险分析]
     grading_criteria: [输入输出明确, 假设合理, 权衡完整, 风险可识别]
     common_errors: [堆术语, 忽略约束, 把相关当因果]
