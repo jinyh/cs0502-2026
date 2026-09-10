@@ -81,7 +81,10 @@ def validate_source(path: Path) -> None:
 def limits(memory_mb: int, cpu_seconds: int):
     def apply_limits():
         memory_bytes = memory_mb * 1024 * 1024
-        resource.setrlimit(resource.RLIMIT_CPU, (cpu_seconds, cpu_seconds))
+        # wall-clock 超时负责统一抛出 TimeoutExpired；CPU 限制晚一秒兜底，
+        # 避免 Linux 内核先终止进程而把超时误报为普通非零退出码。
+        cpu_limit = cpu_seconds + 1
+        resource.setrlimit(resource.RLIMIT_CPU, (cpu_limit, cpu_limit))
         # macOS 拒绝在 preexec_fn 中降低 RLIMIT_DATA/RLIMIT_AS；Linux 可用
         # RLIMIT_AS 做硬上限。macOS 仍有 wall-clock/CPU 限制，内存只能由
         # 外层容器或教学账户配额控制。
