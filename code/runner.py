@@ -16,6 +16,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 
 ROOT = Path(__file__).resolve().parents[1]
 EXAMPLES_ROOT = (ROOT / "code" / "examples").resolve()
@@ -108,17 +109,71 @@ def sandbox_environment():
     return environment
 
 
+def _bounded_output(stream):
+    chunks = []
+    kept = 0
+    omitted = 0
+    while True:
+        chunk = stream.read(8192)
+        if not chunk:
+            break
+        available = max(0, MAX_OUTPUT_CHARS - kept)
+        if available:
+            chunks.append(chunk[:available])
+        kept += min(len(chunk), available)
+        omitted += max(0, len(chunk) - available)
+    text = "".join(chunks)
+    if omitted:
+        while True:
+            marker = f"\n... 输出已截断，省略 {omitted} 个字符 ...\n"
+            allowed = max(0, MAX_OUTPUT_CHARS - len(marker))
+            extra = max(0, len(text) - allowed)
+            if not extra:
+                return text + marker
+            text = text[:allowed]
+            omitted += extra
+    return text
+
+
 def run_process(command, cwd: Path, timeout_seconds: int, memory_mb: int):
-    return subprocess.run(
+    process = subprocess.Popen(
         command,
         cwd=cwd,
         text=True,
-        capture_output=True,
-        timeout=timeout_seconds,
-        check=False,
+        encoding="utf-8",
+        errors="replace",
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE,
         preexec_fn=limits(memory_mb, timeout_seconds),
         env=sandbox_environment(),
     )
+    outputs = {"stdout": "", "stderr": ""}
+
+    def drain(name, stream):
+        outputs[name] = _bounded_output(stream)
+
+    readers = [
+        threading.Thread(target=drain, args=("stdout", process.stdout), daemon=True),
+        threading.Thread(target=drain, args=("stderr", process.stderr), daemon=True),
+    ]
+    for reader in readers:
+        reader.start()
+    try:
+        returncode = process.wait(timeout=timeout_seconds)
+    except subprocess.TimeoutExpired as error:
+        process.kill()
+        process.wait()
+        for reader in readers:
+            reader.join()
+        raise subprocess.TimeoutExpired(
+            error.cmd,
+            error.timeout,
+            output=outputs["stdout"],
+            stderr=outputs["stderr"],
+        ) from None
+    for reader in readers:
+        reader.join()
+    return subprocess.CompletedProcess(command, returncode, outputs["stdout"], outputs["stderr"])
 
 
 def run(path: Path, timeout_seconds: int = 30, memory_mb: int | None = None) -> subprocess.CompletedProcess[str]:

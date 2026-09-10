@@ -362,30 +362,37 @@ def test_lecture_notes_publish_only_the_inventory_readme():
     for number in range(1, 22):
         assert f"Slide{number:02d}" in text
 
-    ignored_pdf = subprocess.run(
-        ["git", "check-ignore", "LectureNotes/Slide01-Welcome-2025.pdf"],
-        cwd=ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    public_readme = subprocess.run(
-        ["git", "check-ignore", "LectureNotes/README.md"],
-        cwd=ROOT,
-        check=False,
-        capture_output=True,
-        text=True,
-    )
-    tracked_pdfs = subprocess.run(
-        ["git", "ls-files", "LectureNotes/*.pdf"],
-        cwd=ROOT,
-        check=True,
-        capture_output=True,
-        text=True,
-    )
-    assert ignored_pdf.returncode == 0
-    assert public_readme.returncode == 1
-    assert not tracked_pdfs.stdout.strip()
+    gitignore = (ROOT / ".gitignore").read_text(encoding="utf-8")
+    assert "LectureNotes/*" in gitignore
+    assert "!LectureNotes/README.md" in gitignore
+
+    if (ROOT / ".git").is_dir():
+        ignored_pdf = subprocess.run(
+            ["git", "check-ignore", "LectureNotes/Slide01-Welcome-2025.pdf"],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        public_readme = subprocess.run(
+            ["git", "check-ignore", "LectureNotes/README.md"],
+            cwd=ROOT,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        tracked_pdfs = subprocess.run(
+            ["git", "ls-files", "LectureNotes/*.pdf"],
+            cwd=ROOT,
+            check=True,
+            capture_output=True,
+            text=True,
+        )
+        assert ignored_pdf.returncode == 0
+        assert public_readme.returncode == 1
+        assert not tracked_pdfs.stdout.strip()
+    else:
+        assert not list((ROOT / "LectureNotes").glob("*.pdf"))
 
 
 def test_opencode_learning_surface_is_complete_and_index_first():

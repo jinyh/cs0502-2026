@@ -159,10 +159,27 @@ def test_runner_limits_output_and_times_out(tmp_path, monkeypatch):
     runner = load_runner()
     monkeypatch.setattr(runner, "ALLOWED_ROOTS", (tmp_path,))
     noisy = tmp_path / "noisy.py"
-    noisy.write_text("print('x' * 70000)\n", encoding="utf-8")
+    noisy.write_text("print('x' * 1000000)\n", encoding="utf-8")
     result = runner.run(runner.validate_path(str(noisy)), timeout_seconds=5)
     assert result.returncode == 0
-    assert "输出已截断" in runner.truncate_output(result.stdout)
+    assert len(result.stdout) <= runner.MAX_OUTPUT_CHARS
+    assert "输出已截断" in result.stdout
+
+    both_streams = runner.run_process(
+        [
+            sys.executable,
+            "-c",
+            "import sys; sys.stdout.write('o' * 1000000); sys.stderr.write('e' * 1000000)",
+        ],
+        ROOT,
+        5,
+        512,
+    )
+    assert both_streams.returncode == 0
+    assert len(both_streams.stdout) <= runner.MAX_OUTPUT_CHARS
+    assert len(both_streams.stderr) <= runner.MAX_OUTPUT_CHARS
+    assert "输出已截断" in both_streams.stdout
+    assert "输出已截断" in both_streams.stderr
 
     looping = tmp_path / "looping.py"
     looping.write_text("while True:\n    pass\n", encoding="utf-8")
@@ -248,3 +265,93 @@ def test_progress_migrates_v1_only_after_init_consent(tmp_path, monkeypatch):
     assert migrated["schema_version"] == 2
     assert migrated["consent"]["local_learning_record"] is True
     assert migrated["cards"]["graph"]["next_review_at"] is None
+
+
+def test_all_card_ids_and_legacy_filenames_resolve_to_stable_ids():
+    progress = load_progress()
+    aliases = progress.card_aliases()
+    card_paths = sorted(path for path in (ROOT / "docs" / "cards").glob("*.md") if path.name != "README.md")
+
+    assert len(card_paths) == 46
+    for path in card_paths:
+        stable_id = aliases[path.stem]
+        assert progress.resolve_card_id(path.stem) == stable_id
+        assert progress.resolve_card_id(stable_id) == stable_id
+
+    assert aliases["ext-complexity"] == "algorithm-complexity"
+    assert aliases["ext-logic-boolean"] == "boolean-logic"
+    assert aliases["ext-recursion-divide-conquer"] == "recursion-divide-conquer"
+    assert aliases["ext-scientific-computing"] == "scientific-computing"
+    assert aliases["ext-search-hashing"] == "search-hashing"
+    assert aliases["ext-web-technologies"] == "web-technologies"
+
+
+def test_v2_progress_merges_legacy_and_stable_card_ids(tmp_path, monkeypatch):
+    progress = load_progress()
+    progress_path = tmp_path / "progress.json"
+    card_root = tmp_path / "cards"
+    card_root.mkdir()
+    (card_root / "ext-complexity.md").write_text(
+        "---\ncard_id: algorithm-complexity\n---\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(progress, "PROGRESS_PATH", progress_path)
+    monkeypatch.setattr(progress, "CARD_ROOT", card_root)
+    progress_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 2,
+                "consent": {"local_learning_record": True, "recorded_at": "2026-08-01T00:00:00Z"},
+                "current_card": "ext-complexity",
+                "cards": {
+                    "ext-complexity": {
+                        "status": "learning",
+                        "attempts": 2,
+                        "hint_count": 1,
+                        "confidence": 2,
+                        "error_tags": ["增长阶"],
+                        "last_reviewed": "2026-08-02T00:00:00Z",
+                        "next_review_at": "2026-08-03T00:00:00Z",
+                        "unhinted_successes": 0,
+                    },
+                    "algorithm-complexity": {
+                        "status": "review",
+                        "attempts": 1,
+                        "hint_count": 0,
+                        "confidence": 4,
+                        "error_tags": ["边界"],
+                        "last_reviewed": "2026-08-04T00:00:00Z",
+                        "next_review_at": "2026-08-11T00:00:00Z",
+                        "unhinted_successes": 1,
+                    },
+                },
+                "labs": {},
+            }
+        ),
+        encoding="utf-8",
+    )
+
+    data = progress.load_progress()
+    assert data["current_card"] == "algorithm-complexity"
+    assert set(data["cards"]) == {"algorithm-complexity"}
+    merged = data["cards"]["algorithm-complexity"]
+    assert merged["attempts"] == 3
+    assert merged["hint_count"] == 1
+    assert merged["error_tags"] == ["增长阶", "边界"]
+    assert merged["status"] == "review"
+    assert merged["confidence"] == 4
+
+    progress.record_card(
+        data,
+        "ext-complexity",
+        "correct",
+        0,
+        5,
+        True,
+        [],
+        datetime(2026, 8, 11, tzinfo=timezone.utc),
+    )
+    progress.save_progress(data)
+    saved = json.loads(progress_path.read_text(encoding="utf-8"))
+    assert set(saved["cards"]) == {"algorithm-complexity"}
+    assert saved["current_card"] == "algorithm-complexity"

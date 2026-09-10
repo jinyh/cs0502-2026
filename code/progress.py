@@ -20,6 +20,7 @@ PROGRESS_PATH = ROOT / "student-work" / "progress.json"
 CARD_ROOT = ROOT / "docs" / "cards"
 LAB_ROOT = ROOT / "code" / "labs"
 LAB_STATUSES = ("not-started", "in-progress", "tests-passing", "explained")
+CARD_ID_PATTERN = re.compile(r"[a-z0-9]+(?:-[a-z0-9]+)*")
 
 
 def utc_now():
@@ -63,6 +64,74 @@ def migrate_v1(data, now: datetime):
     return migrated
 
 
+def card_aliases():
+    aliases = {}
+    for path in sorted(CARD_ROOT.glob("*.md")):
+        if path.name == "README.md":
+            continue
+        text = path.read_text(encoding="utf-8")
+        match = re.search(r"^card_id:\s*([^\s#]+)", text, flags=re.MULTILINE)
+        stable_id = match.group(1) if match else path.stem
+        if not CARD_ID_PATTERN.fullmatch(stable_id):
+            raise ValueError(f"卡片 {path.name} 的 card_id 格式无效")
+        for alias in (path.stem, stable_id):
+            previous = aliases.get(alias)
+            if previous is not None and previous != stable_id:
+                raise ValueError(f"卡片标识冲突: {alias}")
+            aliases[alias] = stable_id
+    return aliases
+
+
+def resolve_card_id(card_id: str):
+    if not CARD_ID_PATTERN.fullmatch(card_id):
+        raise ValueError("卡片编号格式无效")
+    stable_id = card_aliases().get(card_id)
+    if stable_id is None:
+        raise ValueError(f"不存在的卡片: {card_id}")
+    return stable_id
+
+
+def _review_sort_key(card):
+    reviewed = card.get("last_reviewed")
+    if not reviewed:
+        return datetime.min.replace(tzinfo=timezone.utc)
+    try:
+        parsed = datetime.fromisoformat(reviewed.replace("Z", "+00:00"))
+        return parsed if parsed.tzinfo is not None else parsed.replace(tzinfo=timezone.utc)
+    except (TypeError, ValueError):
+        return datetime.min.replace(tzinfo=timezone.utc)
+
+
+def _merge_card_records(older, newer):
+    latest = max((older, newer), key=_review_sort_key)
+    merged = dict(latest)
+    merged["attempts"] = older.get("attempts", 0) + newer.get("attempts", 0)
+    merged["hint_count"] = older.get("hint_count", 0) + newer.get("hint_count", 0)
+    merged["error_tags"] = sorted(set(older.get("error_tags", [])) | set(newer.get("error_tags", [])))
+    return merged
+
+
+def normalize_card_ids(data):
+    aliases = card_aliases()
+    normalized = {}
+    for card_id, card in data.get("cards", {}).items():
+        stable_id = aliases.get(card_id, card_id)
+        card.setdefault("confidence", None)
+        card.setdefault("error_tags", [])
+        card.setdefault("last_reviewed", None)
+        card.setdefault("next_review_at", None)
+        card.setdefault("unhinted_successes", 0)
+        if stable_id in normalized:
+            normalized[stable_id] = _merge_card_records(normalized[stable_id], card)
+        else:
+            normalized[stable_id] = card
+    data["cards"] = normalized
+    current = data.get("current_card")
+    if current is not None:
+        data["current_card"] = aliases.get(current, current)
+    return data
+
+
 def validate_progress(data):
     if data.get("schema_version") != 2:
         raise ValueError("不支持的进度文件版本，请先运行 init --consent")
@@ -81,10 +150,11 @@ def load_progress():
     except json.JSONDecodeError as error:
         raise ValueError(f"进度文件不是有效 JSON: {error.msg}") from error
     validate_progress(data)
-    return data
+    return normalize_card_ids(data)
 
 
 def save_progress(data):
+    normalize_card_ids(data)
     validate_progress(data)
     PROGRESS_PATH.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile(
@@ -110,16 +180,14 @@ def initialize(now: datetime):
         except json.JSONDecodeError as error:
             raise ValueError(f"进度文件不是有效 JSON: {error.msg}") from error
         data = migrate_v1(existing, now)
+        normalize_card_ids(data)
         validate_progress(data)
     save_progress(data)
     return data
 
 
 def require_card(card_id: str):
-    if not re.fullmatch(r"[a-z0-9]+(?:-[a-z0-9]+)*", card_id):
-        raise ValueError("卡片编号格式无效")
-    if not (CARD_ROOT / f"{card_id}.md").is_file():
-        raise ValueError(f"不存在的卡片: {card_id}")
+    return resolve_card_id(card_id)
 
 
 def require_lab(lab_id: str):
@@ -130,7 +198,7 @@ def require_lab(lab_id: str):
 
 
 def record_card(data, card_id, outcome, hints, confidence, explained, error_tags, now):
-    require_card(card_id)
+    card_id = require_card(card_id)
     if hints < 0:
         raise ValueError("提示次数不能为负数")
 
