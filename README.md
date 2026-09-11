@@ -1,14 +1,39 @@
-# 计算机科学导论配套知识库 + 主动学习智能体
+<div class="course-hero">
+  <p class="course-eyebrow">Shanghai Jiao Tong University · Fall 2026</p>
+  <h1>计算机科学导论</h1>
+  <p class="course-subtitle">CS0502 · Introduction to Computer Science</p>
+  <p class="course-lead">面向非计算机专业理工与医学学生，从计算、系统、数据和智能四条主线建立完整的计算机科学直觉。</p>
+  <div class="course-actions">
+    <a class="course-button course-button-primary" href="https://jinyh.github.io/cs0502-2026/docs/course/schedule/">查看教学日历</a>
+    <a class="course-button" href="https://jinyh.github.io/cs0502-2026/docs/student-guide/">开始学习</a>
+  </div>
+</div>
 
-> Shanghai Jiao Tong University · CS0502 Introduction to Computer Science
-> Open-source companion knowledge base + active-learning OpenCode tutor.
+<div class="course-facts">
+  <div><span>上课时间</span><strong>周一 10:00–11:40</strong><small>单周周四 16:00–17:40</small></div>
+  <div><span>上课地点</span><strong>东中院 2-203</strong><small>2026 秋季学期</small></div>
+  <div><span>课程资源</span><strong>21 讲学习蓝图</strong><small>46 张概念卡 · 8 个核心实验</small></div>
+  <div><span>学习方式</span><strong>预测 → 验证 → 迁移</strong><small>OpenCode + PAI-DSW</small></div>
+</div>
 
-本项目面向上海交通大学非计算机专业理工及医学学生，以课程讲稿为只读来源锚点，提供 21 讲课程蓝图、概念卡片、概念代码、交互可视化、核心实验、考核迁移训练和 OpenCode 学习助教。教学讲次与卡片是多对多关系：一讲组合多张卡片，一张卡也可跨讲次复用。知识库补充讲稿，不替代课堂与教师发布的正式材料。
+本课程由上海交通大学计算机学院课程组承担，面向具备微积分和线性代数基础、无计算机科学先修知识的大学二年级理工科及医学科学生。课程网站提供 [课程信息](docs/course/overview.md)、[教学日历](docs/course/schedule.md)、21 讲课程蓝图、概念卡片、代码与实验、交互可视化和 OpenCode 主动学习助教。知识库补充课堂材料，不替代 Canvas 中教师发布的正式课件、作业说明和通知。
+
+## 课程考核
+
+<div class="grading-grid">
+  <div><strong>30%</strong><span>3 次作业</span></div>
+  <div><strong>20%</strong><span>小组项目</span></div>
+  <div><strong>40%</strong><span>期末考试</span></div>
+  <div><strong>10%</strong><span>课堂参与</span></div>
+</div>
+
+正式期末为纸质材料开卷，现场禁止电子资料、联网、OpenCode 和其他 LLM。作业与项目的具体要求和截止时间以 Canvas 发布的正式说明为准。
 
 ## 你会在这里找到什么
 
 ```text
 docs/curriculum/     21 讲课程蓝图 + 机器可读资源映射 + 迁移矩阵
+docs/course/         2026 秋季课程信息、教学日历与课堂规范
 docs/cards/          46 张卡：21 张来源锚点/概览卡 + 25 张语义概念卡
 docs/deep/           LLM、强化学习、量子计算深度专题
 docs/frontier/       人工审校静态基线 + 学生前沿检索入口
@@ -70,7 +95,7 @@ export_student_work()
 
 OpenCode 可以帮助平时学习、作业辅导、项目评审与考前准备；正式期末为纸质材料开卷，现场禁止电子资料、联网、OpenCode 和其他 LLM。正在计分的任务只提供分级提示、相似新题、测试和 rubric 反馈，不输出可直接提交的完整答案。
 
-全学期原则上约 4 次正式计分作业，不按周布置。仓库中的 8 个 Lab 默认用于辅助学习和自测，可以被教师选作某次作业的全部、部分或准备练习，也可以不进入任何作业；是否计分只以正式作业说明为准。详见 [`assignment-plan.md`](docs/assessment/assignment-plan.md)。
+全学期安排 3 次正式计分作业。仓库中的 8 个 Lab 默认用于辅助学习和自测，可以被教师选作某次作业的全部、部分或准备练习，也可以不进入任何作业；是否计分只以正式作业说明为准。详见 [`assignment-plan.md`](docs/assessment/assignment-plan.md)。
 
 首次使用 `/start` 时可选择是否启用匿名本地学习记录。记录只保存在被 Git 忽略的 `student-work/progress.json`，不包含姓名、学号、成绩或原始作答；拒绝记录不影响其他学习功能。
 

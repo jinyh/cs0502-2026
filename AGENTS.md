@@ -103,7 +103,7 @@ ComputerIntroduction/
 - `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，本机 Linux 512MB、ModelScope 2GB，运行代码禁网
 - `.opencode/` — `course-tutor` agent、5 个项目级学习 skill 与 10 个 slash command；优先要求学生预测、追踪、实现和迁移，不直接长问答
 - 学生本机运行 OpenCode，代码统一在 PAI-DSW Quickstart 中运行；两端只通过 helper 指令与 `[CS0502_RESULT]` 摘要手动交接，不建立远程执行 API
-- 全学期原则上约 4 次正式作业，不按周布置；Lab 默认形成性，只有教师正式指定时才通过 `code/labs/catalog.json` 的 `assignment_links` 公开关联作业
+- 全学期安排 3 次正式作业；Lab 默认形成性，只有教师正式指定时才通过 `code/labs/catalog.json` 的 `assignment_links` 公开关联作业
 - 全局 skill 属于用户环境，永不复制、链接、提交或推送；仓库只维护 `.opencode/skills/` 中的课程专属 skill
 
 ## AI 时代特色

@@ -1,0 +1,113 @@
+site_name: CS0502 计算机科学导论
+site_description: 上海交通大学 2026 秋季计算机科学导论课程网站、知识库与主动学习工具
+site_author: CS0502 课程组
+site_url: https://jinyh.github.io/cs0502-2026/
+repo_name: jinyh/cs0502-2026
+repo_url: https://github.com/jinyh/cs0502-2026
+edit_uri: edit/main/
+docs_dir: src
+site_dir: build
+use_directory_urls: true
+
+theme:
+  name: material
+  language: zh
+  logo: assets/images/course-mark.svg
+  favicon: assets/images/favicon.svg
+  font: false
+  features:
+    - navigation.tabs
+    - navigation.sections
+    - navigation.indexes
+    - navigation.top
+    - navigation.footer
+    - content.code.copy
+    - content.action.edit
+    - search.suggest
+    - search.highlight
+    - toc.follow
+  palette:
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-7
+        name: 切换到深色模式
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: custom
+      accent: custom
+      toggle:
+        icon: material/brightness-4
+        name: 切换到浅色模式
+
+nav:
+  - 首页: README.md
+  - 课程信息:
+      - 课程概览: docs/course/overview.md
+      - 教学日历: docs/course/schedule.md
+      - 课堂与作业规范: docs/course/policies.md
+  - 学习蓝图:
+      - 课程蓝图说明: docs/curriculum/README.md
+      - 21 讲课程蓝图: docs/curriculum/21-lecture-blueprint.md
+      - 学生使用指南: docs/student-guide.md
+  - 概念卡片: docs/cards/README.md
+  - 学习路径:
+      - 路径说明: docs/paths/README.md
+      - 工程问题求解: docs/paths/by-engineering-workflow.md
+      - 思维支柱: docs/paths/by-thinking-pillar.md
+      - AI 能力: docs/paths/by-ai-capability.md
+      - 读者目标: docs/paths/by-reader-goal.md
+      - 学科桥接: docs/paths/by-discipline-bridge.md
+  - 实践:
+      - 代码与实验: code/README.md
+      - 交互可视化: code/visualizations/README.md
+      - OpenCode 使用: opencode/tools.md
+  - AI 深度专题: docs/deep/README.md
+  - 前沿进展: docs/frontier/README.md
+  - 考核与项目:
+      - 考核说明: docs/assessment/README.md
+      - 三次作业蓝图: docs/assessment/assignment-plan.md
+      - 项目 Rubric: docs/assessment/project-rubric.md
+  - 术语表: docs/glossary.md
+
+plugins:
+  - search:
+      lang:
+        - zh
+        - en
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.superfences
+  - pymdownx.arithmatex:
+      generic: true
+
+extra_css:
+  - assets/stylesheets/extra.css
+
+extra_javascript:
+  - assets/javascripts/mathjax.js
+  - https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js
+
+exclude_docs: |
+  **/__pycache__/**
+  **/*.pyc
+  **/.DS_Store
+
+validation:
+  links:
+    not_found: warn
+    anchors: warn
+
+copyright: 2026 CS0502 课程组 · 内容 CC BY-SA 4.0 · 代码 MIT

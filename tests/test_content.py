@@ -265,7 +265,7 @@ def test_lab_catalog_is_formative_and_covers_every_lab():
             assert re.fullmatch(r"HW\d+", link["assignment"])
 
     assignment_plan = (ROOT / "docs" / "assessment" / "assignment-plan.md").read_text(encoding="utf-8")
-    assert "约 4 次正式计分作业" in assignment_plan
+    assert "3 次正式计分作业" in assignment_plan
     assert "不按周布置" in assignment_plan
     assert "assignment_links" in assignment_plan
 
@@ -301,6 +301,7 @@ def test_svg_assets_are_accessible_and_self_contained():
 
 def test_assessment_files_are_explicitly_unapproved_and_schema_is_valid():
     blueprint = (ROOT / "docs" / "assessment" / "blueprint.yaml").read_text(encoding="utf-8")
+    assert re.search(r"^schema_version:\s*3$", blueprint, re.MULTILINE)
     status = re.search(r"^status:\s*(\S+)\s*$", blueprint, re.MULTILINE)
     assert status
     assert status.group(1) in {"template", "approved"}
@@ -310,7 +311,14 @@ def test_assessment_files_are_explicitly_unapproved_and_schema_is_valid():
         int(re.search(rf"^  {field}:\s*(\d+)$", blueprint, re.MULTILINE).group(1))
         for field in ("final_exam_percent", "group_project_percent", "coursework_percent")
     ]
-    assert grading_weights == [50, 30, 20]
+    assert grading_weights == [40, 20, 40]
+    coursework_weights = [
+        int(re.search(rf"^    {field}:\s*(\d+)$", blueprint, re.MULTILINE).group(1))
+        for field in ("assignments_percent", "class_participation_percent")
+    ]
+    assert coursework_weights == [30, 10]
+    assert sum(coursework_weights) == grading_weights[2]
+    assert re.search(r"^  assignment_count:\s*3$", blueprint, re.MULTILINE)
     contact_hours = [
         int(re.search(rf"^  {field}:\s*(\d+)$", blueprint, re.MULTILINE).group(1))
         for field in ("lecture_topics", "project_presentation_and_defense", "integrative_review")

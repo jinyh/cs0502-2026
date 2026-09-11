@@ -18,10 +18,11 @@
 - PAI-DSW Quickstart Notebook（持久化环境、example/Lab/可视化 helper 与学生工作备份）
 - OpenCode 配置全套（`course-tutor` agent / 5 skills / 10 slash commands）
 - `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
+- 2026 秋季课程网站源码与 GitHub Pages 自动部署（`website/`、`.github/workflows/pages.yml`）
 
 ### 待完成
 
-- 期末 50% / 项目 30% / 平时 20% 已确认；教师补齐题型细目并审批 `docs/assessment/blueprint.yaml` 后再启用“按正式考核结构校准”的 `/mock`
+- 3 次作业 30% / 项目 20% / 期末 40% / 课堂参与 10% 已确认；教师补齐题型细目并审批 `docs/assessment/blueprint.yaml` 后再启用“按正式考核结构校准”的 `/mock`
 - 课程组审批 21 讲蓝图与 `lecture-card-map.yaml`
 - 任课教师按 `docs/review/ai-audit-2026-08-22.md` 抽查 `ai-reviewed` 卡片；高风险内容再交相应领域专家
-- 二期可选：mkdocs 静态站点 + GitHub Pages；英文版；更多深度专题
+- 二期可选：英文版；更多深度专题

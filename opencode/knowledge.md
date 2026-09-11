@@ -128,7 +128,7 @@
 
 ## 可视化资源
 
-见 [`code/visualizations/`](../code/visualizations/)：二叉堆、循环队列、汉诺塔、栈表达式；多带图灵机页面为 L07 选学扩展。
+见 [`code/visualizations/README.md`](../code/visualizations/README.md)：二叉堆、循环队列、汉诺塔、栈表达式；多带图灵机页面为 L07 选学扩展。
 
 ---
 

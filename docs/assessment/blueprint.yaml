@@ -1,4 +1,4 @@
-schema_version: 2
+schema_version: 3
 status: template
 course: CS0502 计算机科学导论
 policy:
@@ -14,10 +14,14 @@ policy:
   source_questions_forbidden: true
 course_grading:
   status: confirmed
-  confirmed_at: "2026-08-22"
-  final_exam_percent: 50
-  group_project_percent: 30
-  coursework_percent: 20
+  confirmed_at: "2026-09-12"
+  final_exam_percent: 40
+  group_project_percent: 20
+  coursework_percent: 40
+  coursework_breakdown:
+    assignments_percent: 30
+    class_participation_percent: 10
+  assignment_count: 3
   group_project_accountability: [小组成果, 个人答辩, 个人贡献记录]
 contact_hours:
   status: confirmed

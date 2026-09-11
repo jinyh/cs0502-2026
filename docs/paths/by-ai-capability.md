@@ -46,6 +46,6 @@
 - [`ai-security`](../cards/ai-security.md) — 权限、注入与不可信输出
 - [`responsible-ai-systems`](../cards/responsible-ai-systems.md) — 证据、治理、监测与问责
 - 深度：[`llm-deep-dive`](../deep/llm-deep-dive.md) 第 5 节（Agent 与工具调用）
-- 本课程配套的 OpenCode 智能体（[`opencode/`](../../opencode/)）即此路径的实例
+- 本课程配套的 OpenCode 智能体（[`opencode/knowledge.md`](../../opencode/knowledge.md)）即此路径的实例
 
 > 链条非线性：Agent 需要前四者全部。本路径推荐先建立「学习」基座，再按「感知→生成→Agent」展开。

@@ -38,6 +38,7 @@ env/
 
 # === 构建产物 ===
 site/
+website/build/
 *.log
 student-work/
 
