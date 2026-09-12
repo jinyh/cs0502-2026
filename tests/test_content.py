@@ -277,7 +277,7 @@ def test_local_markdown_links_resolve():
     failures = []
     for source in markdown_files:
         for raw_target in link_pattern.findall(source.read_text(encoding="utf-8")):
-            target = raw_target.strip().split("#", 1)[0]
+            target = raw_target.strip().split("#", 1)[0].split("?", 1)[0]
             if not target or "://" in target or target.startswith("mailto:"):
                 continue
             target = target.strip("<>")

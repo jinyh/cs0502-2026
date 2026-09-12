@@ -62,6 +62,7 @@ nav:
           - 代码与实验: code/README.md
           - 形成性 Lab: code/labs/README.md
           - 交互可视化: code/visualizations/README.md
+          - 无人船巡检实验室: code/visualizations/usv-inspection/GUIDE.md
       - OpenCode 助学:
           - 学生使用指南: docs/student-guide.md
           - 安装与模型接入: opencode/tools.md

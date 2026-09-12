@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="CS0502 无人船巡检交互实验室：拆开看、改变条件、观察运行、追踪数据。">
+  <meta name="theme-color" content="#0757a5"><title>无人船巡检交互实验室 · CS0502</title>
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml"><link rel="stylesheet" href="./style.css">
+  <script type="importmap">{"imports":{"three":"./vendor/three.module.js"}}</script>
+</head>
+<body data-mode="guided">
+<a class="skip" href="#main">跳到实验控件</a>
+<header class="topbar">
+  <a class="brand" href="./index.html" aria-label="无人船巡检实验室首页"><img src="./favicon.svg" alt=""><span><strong>USV <b>LAB</b></strong><small>无人船巡检交互实验室</small></span></a>
+  <div class="mode-switch" aria-label="学习模式"><button id="guided" aria-pressed="true">课堂引导 <span>四种思维</span></button><button id="free" aria-pressed="false">自由探索</button></div>
+  <div class="course"><a id="course-home" class="course-home" href="https://jinyh.github.io/cs0502-2026/">← CS0502 课程首页</a><small>计算机科学导论 / 第 1—2 讲</small></div>
+</header>
+<main id="main">
+  <section class="intro"><div><p class="eyebrow">一次巡检 · 四种解决问题的方法</p><h1>船回来了，<span>这份巡检报告能交吗？</span></h1><p>先预测，再操作、解释和迁移。沿着同一次巡检，练习四种解决问题的方法。</p></div><button class="report-jump" id="report-jump">报告与学习成果 <span>↗</span></button></section>
+  <nav class="view-tabs" aria-label="实验视角"><button data-view="mission" aria-pressed="true"><span>01</span> 任务视角</button><button data-view="system" aria-pressed="false"><span>02</span> 系统视角</button><button data-view="data" aria-pressed="false"><span>03</span> 数据与程序</button><span class="model-badge"><i></i> 确定性教学模型 · 非真实航行预测</span></nav>
+  <section class="transport" aria-label="任务运行控制"><div><span class="eyebrow">教学时间</span><strong id="clock">000 <small>s</small></strong></div><button id="start" class="primary">▶ 开始任务</button><button id="pause">Ⅱ 暂停</button><button id="step">单步 +1 s</button><label class="speed-label">倍速<select id="speed"><option value="1">1×</option><option value="4">4×</option><option value="12">12×</option></select></label><span class="transport-separator"></span><button id="rerun">重跑当前配置</button><button id="baseline">恢复基准</button></section>
+  <section id="spatial" class="workspace">
+    <aside class="left-panel">
+      <div id="route-panel"><p class="eyebrow">ROUTE / 表示与约束</p><h2>一份任务，三种路线</h2><p class="muted">基地出发 → 巡检三个点 → 返航</p><div id="routes"></div><div id="route-result" class="note"></div><label class="field" for="battery">出航电量 <span>Wh</span></label><select id="battery"><option value="60">60 Wh · 基准</option><option value="30">30 Wh · 低电量</option><option value="90">90 Wh · 充足电量</option></select><p class="small">出航后锁定路线和配置。重跑当前配置可再比较。</p></div>
+      <div id="parts-panel" hidden><p class="eyebrow">ANATOMY / 部件分工</p><h2>拆开一艘无人船</h2><p class="muted">选择部件，追踪它的输入与输出。</p><div id="parts"></div></div>
+    </aside>
+    <div class="scene-column">
+      <div class="stage">
+        <div class="stage-heading"><div><p class="eyebrow" id="scene-kicker">INSPECTION WATER / 教学港区</p><h2 id="scene-title">从基地到证据</h2></div><span id="renderer-status">正在加载三维</span></div>
+        <div id="render-host" tabindex="0" role="img" aria-label="三维无人船场景，可拖动旋转、滚轮缩放、点击部件；也可使用下方视图按钮"></div>
+        <svg id="fallback" viewBox="-60 -45 120 90" role="img" aria-label="二维任务地图与船位" hidden></svg>
+        <div id="scene-labels" aria-hidden="true"></div>
+        <div class="scene-key"><span><i class="teal"></i> 实际航迹</span><span><i class="dash"></i> 候选路线</span><span><i class="orange"></i> 禁行水域</span></div>
+      </div>
+      <div class="view-tools"><button id="rotate-left" aria-label="向左旋转视角">↶ 旋转</button><button id="zoom-in" aria-label="放大场景">＋</button><button id="zoom-out" aria-label="缩小场景">−</button><button id="reset-view">复位视角</button><button id="fallback-toggle" aria-pressed="false">二维备用</button></div>
+      <div id="explode-tools" class="explode-tools" hidden><label for="explode">结构展开</label><input id="explode" type="range" min="0" max="100" value="0"><output id="explode-value">0%</output><button id="focus-part">聚焦部件</button></div>
+      <div id="scene-note" class="scene-note"><span class="number">↗</span><p>每一个巡检点都会生成图像与设备记录。航行结束后，仍需检查报告依据。</p></div>
+    </div>
+    <aside class="right-panel"><p class="eyebrow">LIVE / 同一航次的实时状态</p><div class="status-title"><h2 id="mission-status">基地待命</h2><span class="live-dot"></span></div>
+      <div class="metrics"><div><span>巡检覆盖</span><strong id="coverage">0<small> / 3</small></strong></div><div><span>剩余电量</span><strong id="energy">60.0<small> Wh</small></strong></div></div>
+      <div class="energy-track"><div id="energy-bar"></div></div><p id="margin" class="small"></p>
+      <div class="signal-grid" id="signals"></div>
+      <div class="transmission"><div><span>船上已存</span><strong id="local-count">0</strong></div><span id="transfer-arrow">→</span><div><span>岸站已收</span><strong id="shore-count">0</strong></div></div><p class="queue" id="queue">待补传 0 条</p>
+      <label class="field" for="autonomy">任务执行配置</label><select id="autonomy"><option value="local">具备本地执行能力</option><option value="shore">依赖岸站指令</option></select>
+      <div class="fault-controls"><button id="network" aria-pressed="true">通信：已连接</button><button id="power" aria-pressed="true">船载：已上电</button></div><label class="check"><input id="sensor" type="checkbox" checked> 温度传感器提供有效记录</label>
+    </aside>
+  </section>
+  <section id="data-view" class="data-workspace" hidden>
+    <div class="program-panel"><p class="eyebrow">TRACE / 第二讲 · 教学追踪</p><h2>一条一条读，什么时候加 1？</h2><p class="muted">网页展示程序的执行步骤；实际 Python 请在 PAI-DSW 运行。</p><pre id="python-code" aria-label="Python 程序"></pre><div class="trace-values"><div><span>当前温度</span><strong id="trace-temp">—</strong></div><div><span>条件 / 动作</span><strong id="trace-condition">尚未开始</strong></div><div><span>count</span><strong id="trace-count">0</strong></div></div><div class="button-row"><button id="trace-step" class="primary">执行下一句</button><button id="trace-reset">从头追踪</button><a class="button" href="./verify_count.py" download>下载 Python ↗</a></div><p class="small">高亮是教学追踪（不是浏览器中的 Python 解释器）。输入或规则改变后，从头追踪。</p></div>
+    <div class="readings-panel"><p class="eyebrow">DATA / 数据来源与统计规则</p><h2>边界上的 80，算不算？</h2><button id="standard" class="primary wide">一键载入标准课堂数据</button><div class="sample-buttons" aria-label="统计样例"><button data-sample="ordinary">普通值 [65, 81]</button><button data-sample="boundary">边界值 [80]</button><button data-sample="empty">空记录 []</button><button data-sample="mission">当前航次（岸站）</button></div><p id="data-source" class="source-tag"></p><div id="reading-bars" class="reading-bars" aria-label="温度记录图"></div><div class="rule-fields"><label>比较规则<select id="operator"><option value=">=">≥ 大于或等于（>=）</option><option value=">">&gt; 严格大于（>）</option></select></label><label>教学阈值 / °C<input id="threshold" type="number" min="-50" max="200" step="1" value="80"></label></div><div class="stat-result"><span>满足条件的记录数</span><strong id="stat-count">2</strong><p id="stat-explanation"></p></div><p class="small">标准样例：同一推进电机 M1，在三个时刻的记录。统计次数不是故障设备数量。规则同时用于报告，样例选择不会改写航次记录。</p></div>
+  </section>
+
+  <section class="workbench"><nav class="bench-tabs" aria-label="证据工作台"><button data-bench="records" aria-pressed="true">航次记录 <span id="record-badge">00</span></button><button data-bench="image" aria-pressed="false">P2 图像复核</button><button data-bench="report" aria-pressed="false">任务报告</button><button data-bench="model" aria-pressed="false">模型与使用说明</button></nav>
+    <div id="bench-records" class="bench-body record-layout"><div><p class="eyebrow">RECORDS / 同一设备 M1 · 采集时刻</p><h2>船上有记录，岸站有收到吗？</h2><div class="table-wrap"><table><thead><tr><th>巡检点</th><th>采集时间</th><th>温度 °C</th><th>交回状态</th></tr></thead><tbody id="record-rows"></tbody></table></div><p class="small">记录在巡检点生成；断网期间的记录留在船上。缺测值不进入温度统计。</p></div><div><p class="eyebrow">EVENTS / 因果时间线</p><ol id="events" class="events" aria-label="任务事件日志"></ol></div></div>
+    <div id="bench-image" class="bench-body image-layout" hidden><div><p class="eyebrow">EVIDENCE / P2 设施表面</p><h2>一条暗线，就能认定为裂纹吗？</h2><div class="evidence-frame"><img id="evidence-image" src="./evidence/original.svg" alt="教学构造图像：涂装钢板接缝附近有一条暗线"><svg id="roi" viewBox="0 0 720 420" aria-label="疑似区域" hidden><rect x="260" y="60" width="200" height="290" rx="8" fill="none" stroke="#f4b85b" stroke-width="4" stroke-dasharray="10 6"/><text x="271" y="48" fill="#f4b85b" font-size="20">疑似区域 · 待验证</text></svg><span>虚拟设施 · 教学构造图像</span></div><div class="button-row"><button id="original">查看原图</button><button id="region">查看疑似区域</button><button id="extra">查看补拍证据</button></div><p id="evidence-caption" class="small"></p></div><div class="review-panel"><p class="source-tag">预设 AI 判断 · 教学示例</p><blockquote>“该区域可能存在裂纹，建议进一步复核。”</blockquote><p>这是预设候选判断，没有运行真实模型，也不代表检测性能。</p><div class="note" id="evidence-note">请先完成 P2 巡检，再查看证据。</div><label for="review" class="field">当前证据支持什么结论？</label><select id="review"><option value="pending">暂不下结论</option><option value="crack">已确认结构裂纹</option><option value="clear">已排除风险，可正常使用</option><option value="reinspect">保留疑点，安排进一步复检</option></select><p id="review-feedback"></p><p class="small">补拍仍缺少内部结构证据。报告可以交付“待复检”结论；不能把候选判断写成已证实事实。</p></div></div>
+    <div id="bench-report" class="bench-body" hidden><div class="report-heading"><div><p class="eyebrow">MISSION REPORT / 基于当前航次生成</p><h2 id="report-title">巡检报告草稿</h2></div><a id="download-report" class="button" href="#report-text" download="CS0502-USV-教学报告.txt">下载报告 .txt ↗</a></div><div id="report-content"></div><details class="report-preview"><summary>报告全文 · 包含学习成果，可复制</summary><textarea id="report-text" rows="12" readonly aria-label="报告全文（可复制）"></textarea></details><label class="field" for="reflection">复盘：你的预测与结果哪里不同？证据是什么？</label><textarea id="reflection" rows="2" placeholder="例如：断网后船没有停，因为任务在船上执行；岸站的记录数量暂时没有增加。"></textarea><p class="small">只保存在当前页面，刷新即清空；复盘随下载报告导出。迁移思考：无人机失联或机械设备网关断开时，哪些能力仍在本地？</p></div>
+    <div id="bench-model" class="bench-body model-copy" hidden><h2>把模型看清楚，再解释结果</h2><p>这是用于比较因果的教学模型。地图坐标单位为米（m），模拟时间为秒（s），电量与能耗为瓦时（Wh）。不模拟风浪、水动力或真实避障，不承诺最优路线。</p><div id="route-comparison"></div><p>航速 4 m/s；行进耗能 0.10 Wh/m；船载设备开机耗能 0.05 Wh/s，停机后保留电路耗能 0.01 Wh/s；每个巡检点瞬时采集耗能 1 Wh。基准电量 60 Wh，返航保留量 6 Wh。预计余量按所选路线剩余距离、开机时间和剩余采集次数计算；中途等待会增加耗能。碰到禁区边界即判违规。</p><p>每个点记录推进电机 M1 的温度与设施图像。三个点按教学脚本分别提供 65、80、81 °C；温度缺测开关会生成空值，不伪造读数。每教学秒最多交回一条记录，顺序补传、去重；返航后可继续补传，此时假设岸站供电。船载停机保留已有非易失存储。</p><p>暂停冻结任务时间、记录和传输；旋转或结构展开只改变观察方式。重跑保留路线、电量及故障配置；恢复基准恢复合规路线、60 Wh、本地执行、联网与上电、有效传感器、标准统计规则，并清空航次和复盘。</p><p>第 1 讲：完成航行、断网实验、图像复核和报告。第 2 讲：载入标准数据，先手算，再逐句追踪，最后在 PAI-DSW 运行下载的 Python 文件。OpenCode 可提示和复盘；本站无需账号，没有远程执行或大模型 API。</p><p>启动方法、验证记录与可编辑文件随源代码交付。交互设计参考 <a href="https://jinyh.github.io/532nm-laser/" target="_blank" rel="noopener">532 LAB</a>。模型与素材均为本实验独立编写。</p></div>
+  </section>
+</main><footer><span>CS0502 / 计算机科学导论</span><span>计算思维 → 系统思维 → 数据思维 → 智能思维</span><span>教学模型 v1.3</span></footer>
+<div id="notice" role="status" aria-live="polite"></div><noscript>本实验需要 JavaScript。启用后可选择无需 WebGL 的二维备用模式。</noscript>
+<script type="module" src="./app.mjs"></script>
+</body></html>

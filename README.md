@@ -43,6 +43,13 @@
   </section>
 </div>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">第 1—2 讲 · 课堂互动</span>
+  <h2>无人船巡检交互实验室</h2>
+  <p>船回来了，这份巡检报告能交吗？从选路线、断网实验到统计与图像复核，先预测，再改变条件、观察结果并解释原因。</p>
+  <a class="module-link" href="code/visualizations/usv-inspection/index.html">进入无人船巡检实验室 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">
