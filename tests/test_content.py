@@ -296,11 +296,16 @@ def test_public_site_separates_course_information_from_optional_extension():
     nav_block = config.split("nav:\n", 1)[1].split("\nplugins:\n", 1)[0]
     top_level_nav = re.findall(r"^  - ([^:]+):", nav_block, re.MULTILINE)
     assert top_level_nav == ["首页", "课程说明", "拓展学习（可选）"]
+    assert "## 两个模块" not in home
     assert home.index("<h2>课程说明</h2>") < home.index("<h2>拓展学习</h2>")
     assert '<span class="module-badge module-badge-optional">可选</span>' in home
     assert "默认不构成课程必做内容" in extension
     for path_name in ("阅读补充", "动手验证", "OpenCode 助学"):
         assert f"<h2>{path_name}</h2>" in extension
+
+    override = (ROOT / "website" / "overrides" / "main.html").read_text(encoding="utf-8")
+    assert "返回课程首页" in override
+    assert 'href="{{ config.site_url }}"' in override
 
     schedule_rows = re.findall(r"^\| \d+ \| \d{2}-\d{2} 周[一四] \|", schedule, re.MULTILINE)
     assert len(schedule_rows) == 22

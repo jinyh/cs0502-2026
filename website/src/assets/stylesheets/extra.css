@@ -333,7 +333,16 @@ body {
   color: var(--sjtu-blue-deep);
 }
 
-[data-md-color-scheme="slate"] .optional-context strong {
+.optional-home-link {
+  flex: 0 0 auto;
+  margin-left: auto;
+  color: var(--sjtu-blue-deep) !important;
+  font-weight: 750;
+  white-space: nowrap;
+}
+
+[data-md-color-scheme="slate"] .optional-context strong,
+[data-md-color-scheme="slate"] .optional-home-link {
   color: #9bd2ff;
 }
 
@@ -463,6 +472,10 @@ body {
 
   .optional-context span {
     margin-top: 0.2rem;
+  }
+
+  .optional-home-link {
+    margin: 0.55rem 0 0;
   }
 }
 
