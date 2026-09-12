@@ -75,4 +75,4 @@
 
 ## 建设状态
 
-现有 46 张卡包括 21 张来源锚点/概览卡和 25 张语义概念卡，均已完成 AI 全量审核并标记为 `ai-reviewed`；审核范围与人工复核分级见 [`docs/review/ai-audit-2026-08-22.md`](../review/ai-audit-2026-08-22.md)。`last_reviewed` 只表示最近一次编辑或自动检查，不等同于专家批准。只有课程目标、术语、代码、图示、链接和主动学习任务经过人工复核，并记录 `human_reviewer`、`human_reviewed_at` 与审查范围后，才可标记为 `stable`。
+现有 46 张卡包括 21 张来源锚点/概览卡和 25 张语义概念卡，均已完成 AI 全量审核并标记为 `ai-reviewed`。审核记录保存在仓库的 `docs/review/`，不在课程网站发布。`last_reviewed` 只表示最近一次编辑或自动检查，不等同于专家批准。只有课程目标、术语、代码、图示、链接和主动学习任务经过人工复核，并记录 `human_reviewer`、`human_reviewed_at` 与审查范围后，才可标记为 `stable`。

@@ -61,4 +61,4 @@ last_reviewed: 2026-08-21
 
 ## 延伸阅读
 
-- [课程项目 rubric](../assessment/project-rubric.md)
+- 课程项目评价要求以 Canvas 发布的正式项目任务书为准。

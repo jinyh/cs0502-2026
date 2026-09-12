@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block content %}
+  {% set optional_page =
+    page.url.startswith("docs/extension/")
+    or page.url.startswith("docs/curriculum/")
+    or page.url.startswith("docs/cards/")
+    or page.url.startswith("docs/paths/")
+    or page.url.startswith("docs/deep/")
+    or page.url.startswith("docs/frontier/")
+    or page.url == "docs/glossary/"
+    or page.url == "docs/student-guide/"
+    or page.url.startswith("code/")
+    or page.url.startswith("opencode/")
+  %}
+  {% if optional_page %}
+    <aside class="optional-context" aria-label="拓展学习说明">
+      <strong>拓展学习 · 可选</strong>
+      <span>本页是辅助学习资源，默认不属于课程必做内容；Canvas 正式指定的活动或 Lab 除外。</span>
+    </aside>
+  {% endif %}
+  {{ super() }}
+{% endblock %}

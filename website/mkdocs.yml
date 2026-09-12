@@ -11,6 +11,7 @@ use_directory_urls: true
 
 theme:
   name: material
+  custom_dir: overrides
   language: zh
   logo: assets/images/course-mark.svg
   favicon: assets/images/favicon.svg
@@ -44,33 +45,26 @@ theme:
 
 nav:
   - 首页: README.md
-  - 课程信息:
-      - 课程概览: docs/course/overview.md
-      - 教学日历: docs/course/schedule.md
-      - 课堂与作业规范: docs/course/policies.md
-  - 学习蓝图:
-      - 课程蓝图说明: docs/curriculum/README.md
-      - 21 讲课程蓝图: docs/curriculum/21-lecture-blueprint.md
-      - 学生使用指南: docs/student-guide.md
-  - 概念卡片: docs/cards/README.md
-  - 学习路径:
-      - 路径说明: docs/paths/README.md
-      - 工程问题求解: docs/paths/by-engineering-workflow.md
-      - 思维支柱: docs/paths/by-thinking-pillar.md
-      - AI 能力: docs/paths/by-ai-capability.md
-      - 读者目标: docs/paths/by-reader-goal.md
-      - 学科桥接: docs/paths/by-discipline-bridge.md
-  - 实践:
-      - 代码与实验: code/README.md
-      - 交互可视化: code/visualizations/README.md
-      - OpenCode 使用: opencode/tools.md
-  - AI 深度专题: docs/deep/README.md
-  - 前沿进展: docs/frontier/README.md
-  - 考核与项目:
-      - 考核说明: docs/assessment/README.md
-      - 三次作业蓝图: docs/assessment/assignment-plan.md
-      - 项目 Rubric: docs/assessment/project-rubric.md
-  - 术语表: docs/glossary.md
+  - 课程说明:
+      - 课程说明首页: docs/course/overview.md
+      - 完整教学日历: docs/course/schedule.md
+      - 课堂、作业与考核: docs/course/policies.md
+  - 拓展学习（可选）:
+      - 拓展学习首页: docs/extension/README.md
+      - 阅读补充:
+          - 21 讲学习蓝图: docs/curriculum/README.md
+          - 概念卡片: docs/cards/README.md
+          - 学习路径: docs/paths/README.md
+          - AI 深度专题: docs/deep/README.md
+          - 前沿进展: docs/frontier/README.md
+          - 术语表: docs/glossary.md
+      - 动手验证:
+          - 代码与实验: code/README.md
+          - 形成性 Lab: code/labs/README.md
+          - 交互可视化: code/visualizations/README.md
+      - OpenCode 助学:
+          - 学生使用指南: docs/student-guide.md
+          - 安装与模型接入: opencode/tools.md
 
 plugins:
   - search:
@@ -104,6 +98,14 @@ exclude_docs: |
   **/__pycache__/**
   **/*.pyc
   **/.DS_Store
+  docs/README.md
+  docs/assessment/**
+  docs/review/**
+  docs/project-status.md
+  docs/curriculum/legacy-coverage-matrix.md
+  opencode/AGENTS.md
+  opencode/knowledge.md
+  opencode/sandbox-policy.md
 
 validation:
   links:

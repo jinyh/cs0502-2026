@@ -1,6 +1,8 @@
-# OpenCode 学生学习指南
+# OpenCode 学生学习指南（拓展学习，可选）
 
 这套智能体的目标不是替你回答问题，而是让你经历一次可检查的学习过程：**先预测或作答，再获得提示；先解释证据，再进入下一题**。
+
+> OpenCode 是可选的课后助学工具，不是完成课程的必需软件。只有 Canvas 正式说明要求的活动才属于课程任务；正式期末考试现场禁止使用 OpenCode 和其他 LLM。
 
 ## 开始之前
 
@@ -62,7 +64,7 @@ OpenCode 不能直接连接或控制你的 PAI-DSW。不要把整份项目、个
 
 完整 example 清单和运行命令见 [`../code/README.md`](../code/README.md)，Lab 结构见 [`../code/labs/README.md`](../code/labs/README.md)。讲次与卡片、代码、Lab 是多对多关系，智能体必须按 [`curriculum/lecture-card-map.yaml`](curriculum/lecture-card-map.yaml) 定位，不能根据文件名前缀猜测。
 
-全学期安排 3 次正式计分作业，而不是每周作业。卡片主动任务、`/practice`、`/review` 和 Lab 默认不计分；某个 Lab 只有在教师正式作业说明中被明确指定后，才成为该次作业的一部分。能力窗口见 [`assessment/assignment-plan.md`](assessment/assignment-plan.md)。
+全学期安排 3 次正式计分作业，而不是每周作业。卡片主动任务、`/practice`、`/review` 和 Lab 默认不计分；某个 Lab 只有在教师正式作业说明中被明确指定后，才成为该次作业的一部分。
 
 ## 本地文件与隐私
 

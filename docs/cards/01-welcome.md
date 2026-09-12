@@ -67,4 +67,4 @@ last_reviewed: 2026-08-21
 
 - [按思维支柱导航](../paths/by-thinking-pillar.md)
 - [按工程问题导航](../paths/by-engineering-workflow.md)
-- [课程智能体说明](../../opencode/knowledge.md)
+- [OpenCode 学生使用指南](../student-guide.md)

@@ -19,7 +19,7 @@ run_example("06_graph_bfs_dfs.py")
 
 先在本机 OpenCode 或纸上预测输出和关键中间状态，再运行验证。运行后只需把 `[CS0502_RESULT]` 摘要复制回 OpenCode，不必粘贴完整日志。
 
-教师开发或无 PAI-DSW 时仍可使用本地兼容入口：
+教师开发或无法使用 PAI-DSW 时仍可使用本地兼容入口：
 
 ```bash
 uv sync
@@ -73,7 +73,7 @@ CS0502_RUNTIME=modelscope .venv/bin/python code/runner.py run student-work/examp
 
 ## 核心 Lab
 
-Lab 默认用于辅助学习和自测。课程组可以把某个 Lab 的全部、部分或变式纳入约 4 次正式作业，也可以完全不用 Lab；只有教师正式作业说明能够改变其计分状态。
+Lab 默认用于辅助学习和自测。课程组可以把某个 Lab 的全部、部分或变式纳入 3 次正式作业，也可以完全不用 Lab；只有教师在 Canvas 发布的正式作业说明能够改变其计分状态。
 
 做实验时不要直接修改 starter，由 PAI-DSW Notebook helper 创建和测试统一副本：
 
@@ -99,4 +99,4 @@ uv run pytest
 
 旧入口 `uv run python code/runner.py <path>` 继续兼容。学生路径统一使用 Notebook helper；本地命令只作为教师开发和无云环境时的降级入口。
 
-依赖以根目录 `pyproject.toml` 和 `uv.lock` 为准；`requirements.txt` 仅供不使用 uv 的兼容环境。安全边界见 [`../opencode/sandbox-policy.md`](../opencode/sandbox-policy.md)。
+依赖以根目录 `pyproject.toml` 和 `uv.lock` 为准；`requirements.txt` 仅供不使用 uv 的兼容环境。运行安全边界由仓库中的 `opencode/sandbox-policy.md` 定义。

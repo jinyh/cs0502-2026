@@ -287,6 +287,36 @@ def test_local_markdown_links_resolve():
     assert not failures, "\n".join(failures)
 
 
+def test_public_site_separates_course_information_from_optional_extension():
+    config = (ROOT / "website" / "mkdocs.yml").read_text(encoding="utf-8")
+    home = (ROOT / "README.md").read_text(encoding="utf-8")
+    extension = (ROOT / "docs" / "extension" / "README.md").read_text(encoding="utf-8")
+    schedule = (ROOT / "docs" / "course" / "schedule.md").read_text(encoding="utf-8")
+
+    nav_block = config.split("nav:\n", 1)[1].split("\nplugins:\n", 1)[0]
+    top_level_nav = re.findall(r"^  - ([^:]+):", nav_block, re.MULTILINE)
+    assert top_level_nav == ["首页", "课程说明", "拓展学习（可选）"]
+    assert home.index("<h2>课程说明</h2>") < home.index("<h2>拓展学习</h2>")
+    assert '<span class="module-badge module-badge-optional">可选</span>' in home
+    assert "默认不构成课程必做内容" in extension
+    for path_name in ("阅读补充", "动手验证", "OpenCode 助学"):
+        assert f"<h2>{path_name}</h2>" in extension
+
+    schedule_rows = re.findall(r"^\| \d+ \| \d{2}-\d{2} 周[一四] \|", schedule, re.MULTILINE)
+    assert len(schedule_rows) == 22
+
+    for hidden_path in (
+        "docs/assessment/**",
+        "docs/review/**",
+        "docs/project-status.md",
+        "docs/curriculum/legacy-coverage-matrix.md",
+        "opencode/AGENTS.md",
+        "opencode/knowledge.md",
+        "opencode/sandbox-policy.md",
+    ):
+        assert f"  {hidden_path}\n" in config
+
+
 def test_svg_assets_are_accessible_and_self_contained():
     svgs = sorted((ROOT / "figures").glob("*.svg"))
     assert len(svgs) >= 30

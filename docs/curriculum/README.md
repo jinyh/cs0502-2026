@@ -1,13 +1,13 @@
-# 课程教学序列（docs/curriculum/）
+# 21 讲学习蓝图（拓展学习，可选）
 
-本目录定义 CS0502 的 **21 讲教学序列**；`docs/cards/` 定义可复用的**概念图谱**。两者是多对多关系：一讲通常组合多张卡片，一张卡片也可以服务多讲、实验、项目与复习路径。
+本目录提供 CS0502 的 **21 讲拓展学习序列**；`docs/cards/` 定义可复用的**概念图谱**。两者是多对多关系：一讲通常组合多张卡片，一张卡片也可以服务多讲、实验、项目与复习路径。本蓝图用于课后定位资源，默认不构成正式课程要求；实际课次与安排见[完整教学日历](../course/schedule.md)。
 
 ## 文件
 
 - [`21-lecture-blueprint.md`](21-lecture-blueprint.md) — AI 时代 21 讲课程蓝图：边界、目标、场景、主动任务与跨章迁移。
 - [`lecture-card-map.yaml`](lecture-card-map.yaml) — 机器可读的讲次—核心卡—支持/预览/扩展卡—示例—实验—交互可视化—配图—考核标签映射。
-- [`legacy-coverage-matrix.md`](legacy-coverage-matrix.md) — 现有 21 张讲稿锚点卡片与 6 张扩展卡片迁移到新序列的覆盖矩阵。
-- [`../review/README.md`](../review/README.md) — 必须由课程组或主题专家人工确认的决策与 `stable` 状态规则。
+- `legacy-coverage-matrix.md` — 仓库维护者使用的旧卡覆盖迁移矩阵，不在课程网站发布。
+- `docs/review/` — 课程组和主题专家使用的审核材料，不在课程网站发布。
 
 ## 三层关系
 

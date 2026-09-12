@@ -53,13 +53,11 @@ CS0502「计算机科学导论」（Introduction to Computer Science）面向非
 - 何友、李劭辉、李徵等 (2026). 《人工智能导论》. *清华大学出版社*.
 - 计算机领域专业与前沿材料见课程网站对应章节及 Canvas。
 
-## 课程资源入口
+## 继续查看课程说明
 
 - [2026 秋季教学日历](schedule.md)
 - [课堂与作业规范](policies.md)
-- [21 讲课程蓝图](../curriculum/21-lecture-blueprint.md)
-- [概念卡片索引](../cards/README.md)
-- [学生使用指南](../student-guide.md)
-- [代码、实验与交互可视化](../../code/README.md)
+
+课程说明以上述正式信息为准。想进一步阅读概念卡、运行实验或使用 OpenCode，可以进入[拓展学习（可选）](../extension/README.md)；这些资源默认不构成课程必做内容。
 
 最后更新：2026-09-12。
