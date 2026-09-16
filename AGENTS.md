@@ -2,7 +2,7 @@
 
 ## 概述
 
-上海交通大学「计算机科学导论（CS0502）」课程由计算机学院课程组承担，面向全校非计算机专业理工及医学科学生。本项目以课程讲稿 PDF 为只读来源锚点，构建一套**混合形态开源知识库**，并配套以阿里百炼 `qwen3.8-max` 为主测模型、provider-agnostic 的 **OpenCode 主动学习智能体**。21 讲是教学序列，概念卡片是多对多知识图谱，两者不要求一一对应。
+上海交通大学「计算机科学导论（CS0502）」课程由计算机学院课程组承担，面向全校非计算机专业理工及医学科学生。本项目以课程讲稿 PDF 为只读来源锚点，构建一套**混合形态开源知识库**，并配套以阿里百炼 `qwen3.8-max` 为主测模型、provider-agnostic 的主动学习智能体。OpenCode 提供完整入口，Pi 通过只读薄适配层复用同一套教学资源。21 讲蓝图用于组织补充资源，概念卡片是多对多知识图谱，两者不要求一一对应。
 
 知识库形态（混合方案）：
 
@@ -67,6 +67,7 @@ ComputerIntroduction/
 │   ├── tools.md                       # OpenCode / Qwen / 沙箱意图与约束
 │   └── sandbox-policy.md              # 白名单包 / 超时 / 内存 / 禁网
 ├── .opencode/                         # 学生 agent / skills / slash commands
+├── .pi/                               # Pi 只读工具、路径护栏与共享资源加载适配
 ├── notebooks/modelscope/              # PAI-DSW 一键环境与课程运行 helper
 ├── code/                               # 代码示例与沙箱
 │   ├── README.md  requirements.txt
@@ -78,7 +79,9 @@ ComputerIntroduction/
 
 ## 主题覆盖范围
 
-主线为 [`docs/curriculum/21-lecture-blueprint.md`](docs/curriculum/21-lecture-blueprint.md) 定义的 **21 讲教学序列**；概念覆盖由 `docs/cards/` 提供，多讲与多卡之间允许多对多映射。旧版规划的 8 大类约 45 篇百科**降级为可选扩展附录**，见 `docs/deep/README.md`——按需取舍，不作为主线承诺。
+实际授课主线以 [`docs/course/schedule.md`](docs/course/schedule.md) 的最新教学日历为准。[`docs/curriculum/21-lecture-blueprint.md`](docs/curriculum/21-lecture-blueprint.md) 用于组织补充资源；概念覆盖由 `docs/cards/` 提供，多讲与多卡之间允许多对多映射。旧版规划的 8 大类约 45 篇百科**降级为可选扩展附录**，见 `docs/deep/README.md`——按需取舍，不作为主线承诺。
+
+> 2026 年备课必须先核对最新教学日历，按实际课次确定主题、内容范围及前后衔接。21 讲知识库蓝图用于组织补充资源，旧 PDF 编号用于定位来源，均不得替代实际教学日历。每次修订须检查原版知识覆盖，不能因加入案例、AI 或工具演示而无说明地删减核心内容。
 
 凡旧规划主题确有深度展开需要时，在 `docs/deep/` 新建文件并在对应卡片 `related_deep` 字段登记反向链接。
 
@@ -94,7 +97,7 @@ ComputerIntroduction/
 
 ## 智能体配置约定
 
-`opencode/` 子目录是学生本地拉取仓库后用 OpenCode 加载的智能体入口：
+`opencode/` 与 `.opencode/` 是课程智能体的共享教学资源和 OpenCode 完整入口；`.pi/` 只提供 Pi 的加载与只读权限适配：
 
 - `AGENTS.md` — 行为约束中枢：角色为课程学习助教；红线为不代写作业只给思路、不触碰敏感数据、导论不引入超范围形式化证明、直觉先行；语言中文为主、语气像助教
 - `knowledge.md` — 知识库检索入口：先定位课程讲次与学习目标，再按概念 tags 选择必要卡片、实验和深度专题
@@ -102,7 +105,8 @@ ComputerIntroduction/
 - `tools.md` — 工具配置：写意图与约束，不保存 provider 密钥；本学期以用户缺省 `qwen3.8-max` 为主测模型
 - `sandbox-policy.md` — 沙箱安全：白名单 `numpy / pandas / sklearn / matplotlib / networkx`，超时 30s，本机 Linux 512MB、ModelScope 2GB，运行代码禁网
 - `.opencode/` — `course-tutor` agent、5 个项目级学习 skill 与 10 个 slash command；优先要求学生预测、追踪、实现和迁移，不直接长问答
-- 学生本机运行 OpenCode，代码统一在 PAI-DSW Quickstart 中运行；两端只通过 helper 指令与 `[CS0502_RESULT]` 摘要手动交接，不建立远程执行 API
+- `.pi/` — 自动加载 `.opencode/` 的同一套资源，映射 Pi 工具名并限制为课程目录内只读访问；不得复制维护第二套 skill
+- 学生本机运行 OpenCode 或 Pi，代码统一在 PAI-DSW Quickstart 中运行；两端只通过 helper 指令与 `[CS0502_RESULT]` 摘要手动交接，不建立远程执行 API
 - 全学期安排 3 次正式作业；Lab 默认形成性，只有教师正式指定时才通过 `code/labs/catalog.json` 的 `assignment_links` 公开关联作业
 - 全局 skill 属于用户环境，永不复制、链接、提交或推送；仓库只维护 `.opencode/skills/` 中的课程专属 skill
 
@@ -112,7 +116,7 @@ ComputerIntroduction/
 
 - **四大思维支柱对齐**：课程蓝图与卡片元数据共同对齐计算思维 / 系统思维 / 数据思维 / 智能思维，支撑 `paths/by-thinking-pillar.md`
 - **前沿进展机制**：`docs/frontier/` 双层结构——静态写底层（带一手来源，只有 `review_status: approved` 才称课程组批准基线）+ 智能体联网增量区（每条标注检索日期与来源 URL，未经审校，学生批判性阅读）。仅对高变动 AI 主题建前沿页
-- **交互式智能体**：本机 OpenCode 加载知识库做主动学习与前沿检索，PAI-DSW 提供一致代码环境，通过预测—云端验证—复盘闭环超越静态阅读
+- **交互式智能体**：本机 OpenCode 或 Pi 加载同一知识库做主动学习，PAI-DSW 提供一致代码环境，通过预测—云端验证—复盘闭环超越静态阅读；联网与写入能力按各入口单独验收
 - **跨学科桥接**：卡片「直觉类比」与「跨学科联系」字段主动关联医学 / 物理 / 生物，适配非 CS 专业背景
 
 ## 写作规范

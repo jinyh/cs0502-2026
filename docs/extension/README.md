@@ -1,6 +1,6 @@
 # 拓展学习（可选）
 
-本模块把课程知识库、代码实验和 OpenCode 助学工具集中在一起，供你按学习目标选用。它们默认不构成课程必做内容，也不替代课堂、课件和 Canvas 中的正式要求。
+本模块把课程知识库、代码实验和课程 AI 学习助教集中在一起，供你按学习目标选用。它们默认不构成课程必做内容，也不替代课堂、课件和 Canvas 中的正式要求。
 
 !!! info "如何判断是否需要完成"
     概念卡片、代码示例、交互可视化和 Lab 默认用于课后理解与自测。只有教师在 Canvas 的正式作业说明中明确指定某项活动或 Lab 时，它才进入课程要求或计分范围。
@@ -36,20 +36,22 @@
   </section>
   <section class="extension-card">
     <span class="path-number">03</span>
-    <h2>OpenCode 助学</h2>
+    <h2>AI 助学</h2>
     <p>适合希望获得诊断、分级提示、变式练习和复盘引导的同学。</p>
-    <p><strong>建议起点：</strong>完成本机安装并在仓库根目录启动课程助教，然后输入 <code>/start 当前讲次</code>。</p>
+    <p><strong>建议起点：</strong>选择 OpenCode 完整入口或 Pi 只读试用入口，启动课程助教后输入 <code>/start 当前讲次</code>。</p>
     <div class="path-links">
-      <a href="https://jinyh.github.io/cs0502-2026/docs/student-guide/">学生使用指南</a>
-      <a href="https://jinyh.github.io/cs0502-2026/opencode/tools/">安装与模型接入</a>
+      <a href="https://jinyh.github.io/cs0502-2026/docs/student-guide/">OpenCode 使用指南</a>
+      <a href="https://jinyh.github.io/cs0502-2026/docs/pi-student-guide/">Pi 试用指南</a>
+      <a href="https://jinyh.github.io/cs0502-2026/opencode/tools/">OpenCode 模型接入</a>
+      <a href="https://jinyh.github.io/cs0502-2026/docs/agent-compatibility/">Agent 兼容性状态</a>
     </div>
   </section>
 </div>
 
 ## 三条路径如何配合
 
-你可以只使用其中一条，也可以按“阅读一个概念 → 预测运行结果 → 用 OpenCode 复盘”的顺序组合。时间紧时，从当前课堂主题和一个最小问题开始，不需要一次读完整个知识库。
+你可以只使用其中一条，也可以按“阅读一个概念 → 预测运行结果 → 用课程 AI 学习助教复盘”的顺序组合。时间紧时，从当前课堂主题和一个最小问题开始，不需要一次读完整个知识库。
 
-OpenCode 只用于平时学习。正在计分的作业和项目中，它只提供分级提示、相似新题、测试建议和 rubric 反馈；正式期末考试现场禁止使用 OpenCode、其他 LLM、电子资料和网络。
+课程 AI 学习助教只用于平时学习。正在计分的作业和项目中，它只提供分级提示、相似新题、测试建议和 rubric 反馈；正式期末考试现场禁止使用任何 AI/LLM 工具、电子资料和网络。
 
 返回 [课程说明](../course/overview.md)。

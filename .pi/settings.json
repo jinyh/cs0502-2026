@@ -1,0 +1,4 @@
+{
+  "defaultTools": ["read", "grep", "find", "ls"],
+  "enableSkillCommands": true
+}

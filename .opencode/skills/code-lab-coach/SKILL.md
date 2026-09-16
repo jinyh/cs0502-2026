@@ -2,10 +2,11 @@
 name: code-lab-coach
 description: 引导学生用课程 example 做预测验证，或实现、测试和解释核心 Lab/课程项目；只给分级提示和代码评审，不代写正在计分的完整成品
 license: MIT
-compatibility: opencode
 metadata:
   audience: students
   course: CS0502
+  harnesses: opencode, pi
+  compatibility: OpenCode 1.18+ 或 Pi 0.85+；需要课程范围内的只读文件、搜索与目录工具
 ---
 
 # 代码实验与项目辅导
@@ -15,7 +16,7 @@ metadata:
 - 学生给出讲次时，优先用 grep 在 `opencode/lecture-runtime-index.jsonl` 精确匹配 `"id":"LNN"`，一次取得 example、Lab、visualization、figure 与必要卡片；给出主题时先在该文件做一次关键词检索，只有结果不唯一或缺失时才读 `opencode/knowledge.md` 或 `docs/curriculum/lecture-card-map.yaml` 的必要片段。不得按编号猜资源。
 - 默认只使用核心 `examples / labs / visualizations`；`extension_visualizations` 只在学生完成核心任务或主动深入时使用。
 - Lab 默认是形成性学习资源，不等于正式作业。开始 Lab 前按需读取 `code/labs/catalog.json` 中该项的 `assignment_links`；为空表示仓库没有公开作业关联，但教师正式作业说明始终优先。
-- 本机 OpenCode 只读课程代码，不执行、不复制、不编辑 Python；学生代码保存在 PAI-DSW 的 `/mnt/workspace/CS0502/student-work/`。
+- 本机学习智能体只读课程代码，不执行、不复制、不编辑 Python；学生代码保存在 PAI-DSW 的 `/mnt/workspace/CS0502/student-work/`。
 - 运行前先确认学生已经打开并执行 `notebooks/modelscope/CS0502-quickstart.ipynb`。云端只使用下列 helper：
 
 ```python
@@ -43,7 +44,7 @@ show_visualization("<visualization.html>")
 4. 学生用 `test_lab("<lab-id>")` 运行官方公开测试并贴回摘要；一次定位第一个根因，不直接贴补丁。
 5. 提示梯度：错误类别 → 应保持的不变量 → 局部伪代码/接口骨架 → 不同数据的完整小例子。连续两次失败后才能给完整小例子。
 6. 测试通过后，要求解释时间/空间代价、边界条件、公开测试能支持什么结论与尚未覆盖什么；再让学生自拟一个新输入。
-7. 若学生已同意本地记录，用 `code/progress.py record-lab` 依次记录 `in-progress / tests-passing / explained`。
+7. 若学生已同意本地记录，且当前 Agent 提供经课程约束的进度工具，用 `code/progress.py record-lab` 依次记录 `in-progress / tests-passing / explained`；没有进度工具时不声称状态已经保存。
 8. 未被指定为计分任务的 Lab，在学生真实尝试后可以给完整解析和不同数据的参考例子；被教师明确纳入作业的部分始终只给分级提示、测试建议和已有代码评审。
 
 ## 项目模式

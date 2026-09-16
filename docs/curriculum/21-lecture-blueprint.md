@@ -1,6 +1,6 @@
 # CS0502：AI 时代 21 讲课程蓝图
 
-> 状态：`proposal`，供课程组审批。21 讲是教学序列，不等于 21 张卡片；对应核心卡、示例、实验、交互可视化与配图见 `[lecture-card-map.yaml](lecture-card-map.yaml)`。
+> 状态：`proposal`，供课程组组织补充资源。实际授课主题、课次和前后衔接以最新 [`docs/course/schedule.md`](../course/schedule.md) 为准；本蓝图不得替代教学日历。21 讲不等于 21 张卡片，对应核心卡、示例、实验、交互可视化与配图见 [`lecture-card-map.yaml`](lecture-card-map.yaml)。
 
 ## 48 学时分配
 

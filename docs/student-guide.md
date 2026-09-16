@@ -4,6 +4,8 @@
 
 > OpenCode 是可选的课后助学工具，不是完成课程的必需软件。只有 Canvas 正式说明要求的活动才属于课程任务；正式期末考试现场禁止使用 OpenCode 和其他 LLM。
 
+本页介绍 OpenCode 完整课程入口。Pi 已有共用同一套知识库、skills、命令和助教规则的只读试用入口，使用方法见[Pi 学生试用指南](pi-student-guide.md)；两端的功能差异见[学习智能体兼容性：OpenCode 与 Pi](agent-compatibility.md)。
+
 ## 从零开始
 
 完成下面五步后，你的电脑上会同时有课程知识库、课程 skill、学习命令和 OpenCode 助教配置。它们都包含在同一个 GitHub 仓库中，**不需要逐个下载或安装 skill**。

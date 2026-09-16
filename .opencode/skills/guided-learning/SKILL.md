@@ -2,17 +2,18 @@
 name: guided-learning
 description: 按课程目标检索可复用概念卡，并用诊断、预测、追踪、分级提示和迁移任务引导学习；适用于“学一讲、解释概念、梳理讲稿、我没看懂”等请求
 license: MIT
-compatibility: opencode
 metadata:
   audience: students
   course: CS0502
+  harnesses: opencode, pi
+  compatibility: OpenCode 1.18+ 或 Pi 0.85+；需要课程范围内的只读文件、搜索与目录工具
 ---
 
 # 引导式概念学习
 
 ## 资料范围
 
-普通概念学习先读 `opencode/knowledge.md`。若学生按讲次、讲次标题或范围提问，再读取 `docs/curriculum/lecture-card-map.yaml` 中当前讲次的必要片段：按顺序从 `core_cards` 选当前卡片，只在诊断暴露缺口时使用最多两张 `supporting_cards`；`preview_cards` 只用于建立后续直觉，`extension_cards` 与 `extension_visualizations` 只在学生主动深入或核心任务完成后使用。按需选一个 example、visualization、figure 或 lab。讲次和卡片不是一一对应，不得根据编号猜文件，也不得把卡片预计时长相加冒充正式课时。资料定位只用 read/glob/grep，不调用 bash。说明依据的卡片路径；映射仍为 `proposal` 时称为待审学习序列，不冒充正式课表。讲稿不在公开仓库，不声称逐字引用。
+普通概念学习先读 `opencode/knowledge.md`。若学生按讲次、讲次标题或范围提问，再读取 `docs/curriculum/lecture-card-map.yaml` 中当前讲次的必要片段：按顺序从 `core_cards` 选当前卡片，只在诊断暴露缺口时使用最多两张 `supporting_cards`；`preview_cards` 只用于建立后续直觉，`extension_cards` 与 `extension_visualizations` 只在学生主动深入或核心任务完成后使用。按需选一个 example、visualization、figure 或 lab。讲次和卡片不是一一对应，不得根据编号猜文件，也不得把卡片预计时长相加冒充正式课时。资料定位使用 Agent 提供的只读文件、搜索和目录工具；OpenCode 对应 read/glob/grep，Pi 对应 read/find/grep/ls。不要为定位资料调用 shell。说明依据的卡片路径；映射仍为 `proposal` 时称为待审学习序列，不冒充正式课表。讲稿不在公开仓库，不声称逐字引用。
 
 `/start` 是性能敏感的入门例外：首次回复前不读取 `opencode/knowledge.md` 或完整课程映射，只检查本地进度状态并提出一道与学生给定目标有关的短诊断题；学生回答后，需要推荐具体资源时才做一次最小检索。
 
@@ -35,11 +36,13 @@ metadata:
 
 ## 入门与本地记录
 
-`/start` 只做三件事：处理本地记录、提出**一道且仅一道**短诊断题、在学生回答后推荐一个下一步。先用 read/glob 检查 `student-work/progress.json`；已有符合 v2 schema 且 `consent.local_learning_record` 为 `true` 的记录时直接沿用，不重复询问或初始化。不存在、损坏或无有效 consent 时才说明记录范围并征求同意。不得把多个小题组成题组，也不得在学生尚未回答时预先推荐。学生同意后才运行：
+`/start` 只做三件事：处理本地记录、提出**一道且仅一道**短诊断题、在学生回答后推荐一个下一步。先用 Agent 提供的只读文件或目录工具检查 `student-work/progress.json`；已有符合 v2 schema 且 `consent.local_learning_record` 为 `true` 的记录时直接沿用，不重复询问或初始化。不存在、损坏或无有效 consent，且当前 Agent 提供经课程约束的进度工具时，才说明记录范围并征求同意；没有进度工具时只说明本轮不持久记录，随后直接进入诊断。不得把多个小题组成题组，也不得在学生尚未回答时预先推荐。学生同意且当前 Agent 提供经课程约束的命令执行能力时，才运行：
 
 ```bash
 uv run --no-project python code/progress.py init --consent
 ```
+
+当前 Agent 没有受限命令执行能力时，只在当前会话内继续学习，并明确说明没有创建或更新进度文件。
 
 损坏或不兼容的进度文件不得擅自覆盖：说明问题并继续当前会话，除非学生明确同意处理。学习以迁移题和学生总结结束后，若已同意记录，用 `record-card` 保存 `correct / partial / incorrect`、本轮提示次数、信心 1–5、是否能解释边界及少量错因标签。不得保存姓名、学号、成绩或原始作答；拒绝记录不影响继续学习。
 

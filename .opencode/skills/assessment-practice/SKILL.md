@@ -2,10 +2,11 @@
 name: assessment-practice
 description: 按脱敏考核蓝图生成全新同构练习、模拟题、rubric 评分和错因迁移；适用于备考、刷题、模拟考试和提高分数
 license: MIT
-compatibility: opencode
 metadata:
   audience: students
   course: CS0502
+  harnesses: opencode, pi
+  compatibility: OpenCode 1.18+ 或 Pi 0.85+；需要课程范围内的只读文件、搜索与目录工具
 ---
 
 # 考核迁移训练
@@ -32,6 +33,6 @@ metadata:
 4. 学生完成自生成练习尝试后，可给完整解析。
 5. 紧接着生成一题同认知层级的变式；无提示正确且能解释才视为迁移成功。
 
-若学生已同意本地记录，在完成变式后调用 `code/progress.py record-card` 更新主要卡片；只记录结果、提示次数、信心和错因标签，不保存题面或学生原始答案。
+若学生已同意本地记录，且当前 Agent 提供经课程约束的进度工具，在完成变式后调用 `code/progress.py record-card` 更新主要卡片；只记录结果、提示次数、信心和错因标签，不保存题面或学生原始答案。没有进度工具时只做当前会话反馈，不声称记录已经保存。
 
 若学生说这是正在计分的作业、项目或正在进行的考试，停止完整解答：作业/项目改用分级提示与 rubric；正式考试现场拒绝实时解题。

@@ -16,7 +16,7 @@
   <div><span>期末考试</span><strong>纸质材料开卷</strong><small>禁止电子资料与联网</small></div>
 </div>
 
-本课程由上海交通大学计算机学院课程组承担，面向具备微积分和线性代数基础、无计算机科学先修知识的大学二年级理工科及医学科学生。课程网站先提供正式课程说明；知识库、代码实验和 OpenCode 归入可选拓展学习。课件、作业要求、提交入口与临时通知以 Canvas 为准。
+本课程由上海交通大学计算机学院课程组承担，面向具备微积分和线性代数基础、无计算机科学先修知识的大学二年级理工科及医学科学生。课程网站先提供正式课程说明；知识库、代码实验和课程 AI 学习助教归入可选拓展学习。课件、作业要求、提交入口与临时通知以 Canvas 为准。
 
 <div class="module-grid">
   <section class="module-card module-card-primary">
@@ -33,11 +33,11 @@
   <section class="module-card module-card-optional">
     <span class="module-badge module-badge-optional">可选</span>
     <h2>拓展学习</h2>
-    <p>按需要使用知识库、代码实验和 OpenCode 助学工具，加深理解或进行课后练习。</p>
+    <p>按需要使用知识库、代码实验和课程 AI 学习助教，加深理解或进行课后练习。</p>
     <ul>
       <li>阅读补充：概念卡片、专题与前沿注记</li>
       <li>动手验证：示例、Lab 与交互可视化</li>
-      <li>OpenCode 助学：预测、提示、练习与复盘</li>
+      <li>AI 助学：预测、提示、练习与复盘</li>
     </ul>
     <a class="module-link" href="https://jinyh.github.io/cs0502-2026/docs/extension/">查看可选拓展 →</a>
   </section>
@@ -65,7 +65,9 @@
 
 拓展学习模块是课程讲稿的可检索、可运行补充，默认不构成必做要求，也不替代课堂教学。某个 Lab 只有被教师在 Canvas 的正式作业说明中明确指定后，才成为计分任务的一部分。
 
-文档内容使用 CC BY-SA 4.0，代码与 OpenCode 配置使用 MIT，详见 [`LICENSE`](LICENSE)。课程讲稿 PDF 版权归课程组所有，不随仓库发布。
+学习智能体同时保留 OpenCode 完整入口和 Pi 只读试用入口；两者复用同一套课程知识库、skills、命令与教学规则。使用方式和功能边界见[学习智能体兼容性](docs/agent-compatibility.md)。
+
+文档内容使用 CC BY-SA 4.0，代码与智能体配置使用 MIT，详见 [`LICENSE`](LICENSE)。课程讲稿 PDF 版权归课程组所有，不随仓库发布。
 
 ## 致谢
 

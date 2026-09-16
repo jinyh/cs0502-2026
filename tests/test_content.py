@@ -300,7 +300,7 @@ def test_public_site_separates_course_information_from_optional_extension():
     assert home.index("<h2>课程说明</h2>") < home.index("<h2>拓展学习</h2>")
     assert '<span class="module-badge module-badge-optional">可选</span>' in home
     assert "默认不构成课程必做内容" in extension
-    for path_name in ("阅读补充", "动手验证", "OpenCode 助学"):
+    for path_name in ("阅读补充", "动手验证", "AI 助学"):
         assert f"<h2>{path_name}</h2>" in extension
 
     override = (ROOT / "website" / "overrides" / "main.html").read_text(encoding="utf-8")
@@ -481,7 +481,7 @@ def test_opencode_defaults_to_deny_and_does_not_vendor_global_skills():
     assert '  "*": deny' in agent
     assert '"uv run python code/runner.py *": allow' not in agent
     assert '"uv run --no-project python code/progress.py *": allow' in agent
-    assert "本机 OpenCode 不执行课程 Python" in agent
+    assert "本机学习智能体不执行课程 Python" in agent
     assert agent.index('  "*": deny') < agent.index("  read:")
 
     assert not (ROOT / ".agents" / "skills").exists()
@@ -499,3 +499,31 @@ def test_opencode_defaults_to_deny_and_does_not_vendor_global_skills():
         except UnicodeDecodeError:
             continue
         assert not forbidden_reference.search(text), path
+
+
+def test_pi_reuses_course_resources_with_a_read_only_project_adapter():
+    settings = json.loads((ROOT / ".pi" / "settings.json").read_text(encoding="utf-8"))
+    assert settings["defaultTools"] == ["read", "grep", "find", "ls"]
+    assert settings["enableSkillCommands"] is True
+
+    adapter = (ROOT / ".pi" / "extensions" / "course-tutor.ts").read_text(encoding="utf-8")
+    assert 'join(courseRoot, ".opencode/skills")' in adapter
+    assert 'join(courseRoot, ".opencode/commands")' in adapter
+    assert 'join(courseRoot, ".opencode/agents/course-tutor.md")' in adapter
+    for protected in ("reference", "LectureNotes", ".git", ".env"):
+        assert protected in adapter
+
+    skills = sorted((ROOT / ".opencode" / "skills").glob("*/SKILL.md"))
+    assert len(skills) == 5
+    for skill in skills:
+        text = skill.read_text(encoding="utf-8")
+        assert re.search(r"^  compatibility: .*OpenCode.*Pi", text, re.MULTILINE), skill
+        assert re.search(r"^  harnesses: opencode, pi$", text, re.MULTILINE), skill
+
+    guide = (ROOT / "docs" / "pi-student-guide.md").read_text(encoding="utf-8")
+    assert ".pi/settings.json" in guide
+    assert ".pi/extensions/course-tutor.ts" in guide
+    assert "/start L01" in guide
+    assert "pi --no-context-files --no-skills --no-prompt-templates --no-extensions" in guide
+    assert "-e .pi/extensions/course-tutor.ts" in guide
+    assert "只读" in guide

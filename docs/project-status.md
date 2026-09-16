@@ -4,6 +4,13 @@
 
 ## 当前进度
 
+### 2026-09-16 智能体兼容性验证
+
+- 保留现有 OpenCode 完整课程入口；Pi 通过 `.pi/` 薄适配层复用同一套教学 skills、命令和助教规则，不复制内容。
+- 网站总入口统一为“AI 助学”，分别提供 OpenCode 指南与 Pi 只读试用指南；2026 版 Slide01/02 已同步使用通用助教表述。
+- Pi 0.85.1 已通过项目资源加载、10 个命令参数展开和工具路径护栏检查；只读学生试用入口已加入仓库。
+- Pi 的真实教学回复、速度对比、进度写入和联网权限仍待验证。详见[学习智能体兼容性](agent-compatibility.md)。
+
 ### 已有资源
 
 - 21 个课程讲稿 PDF（课程内部材料，发布在 Canvas，不入仓库）
@@ -16,7 +23,7 @@
 - 多路径索引（`docs/paths/` 五页）与 `glossary.md`
 - 18 个概念示例、8 个核心实验、30 张 SVG 配图与跨平台 runner
 - PAI-DSW Quickstart Notebook（持久化环境、example/Lab/可视化 helper 与学生工作备份）
-- OpenCode 配置全套（`course-tutor` agent / 5 skills / 10 slash commands）
+- OpenCode 完整配置与 Pi 只读适配（共用 `course-tutor` / 5 skills / 10 个学习命令）
 - `README.md` 与 `LICENSE`（内容 CC-BY-SA 4.0 / 代码 MIT）
 - 2026 秋季课程网站源码与 GitHub Pages 自动部署（`website/`、`.github/workflows/pages.yml`）
 

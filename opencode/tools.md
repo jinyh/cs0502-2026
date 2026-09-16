@@ -2,6 +2,8 @@
 
 > 可执行配置位于仓库根目录 `opencode.json` 与 `.opencode/`。本页解释意图，不保存任何凭据。
 
+本页的安装、权限与凭据步骤专用于 OpenCode。项目同时提供 [Pi 只读试用入口](../docs/pi-student-guide.md)，两端共用课程资源但分别实施权限；支持范围和测试结果见[学习智能体兼容性](../docs/agent-compatibility.md)。不要将 OpenCode 的权限配置视为其他 Agent 已生效的限制。
+
 面向学生的下载、安装和首次验证步骤见[OpenCode 学生学习指南](../docs/student-guide.md)。完整仓库已经包含知识库、课程 agent、5 个 skill 和 10 个 slash command；skill 由 OpenCode 自动发现并按需加载，不需要单独安装。
 
 ## 模型
