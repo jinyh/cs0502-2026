@@ -1,555 +1,100 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>汉诺塔递归演示</title>
-    <style>
-        body {
-            font-family: 'Arial', sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-        }
-
-        .header {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 20px;
-            margin-bottom: 30px;
-            flex-wrap: wrap;
-        }
-
-        .control-group {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px 15px;
-            border-radius: 8px;
-        }
-
-        input, select, button {
-            padding: 8px 12px;
-            border: none;
-            border-radius: 4px;
-            font-size: 14px;
-        }
-
-        button {
-            background: #4CAF50;
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #45a049;
-        }
-
-        button:disabled {
-            background: #666;
-            cursor: not-allowed;
-        }
-
-        .game-area {
-            display: flex;
-            gap: 30px;
-            align-items: flex-start;
-        }
-
-        .hanoi-container {
-            flex: 1;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            min-height: 450px;
-        }
-
-        .towers {
-            display: flex;
-            justify-content: space-around;
-            align-items: flex-end;
-            height: 350px;
-            margin: 20px 0;
-        }
-
-        .tower {
-            width: 200px;
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100%;
-        }
-
-        .tower-base {
-            width: 180px;
-            height: 20px;
-            background: #8B4513;
-            border-radius: 10px;
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 1;
-        }
-
-        .tower-pole {
-            width: 8px;
-            height: 280px;
-            background: #654321;
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            border-radius: 4px;
-            z-index: 2;
-        }
-
-        .tower-disks {
-            position: absolute;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            flex-direction: column-reverse;
-            align-items: center;
-            z-index: 3;
-            min-height: 24px;
-        }
-
-        .tower-label {
-            position: absolute;
-            bottom: -35px;
-            left: 50%;
-            transform: translateX(-50%);
-            font-weight: bold;
-            font-size: 18px;
-            white-space: nowrap;
-        }
-
-        .disk {
-            height: 20px;
-            border-radius: 10px;
-            margin: 1px 0;
-            position: relative;
-            transition: all 0.5s ease;
-            border: 2px solid rgba(255, 255, 255, 0.3);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            color: white;
-            text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        .stack-panel {
-            width: 300px;
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 15px;
-            padding: 20px;
-            min-height: 450px;
-            display: flex;
-            flex-direction: column;
-        }
-
-        .stack-visualization {
-            background: rgba(0, 0, 0, 0.2);
-            border-radius: 8px;
-            padding: 15px;
-            margin-bottom: 20px;
-            min-height: 280px;
-            flex-grow: 1;
-            overflow-y: auto;
-        }
-
-        .stack-item {
-            background: rgba(255, 255, 255, 0.1);
-            margin: 5px 0;
-            padding: 8px 12px;
-            border-radius: 4px;
-            border-left: 4px solid #4CAF50;
-            font-family: monospace;
-            font-size: 12px;
-        }
-
-        .stats {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-top: auto;
-        }
-
-        .stat-item {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 10px;
-            border-radius: 8px;
-            text-align: center;
-        }
-
-        .stat-value {
-            font-size: 24px;
-            font-weight: bold;
-            color: #4CAF50;
-        }
-
-        .tower-highlight {
-            background: rgba(255, 255, 0, 0.3) !important;
-            border-radius: 10px;
-            transition: background 0.3s;
-        }
-
-        .hanoi-title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        .stack-title {
-            text-align: center;
-            margin-bottom: 20px;
-            font-size: 20px;
-            font-weight: bold;
-        }
-
-        @media (max-width: 768px) {
-            .game-area {
-                flex-direction: column;
-            }
-            
-            .towers {
-                height: 300px;
-            }
-            
-            .tower {
-                width: 150px;
-            }
-            
-            .tower-base {
-                width: 130px;
-            }
-            
-            .tower-pole {
-                height: 230px;
-            }
-            
-            .hanoi-container,
-            .stack-panel {
-                min-height: 350px;
-            }
-            
-            .stack-visualization {
-                min-height: 200px;
-            }
-            
-            .controls {
-                flex-direction: column;
-                align-items: center;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>汉诺塔递归与调用栈动画</title>
+  <style>
+    :root { --blue:#004098; --ink:#172033; --muted:#617086; --line:#cad7e8; --pale:#eef5ff; --gold:#f3b63c; --green:#27845d; --red:#b84242; }
+    *{box-sizing:border-box} body{margin:0;background:#f3f6fa;color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif} main{max-width:1280px;margin:auto;padding:22px}
+    header{border-left:10px solid var(--blue);padding:3px 0 3px 18px} h1{margin:0 0 5px;color:var(--blue);font-size:clamp(26px,3vw,38px)} header p{margin:0;color:var(--muted);font-size:17px}
+    .predict{margin:14px 0;background:#fff8e7;border:1px solid #efd18b;padding:11px 15px;font-size:17px}
+    .layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(330px,.9fr);gap:20px}.panel{background:white;border:1px solid var(--line);padding:16px}.panel h2{margin:0 0 8px;color:var(--blue);font-size:21px}
+    .towers{height:390px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end;border-bottom:8px solid #8a6846;padding:20px 7px 0}.tower{height:330px;position:relative;display:flex;flex-direction:column-reverse;align-items:center;padding-bottom:10px}.pole{position:absolute;bottom:0;width:9px;height:285px;background:#8a6846;border-radius:5px 5px 0 0;z-index:0}.disk{height:32px;border:2px solid #163b72;border-radius:8px;background:linear-gradient(#4e93d0,#1769aa);z-index:1;margin-top:3px;color:white;display:grid;place-items:center;font-weight:700;box-shadow:0 2px 3px #6a7687;animation:appear .25s}.tower-label{position:absolute;bottom:-48px;font-size:20px;font-weight:700;color:var(--blue)}
+    @keyframes appear{from{opacity:.25;transform:translateY(-10px)}}
+    .stack-wrap{min-height:390px;display:flex;flex-direction:column}.stack-label{color:var(--muted);font-size:14px}.frames{display:flex;flex-direction:column;gap:7px;margin-top:7px}.frame{border:2px solid #8caed6;background:var(--pale);padding:8px 10px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.frame.top{border-color:var(--gold);background:#fff5d8}.frame .call{font-weight:800}.frame .stage{font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#4e5c70;font-size:14px;margin-top:3px}.empty{display:grid;place-items:center;min-height:220px;color:#9aa5b5}
+    .event{margin-top:18px;background:white;border:1px solid var(--line);min-height:82px;padding:14px 17px}.event strong{color:var(--blue)}.event .move{color:var(--green);font-weight:700;font-size:20px;margin-top:5px}.event .base{color:var(--red);font-weight:700;margin-top:5px}
+    .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}button,select{font:16px inherit;border-radius:6px;padding:10px 17px}button{border:0;background:var(--blue);color:white;cursor:pointer}button.secondary{background:#5d6b7e}button:disabled{opacity:.45;cursor:not-allowed}select{background:white;border:1px solid var(--line)}.stats{margin-left:auto;color:var(--muted)}
+    .lesson{margin-top:14px;color:var(--muted);font-size:15px}.lesson b{color:var(--ink)}
+    @media(max-width:850px){main{padding:14px}.layout{grid-template-columns:1fr}.towers{height:330px}.tower{height:270px}.pole{height:225px}.stats{width:100%;margin-left:0}}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>汉诺塔递归演示</h1>
-            <p>观察递归算法如何使用栈来解决汉诺塔问题</p>
-        </div>
+<main>
+  <header><h1>汉诺塔：递归与调用栈</h1><p>圆盘移动和函数调用同步显示，基本情形统一为 n = 0 立即返回</p></header>
+  <div class="predict"><strong>先预测：</strong>n = 3 时最多同时存在几个 Hanoi 栈帧？总共移动多少次？到达 Hanoi(0, …) 时会不会移动圆盘？</div>
+  <section class="layout">
+    <article class="panel"><h2>三根塔柱</h2><div class="towers" id="towers" aria-label="汉诺塔圆盘状态"></div></article>
+    <article class="panel stack-wrap"><h2>调用栈</h2><div class="stack-label">栈顶在上方；黄色栈帧正在执行</div><div class="frames" id="frames" aria-label="递归调用栈"></div></article>
+  </section>
+  <div class="event" id="event" aria-live="polite"></div>
+  <div class="bar">
+    <label>圆盘数 <select id="count"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
+    <button id="next">下一步</button><button id="auto" class="secondary">自动播放</button><button id="reset" class="secondary">重置</button>
+    <span class="stats" id="stats"></span>
+  </div>
+  <div class="lesson"><b>观察重点：</b>调用递归函数时压入栈帧；n = 0 的栈帧不搬盘并立即返回；搬盘是当前栈帧中的普通操作。</div>
+</main>
+<script>
+  const names=['X','Y','Z'];
+  const towersEl=document.getElementById('towers'), framesEl=document.getElementById('frames'), eventEl=document.getElementById('event'), statsEl=document.getElementById('stats');
+  const nextBtn=document.getElementById('next'), autoBtn=document.getElementById('auto'), countEl=document.getElementById('count');
+  let events=[], index=-1, timer=null, diskCount=3;
+  const clone=x=>JSON.parse(JSON.stringify(x));
 
-        <div class="controls">
-            <div class="control-group">
-                <label>圆盘数量:</label>
-                <input type="number" id="diskCount" aria-label="圆盘数量" min="1" max="8" value="3">
-            </div>
-            <div class="control-group">
-                <label>动画速度:</label>
-                <select id="speed" aria-label="动画速度">
-                    <option value="1000">慢速</option>
-                    <option value="500" selected>中速</option>
-                    <option value="200">快速</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <button id="startBtn">开始演示</button>
-                <button id="resetBtn">重置</button>
-                <button id="pauseBtn" disabled>暂停</button>
-            </div>
-        </div>
-        <p style="text-align:center"><strong>先预测：</strong>移动 n 个盘最少需要多少步？写出递推关系后再播放。</p>
-
-        <div class="game-area">
-            <div class="hanoi-container">
-                <div class="hanoi-title">汉诺塔游戏区</div>
-                <div class="towers">
-                    <div class="tower" data-tower="0">
-                        <div class="tower-pole"></div>
-                        <div class="tower-disks"></div>
-                        <div class="tower-base"></div>
-                        <div class="tower-label">起始柱 (A)</div>
-                    </div>
-                    <div class="tower" data-tower="1">
-                        <div class="tower-pole"></div>
-                        <div class="tower-disks"></div>
-                        <div class="tower-base"></div>
-                        <div class="tower-label">辅助柱 (B)</div>
-                    </div>
-                    <div class="tower" data-tower="2">
-                        <div class="tower-pole"></div>
-                        <div class="tower-disks"></div>
-                        <div class="tower-base"></div>
-                        <div class="tower-label">目标柱 (C)</div>
-                    </div>
-                </div>
-            </div>
-
-            <div class="stack-panel">
-                <div class="stack-title">递归调用栈</div>
-                <div class="stack-visualization" id="stackVis"></div>
-                
-                <div class="stats">
-                    <div class="stat-item">
-                        <div class="stat-value" id="moveCount">0</div>
-                        <div>移动次数</div>
-                    </div>
-                    <div class="stat-item">
-                        <div class="stat-value" id="stackDepth">0</div>
-                        <div>栈深度</div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        class HanoiTower {
-            constructor() {
-                this.towers = [[], [], []];
-                this.diskCount = 3;
-                this.moveCount = 0;
-                this.isRunning = false;
-                this.isPaused = false;
-                this.speed = 500;
-                this.callStack = [];
-                this.currentMove = null;
-                
-                this.colors = [
-                    '#FF6B6B', '#4ECDC4', '#45B7D1', '#96CEB4', 
-                    '#FFEAA7', '#DDA0DD', '#F4A460', '#87CEEB'
-                ];
-                
-                this.initializeElements();
-                this.reset();
-            }
-
-            initializeElements() {
-                this.diskCountInput = document.getElementById('diskCount');
-                this.speedSelect = document.getElementById('speed');
-                this.startBtn = document.getElementById('startBtn');
-                this.resetBtn = document.getElementById('resetBtn');
-                this.pauseBtn = document.getElementById('pauseBtn');
-                this.stackVis = document.getElementById('stackVis');
-                this.moveCountEl = document.getElementById('moveCount');
-                this.stackDepthEl = document.getElementById('stackDepth');
-
-                this.startBtn.addEventListener('click', () => this.start());
-                this.resetBtn.addEventListener('click', () => this.reset());
-                this.pauseBtn.addEventListener('click', () => this.togglePause());
-                this.diskCountInput.addEventListener('change', () => this.reset());
-                this.speedSelect.addEventListener('change', (e) => {
-                    this.speed = parseInt(e.target.value);
-                });
-            }
-
-            reset() {
-                this.isRunning = false;
-                this.isPaused = false;
-                this.moveCount = 0;
-                this.callStack = [];
-                this.diskCount = parseInt(this.diskCountInput.value);
-                
-                this.towers = [[], [], []];
-                for (let i = this.diskCount; i >= 1; i--) {
-                    this.towers[0].push(i);
-                }
-                
-                this.updateDisplay();
-                this.updateButtons();
-                this.updateStats();
-            }
-
-            start() {
-                if (this.isPaused) {
-                    this.isPaused = false;
-                    this.updateButtons();
-                    return;
-                }
-                
-                this.isRunning = true;
-                this.updateButtons();
-                this.solveHanoi(this.diskCount, 0, 2, 1);
-            }
-
-            togglePause() {
-                this.isPaused = !this.isPaused;
-                this.updateButtons();
-            }
-
-            updateButtons() {
-                this.startBtn.disabled = this.isRunning && !this.isPaused;
-                this.pauseBtn.disabled = !this.isRunning;
-                this.resetBtn.disabled = this.isRunning && !this.isPaused;
-                this.diskCountInput.disabled = this.isRunning;
-                
-                this.pauseBtn.textContent = this.isPaused ? '继续' : '暂停';
-                this.startBtn.textContent = this.isPaused ? '继续' : '开始演示';
-            }
-
-            async solveHanoi(n, from, to, aux) {
-                if (!this.isRunning) return;
-                
-                // 将函数调用压入栈
-                const callInfo = {
-                    n: n,
-                    from: String.fromCharCode(65 + from),
-                    to: String.fromCharCode(65 + to),
-                    aux: String.fromCharCode(65 + aux),
-                    id: Date.now() + Math.random()
-                };
-                
-                this.callStack.push(callInfo);
-                this.updateStackVisualization();
-                
-                await this.delay(this.speed / 2);
-                
-                if (n === 1) {
-                    // 基础情况：移动一个圆盘
-                    await this.moveDisk(from, to);
-                } else {
-                    // 递归情况
-                    // 步骤1：将n-1个圆盘从起始柱移动到辅助柱
-                    await this.solveHanoi(n - 1, from, aux, to);
-                    
-                    // 步骤2：将最大的圆盘从起始柱移动到目标柱
-                    await this.moveDisk(from, to);
-                    
-                    // 步骤3：将n-1个圆盘从辅助柱移动到目标柱
-                    await this.solveHanoi(n - 1, aux, to, from);
-                }
-                
-                // 函数调用完成，从栈中弹出
-                this.callStack.pop();
-                this.updateStackVisualization();
-                
-                if (this.callStack.length === 0) {
-                    this.isRunning = false;
-                    this.updateButtons();
-                }
-            }
-
-            async moveDisk(from, to) {
-                while (this.isPaused) {
-                    await this.delay(100);
-                }
-                
-                if (!this.isRunning) return;
-                
-                const disk = this.towers[from].pop();
-                this.towers[to].push(disk);
-                this.moveCount++;
-                
-                this.updateDisplay();
-                this.updateStats();
-                
-                // 高亮当前移动
-                this.highlightMove(from, to, disk);
-                
-                await this.delay(this.speed);
-            }
-
-            highlightMove(from, to, disk) {
-                const fromTower = document.querySelector(`[data-tower="${from}"]`);
-                const toTower = document.querySelector(`[data-tower="${to}"]`);
-                
-                fromTower.classList.add('tower-highlight');
-                toTower.classList.add('tower-highlight');
-                
-                setTimeout(() => {
-                    fromTower.classList.remove('tower-highlight');
-                    toTower.classList.remove('tower-highlight');
-                }, this.speed);
-            }
-
-            updateDisplay() {
-                const towerElements = document.querySelectorAll('.tower-disks');
-                
-                towerElements.forEach((diskContainer, towerIndex) => {
-                    // 清除现有圆盘
-                    diskContainer.innerHTML = '';
-                    
-                    // 添加新圆盘（从下到上）
-                    const tower = this.towers[towerIndex];
-                    tower.forEach((diskSize, diskIndex) => {
-                        const diskEl = document.createElement('div');
-                        diskEl.className = 'disk';
-                        diskEl.style.width = `${60 + diskSize * 20}px`;
-                        diskEl.style.backgroundColor = this.colors[diskSize - 1];
-                        diskEl.textContent = diskSize;
-                        
-                        diskContainer.appendChild(diskEl);
-                    });
-                });
-            }
-
-            updateStackVisualization() {
-                this.stackVis.innerHTML = '';
-                
-                if (this.callStack.length === 0) {
-                    this.stackVis.innerHTML = '<div style="text-align: center; color: #888; margin-top: 50px;">栈为空</div>';
-                    return;
-                }
-                
-                // 从栈顶到栈底显示
-                for (let i = this.callStack.length - 1; i >= 0; i--) {
-                    const call = this.callStack[i];
-                    const stackItem = document.createElement('div');
-                    stackItem.className = 'stack-item';
-                    stackItem.innerHTML = `
-                        <strong>hanoi(${call.n}, ${call.from}, ${call.to}, ${call.aux})</strong><br>
-                        <small>移动 ${call.n} 个圆盘: ${call.from} → ${call.to}</small>
-                    `;
-                    this.stackVis.appendChild(stackItem);
-                }
-            }
-
-            updateStats() {
-                this.moveCountEl.textContent = this.moveCount;
-                this.stackDepthEl.textContent = this.callStack.length;
-            }
-
-            delay(ms) {
-                return new Promise(resolve => setTimeout(resolve, ms));
-            }
-        }
-
-        // 初始化游戏
-        window.addEventListener('DOMContentLoaded', () => {
-            new HanoiTower();
-        });
-    </script>
+  function buildTrace(n){
+    const towers=[[],[],[]]; for(let d=n;d>=1;d--)towers[0].push(d);
+    const frames=[]; const out=[]; let moves=0,maxDepth=0,id=0;
+    const snapshot=(kind,text,detail='')=>out.push({kind,text,detail,towers:clone(towers),frames:clone(frames),moves,maxDepth});
+    function visit(k,from,aux,to){
+      const frame={id:++id,n:k,from:names[from],aux:names[aux],to:names[to],stage:'刚进入，准备检查基本情形'};
+      frames.push(frame); maxDepth=Math.max(maxDepth,frames.length);
+      snapshot('push',`压栈 Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to})`,'新调用还没有完成，计算机先保存参数和返回位置。');
+      if(k===0){
+        frame.stage='n = 0，立即返回'; snapshot('base','到达基本情形 n = 0','不移动任何圆盘。');
+        frames.pop(); snapshot('pop',`弹栈 Hanoi(0, ${frame.from}, ${frame.aux}, ${frame.to})`,'控制权回到上一层调用。'); return;
+      }
+      frame.stage=`等待 Hanoi(${k-1}, ${names[from]}, ${names[to]}, ${names[aux]}) 返回`;
+      snapshot('descend','执行第一次递归',`先把上面的 ${k-1} 个圆盘从 ${names[from]} 移到 ${names[aux]}。`);
+      visit(k-1,from,to,aux);
+      frame.stage=`第一次递归完成，移动盘 ${k}`; snapshot('resume',`恢复 Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to})`,'现在执行这个栈帧中尚未完成的搬盘动作。');
+      const disk=towers[from].pop(); towers[to].push(disk); moves++;
+      frame.stage=`盘 ${k} 已移动，准备第二次递归`; snapshot('move',`移动盘 ${k}：${names[from]} → ${names[to]}`,`这是普通操作，没有产生新栈帧。`);
+      frame.stage=`等待 Hanoi(${k-1}, ${names[aux]}, ${names[from]}, ${names[to]}) 返回`;
+      snapshot('descend','执行第二次递归',`把 ${k-1} 个圆盘从 ${names[aux]} 移到 ${names[to]}。`);
+      visit(k-1,aux,from,to);
+      frame.stage='三步完成，准备返回'; snapshot('return',`Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to}) 完成`,'这个调用已经没有尚未完成的工作。');
+      frames.pop(); snapshot('pop',`弹栈 Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to})`,frames.length?'继续执行上一层调用。':'最外层调用结束。');
+    }
+    snapshot('ready','准备开始','点击“下一步”，观察调用怎样压栈。'); visit(n,0,1,2);
+    return out;
+  }
+  function renderTowers(state){
+    towersEl.innerHTML='';
+    state.towers.forEach((stack,t)=>{
+      const tower=document.createElement('div'); tower.className='tower';
+      tower.innerHTML='<div class="pole"></div>';
+      stack.forEach(d=>{const disk=document.createElement('div');disk.className='disk';disk.style.width=`${42+d*31}px`;disk.textContent=d;tower.appendChild(disk)});
+      const label=document.createElement('div');label.className='tower-label';label.textContent=names[t];tower.appendChild(label);towersEl.appendChild(tower);
+    });
+  }
+  function renderFrames(state){
+    if(!state.frames.length){framesEl.innerHTML='<div class="empty">调用栈为空</div>';return}
+    framesEl.innerHTML=[...state.frames].reverse().map((f,i)=>`<div class="frame ${i===0?'top':''}"><div class="call">Hanoi(${f.n}, ${f.from}, ${f.aux}, ${f.to})</div><div class="stage">${f.stage}</div></div>`).join('');
+  }
+  function render(){
+    const state=events[index]; renderTowers(state); renderFrames(state);
+    const extra=state.kind==='move'?`<div class="move">${state.text}</div>`:state.kind==='base'?`<div class="base">${state.text}</div>`:`<strong>${state.text}</strong>`;
+    eventEl.innerHTML=`${extra}<div>${state.detail}</div>`;
+    statsEl.textContent=`事件 ${index}/${events.length-1}　移动 ${state.moves}/${2**diskCount-1}　当前深度 ${state.frames.length}　最大深度 ${state.maxDepth}`;
+    nextBtn.disabled=index>=events.length-1; countEl.disabled=index>0;
+    if(nextBtn.disabled)stopAuto();
+  }
+  function next(){if(index<events.length-1){index++;render()}}
+  function startAuto(){if(timer||nextBtn.disabled)return;autoBtn.textContent='暂停';timer=setInterval(next,700)}
+  function stopAuto(){if(timer)clearInterval(timer);timer=null;autoBtn.textContent='自动播放'}
+  function reset(){stopAuto();diskCount=Number(countEl.value);events=buildTrace(diskCount);index=0;countEl.disabled=false;render()}
+  nextBtn.addEventListener('click',next);autoBtn.addEventListener('click',()=>timer?stopAuto():startAuto());document.getElementById('reset').addEventListener('click',reset);countEl.addEventListener('change',reset);reset();
+</script>
 </body>
 </html>

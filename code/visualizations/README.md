@@ -1,6 +1,6 @@
 # 可视化（code/visualizations/）
 
-现有 5 个自包含 HTML 可视化（内嵌 CSS+JS，单文件，浏览器直接打开）迁移自课程 Demo，原文件保留在教师工作区。另新增采用本地模块资源的无人船巡检实验室，通过 HTTP 启动。
+现有 6 个自包含 HTML 可视化（内嵌 CSS+JS，单文件，浏览器直接打开）。另有采用本地模块资源的无人船巡检实验室，通过 HTTP 启动。
 
 ## 第 1—2 讲：无人船巡检交互实验室
 
@@ -12,13 +12,16 @@
 
 | 文件 | 主题 | 对应卡片 | 嵌入方式 |
 |---|---|---|---|
+| `traffic_conflicts.html` | 五岔路口：车流轨迹与交叉冲突图 | 第 3 讲「数据结构一」第 8 页补充 | 浏览器直接打开，离线使用 |
 | `binary_heap.html` | 二叉堆的插入与下沉 | `05-data-structure-advanced` | iframe 或新标签打开 |
-| `circular_queue.html` | 循环队列的入队出队 | `05-data-structure-advanced` | 同上 |
-| `Hanoi.html` | 汉诺塔递归过程 | `05-data-structure-advanced` | 同上 |
-| `stack_expr.html` | 栈与表达式求值 | `05-data-structure-advanced` | 同上 |
+| `circular_queue.html` | 5 格留一空位的循环队列下标追踪 | `05-data-structure-advanced` | 同上 |
+| `Hanoi.html` | 采用 `n=0` 基例的汉诺塔递归与调用栈 | `05-data-structure-advanced` | 同上 |
+| `stack_expr.html` | `5+(6-4/2)*3` 的双栈求值过程 | `05-data-structure-advanced` | 同上 |
 | `TuringMachine.html` | 多带图灵机回文检查器（选学扩展） | `08-turing-machine` | 同上 |
 
 ## 学生使用（PAI-DSW）
+
+`traffic_conflicts.html` 按「看进出口 → 追踪路径 → 判断连边」讲解，预设 `AB–BA`、`AD–DC` 与 `AB–BD` 三组对照。它使用明确构造的分道与转弯轨迹，只按路口内部横向交叉连边，不计分流、汇流、车宽或行人；不连边不等于现实中可无条件同时放行，也不表示复刻或验证了原讲稿的完整边集。页面内附约 4 分钟课堂讲法。
 
 先运行 `notebooks/modelscope/CS0502-quickstart.ipynb` 的环境准备与 helper 单元，再在新单元中输入：
 

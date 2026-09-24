@@ -1,525 +1,79 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>循环队列解决速度不匹配问题</title>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
-            font-family: 'Arial', sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 20px;
-            color: #333;
-        }
-        
-        .container {
-            background: white;
-            border-radius: 20px;
-            padding: 30px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            max-width: 900px;
-            width: 100%;
-        }
-        
-        h1 {
-            text-align: center;
-            color: #667eea;
-            margin-bottom: 30px;
-            font-size: 28px;
-        }
-        
-        .devices {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 40px;
-            gap: 20px;
-        }
-        
-        .device {
-            flex: 1;
-            padding: 20px;
-            border-radius: 15px;
-            text-align: center;
-            position: relative;
-        }
-        
-        .producer {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-        }
-        
-        .consumer {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-            color: white;
-        }
-        
-        .device h2 {
-            font-size: 20px;
-            margin-bottom: 10px;
-        }
-        
-        .speed {
-            font-size: 14px;
-            opacity: 0.9;
-            margin-bottom: 15px;
-        }
-        
-        .status {
-            font-size: 16px;
-            font-weight: bold;
-            padding: 8px;
-            background: rgba(255,255,255,0.3);
-            border-radius: 8px;
-            margin-top: 10px;
-        }
-        
-        .queue-container {
-            margin: 40px 0;
-            position: relative;
-        }
-        
-        .queue-title {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: #667eea;
-            margin-bottom: 20px;
-        }
-        
-        .queue {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 20px;
-        }
-        
-        .queue-slot {
-            width: 70px;
-            height: 70px;
-            border: 3px solid #667eea;
-            border-radius: 12px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 24px;
-            font-weight: bold;
-            background: #f8f9ff;
-            position: relative;
-            transition: all 0.3s ease;
-        }
-        
-        .queue-slot.filled {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            transform: scale(1.1);
-            box-shadow: 0 5px 15px rgba(240, 147, 251, 0.4);
-        }
-        
-        .queue-slot.head {
-            border-color: #00f2fe;
-            border-width: 4px;
-        }
-        
-        .queue-slot.tail {
-            border-color: #f5576c;
-            border-width: 4px;
-        }
-        
-        .queue-slot::before {
-            content: attr(data-index);
-            position: absolute;
-            top: -25px;
-            font-size: 12px;
-            color: #999;
-        }
-        
-        .pointers {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-            margin-top: 20px;
-        }
-        
-        .pointer {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            font-size: 14px;
-        }
-        
-        .pointer-box {
-            width: 20px;
-            height: 20px;
-            border-radius: 4px;
-        }
-        
-        .head-pointer {
-            background: #00f2fe;
-        }
-        
-        .tail-pointer {
-            background: #f5576c;
-        }
-        
-        .stats {
-            display: flex;
-            justify-content: space-around;
-            margin-top: 30px;
-            padding: 20px;
-            background: #f8f9ff;
-            border-radius: 12px;
-        }
-        
-        .stat {
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 28px;
-            font-weight: bold;
-            color: #667eea;
-        }
-        
-        .stat-label {
-            font-size: 14px;
-            color: #666;
-            margin-top: 5px;
-        }
-        
-        .controls {
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            margin-top: 30px;
-            flex-wrap: wrap;
-        }
-        
-        button {
-            padding: 12px 24px;
-            border: none;
-            border-radius: 8px;
-            font-size: 16px;
-            font-weight: bold;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            color: white;
-        }
-        
-        .btn-start {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        
-        .btn-pause {
-            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-        }
-        
-        .btn-reset {
-            background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
-        }
-        
-        button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
-        }
-        
-        button:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            transform: none;
-        }
-        
-        .message {
-            text-align: center;
-            margin-top: 20px;
-            padding: 15px;
-            border-radius: 8px;
-            font-weight: bold;
-            transition: all 0.3s ease;
-        }
-        
-        .message.warning {
-            background: #fff3cd;
-            color: #856404;
-        }
-        
-        .message.success {
-            background: #d4edda;
-            color: #155724;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-            }
-            
-            h1 {
-                font-size: 22px;
-            }
-            
-            .devices {
-                flex-direction: column;
-            }
-            
-            .queue-slot {
-                width: 50px;
-                height: 50px;
-                font-size: 18px;
-            }
-            
-            .stats {
-                flex-direction: column;
-                gap: 15px;
-            }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>循环队列下标追踪动画</title>
+  <style>
+    :root{--blue:#004098;--ink:#172033;--muted:#617086;--line:#cad7e8;--pale:#eef5ff;--gold:#f4b63e;--green:#25815b;--red:#bc3e3e}
+    *{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif}main{max-width:1160px;margin:auto;padding:22px}
+    header{border-left:10px solid var(--blue);padding:3px 0 3px 18px}h1{margin:0 0 5px;color:var(--blue);font-size:clamp(26px,3vw,38px)}header p{margin:0;color:var(--muted);font-size:17px}.predict{margin:14px 0;background:#fff8e7;border:1px solid #efd18b;padding:11px 15px;font-size:17px}
+    .layout{display:grid;grid-template-columns:minmax(430px,1.25fr) minmax(320px,.75fr);gap:20px}.panel{background:white;border:1px solid var(--line);padding:16px}.panel h2{margin:0;color:var(--blue);font-size:21px}
+    .ring{height:500px;display:grid;grid-template:repeat(3,1fr)/repeat(3,1fr);grid-template-areas:"s4 s0 s1" "s4 center s1" "s3 s3 s2";gap:12px;align-items:center;justify-items:center;position:relative}.slot{width:120px;height:92px;border:3px solid var(--blue);background:var(--pale);border-radius:12px;display:grid;place-items:center;position:relative;transition:.25s}.slot.filled{background:#dcecff}.slot.reserved{background:repeating-linear-gradient(135deg,#f1f3f6,#f1f3f6 8px,#dde2e9 8px,#dde2e9 16px)}.slot.rejected{animation:reject .55s 2;border-color:var(--red)}
+    @keyframes reject{50%{transform:scale(1.08);background:#ffe0e0}}.index{position:absolute;top:4px;left:7px;color:var(--muted);font-size:14px}.value{font-size:31px;font-weight:800;color:var(--blue)}.tag{position:absolute;white-space:nowrap;font-size:14px;font-weight:700;padding:3px 6px;border-radius:4px}.tag.front{bottom:-29px;background:#d9f2e7;color:#146342}.tag.rear{top:-29px;background:#ffe8b8;color:#805600}.tag.both{top:-31px;background:#e5dcff;color:#56339a}.center{grid-area:center;text-align:center}.center .capacity{font-size:24px;font-weight:800;color:var(--blue)}.center small{display:block;color:var(--muted);margin-top:5px}
+    .operation-list{margin-top:14px;display:flex;flex-direction:column;gap:7px}.op{border-left:5px solid #b6c6da;padding:8px 10px;background:#f6f8fb;color:#536176}.op.done{border-color:var(--green);color:#667386}.op.current{border-color:var(--gold);background:#fff5dc;color:var(--ink);font-weight:700}.legend{margin-top:15px;color:var(--muted);font-size:15px}.logical{margin-top:18px;background:white;border:1px solid var(--line);padding:14px 17px}.logical strong{color:var(--blue)}.logical-seq{font-size:22px;font-weight:700;margin-top:6px;overflow-wrap:anywhere}.event{margin-top:12px;min-height:78px;background:white;border:1px solid var(--line);padding:13px 17px}.event strong{color:var(--blue)}.event .formula{font:700 19px ui-monospace,SFMono-Regular,Consolas,monospace;color:var(--green);margin-top:5px}.event .reject-text{color:var(--red);font-weight:800;font-size:19px}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:13px}button{font:16px inherit;border:0;border-radius:6px;padding:10px 18px;background:var(--blue);color:white;cursor:pointer}button.secondary{background:#5d6b7e}button:disabled{opacity:.45}.stats{margin-left:auto;color:var(--muted)}
+    @media(max-width:800px){main{padding:14px}.layout{grid-template-columns:1fr}.ring{height:430px}.slot{width:92px;height:78px}.stats{width:100%;margin-left:0}}
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔄 循环队列解决设备速度不匹配问题</h1>
-        
-        <div class="devices">
-            <div class="device producer">
-                <h2>📤 生产者（快速）</h2>
-                <div class="speed">速度: 每0.8秒产生一个数据</div>
-                <div class="status" id="producer-status" aria-live="polite">等待中...</div>
-            </div>
-            
-            <div class="device consumer">
-                <h2>📥 消费者（慢速）</h2>
-                <div class="speed">速度: 每1.5秒消费一个数据</div>
-                <div class="status" id="consumer-status" aria-live="polite">等待中...</div>
-            </div>
-        </div>
-        
-        <div class="queue-container">
-            <div class="queue-title">循环队列缓冲区（容量: 8）</div>
-            <div class="queue" id="queue" aria-label="循环队列槽位"></div>
-            <div class="pointers">
-                <div class="pointer">
-                    <div class="pointer-box head-pointer"></div>
-                    <span>队头（消费位置）</span>
-                </div>
-                <div class="pointer">
-                    <div class="pointer-box tail-pointer"></div>
-                    <span>队尾（生产位置）</span>
-                </div>
-            </div>
-        </div>
-        
-        <div class="stats">
-            <div class="stat">
-                <div class="stat-value" id="produced">0</div>
-                <div class="stat-label">已生产</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="consumed">0</div>
-                <div class="stat-label">已消费</div>
-            </div>
-            <div class="stat">
-                <div class="stat-value" id="queue-size">0</div>
-                <div class="stat-label">队列长度</div>
-            </div>
-        </div>
-        
-        <div id="message" class="message" style="display: none;" aria-live="polite"></div>
-        
-        <div class="controls">
-            <button class="btn-start" id="btn-start">▶️ 开始演示</button>
-            <button class="btn-pause" id="btn-pause" disabled>⏸️ 暂停</button>
-            <button class="btn-reset" id="btn-reset">🔄 重置</button>
-        </div>
-        <p style="text-align:center"><strong>先预测：</strong>生产者比消费者快时，队列何时装满？head 和 tail 会怎样绕回数组开头？</p>
-    </div>
-    
-    <script>
-        class CircularQueue {
-            constructor(capacity) {
-                this.capacity = capacity;
-                this.queue = new Array(capacity).fill(null);
-                this.head = 0;
-                this.tail = 0;
-                this.size = 0;
-            }
-            
-            enqueue(item) {
-                if (this.isFull()) return false;
-                this.queue[this.tail] = item;
-                this.tail = (this.tail + 1) % this.capacity;
-                this.size++;
-                return true;
-            }
-            
-            dequeue() {
-                if (this.isEmpty()) return null;
-                const item = this.queue[this.head];
-                this.queue[this.head] = null;
-                this.head = (this.head + 1) % this.capacity;
-                this.size--;
-                return item;
-            }
-            
-            isFull() {
-                return this.size === this.capacity;
-            }
-            
-            isEmpty() {
-                return this.size === 0;
-            }
-        }
-        
-        const QUEUE_CAPACITY = 8;
-        const PRODUCER_SPEED = 800;
-        const CONSUMER_SPEED = 1500;
-        
-        let queue = new CircularQueue(QUEUE_CAPACITY);
-        let producedCount = 0;
-        let consumedCount = 0;
-        let dataCounter = 1;
-        let isRunning = false;
-        let producerInterval = null;
-        let consumerInterval = null;
-        
-        function initQueue() {
-            const queueElement = document.getElementById('queue');
-            queueElement.innerHTML = '';
-            for (let i = 0; i < QUEUE_CAPACITY; i++) {
-                const slot = document.createElement('div');
-                slot.className = 'queue-slot';
-                slot.id = `slot-${i}`;
-                slot.setAttribute('data-index', i);
-                queueElement.appendChild(slot);
-            }
-        }
-        
-        function updateDisplay() {
-            for (let i = 0; i < QUEUE_CAPACITY; i++) {
-                const slot = document.getElementById(`slot-${i}`);
-                slot.className = 'queue-slot';
-                
-                if (queue.queue[i] !== null) {
-                    slot.textContent = queue.queue[i];
-                    slot.classList.add('filled');
-                } else {
-                    slot.textContent = '';
-                }
-                
-                if (i === queue.head && queue.size > 0) {
-                    slot.classList.add('head');
-                }
-                if (i === queue.tail) {
-                    slot.classList.add('tail');
-                }
-            }
-            
-            document.getElementById('produced').textContent = producedCount;
-            document.getElementById('consumed').textContent = consumedCount;
-            document.getElementById('queue-size').textContent = queue.size;
-        }
-        
-        function showMessage(text, type) {
-            const messageEl = document.getElementById('message');
-            messageEl.textContent = text;
-            messageEl.className = `message ${type}`;
-            messageEl.style.display = 'block';
-            setTimeout(() => {
-                messageEl.style.display = 'none';
-            }, 2000);
-        }
-        
-        function produce() {
-            const producerStatus = document.getElementById('producer-status');
-            
-            if (queue.isFull()) {
-                producerStatus.textContent = '⏸️ 队列已满，等待消费...';
-                showMessage('⚠️ 队列已满！生产者等待中...', 'warning');
-                return;
-            }
-            
-            const data = dataCounter++;
-            if (queue.enqueue(data)) {
-                producedCount++;
-                producerStatus.textContent = `✅ 已生产数据: ${data}`;
-                updateDisplay();
-            }
-        }
-        
-        function consume() {
-            const consumerStatus = document.getElementById('consumer-status');
-            
-            if (queue.isEmpty()) {
-                consumerStatus.textContent = '⏸️ 队列为空，等待生产...';
-                return;
-            }
-            
-            const data = queue.dequeue();
-            if (data !== null) {
-                consumedCount++;
-                consumerStatus.textContent = `✅ 已消费数据: ${data}`;
-                updateDisplay();
-            }
-        }
-        
-        function start() {
-            if (isRunning) return;
-            isRunning = true;
-            
-            document.getElementById('btn-start').disabled = true;
-            document.getElementById('btn-pause').disabled = false;
-            document.getElementById('producer-status').textContent = '运行中...';
-            document.getElementById('consumer-status').textContent = '运行中...';
-            
-            producerInterval = setInterval(produce, PRODUCER_SPEED);
-            consumerInterval = setInterval(consume, CONSUMER_SPEED);
-            
-            showMessage('✅ 演示开始！观察循环队列如何缓冲速度差异', 'success');
-        }
-        
-        function pause() {
-            if (!isRunning) return;
-            isRunning = false;
-            
-            clearInterval(producerInterval);
-            clearInterval(consumerInterval);
-            
-            document.getElementById('btn-start').disabled = false;
-            document.getElementById('btn-pause').disabled = true;
-            document.getElementById('producer-status').textContent = '已暂停';
-            document.getElementById('consumer-status').textContent = '已暂停';
-            
-            showMessage('⏸️ 演示已暂停', 'warning');
-        }
-        
-        function reset() {
-            pause();
-            queue = new CircularQueue(QUEUE_CAPACITY);
-            producedCount = 0;
-            consumedCount = 0;
-            dataCounter = 1;
-            
-            document.getElementById('producer-status').textContent = '等待中...';
-            document.getElementById('consumer-status').textContent = '等待中...';
-            
-            updateDisplay();
-            showMessage('🔄 已重置', 'success');
-        }
-        
-        document.getElementById('btn-start').addEventListener('click', start);
-        document.getElementById('btn-pause').addEventListener('click', pause);
-        document.getElementById('btn-reset').addEventListener('click', reset);
-        
-        initQueue();
-        updateDisplay();
-    </script>
+<main>
+  <header><h1>循环队列的下标追踪</h1><p>N = 5，rear 指向下一空位，留一个空位，因此最多存放 4 个元素</p></header>
+  <div class="predict"><strong>先预测：</strong>A、B、C 入队，出队两次，再让 D、E、F 入队。哪个槽位保持为空？此时 G 还能入队吗？</div>
+  <section class="layout">
+    <article class="panel"><h2>数组首尾相接</h2><div class="ring" id="ring" aria-label="五个槽位组成的循环队列"></div></article>
+    <article class="panel"><h2>操作序列</h2><div class="operation-list" id="ops"></div><div class="legend">front 指向队头元素；rear 指向下一次入队使用的空位。</div></article>
+  </section>
+  <div class="logical"><strong>逻辑顺序（队头到队尾）</strong><div class="logical-seq" id="logical"></div></div>
+  <div class="event" id="event" aria-live="polite"></div>
+  <div class="controls"><button id="next">下一步</button><button id="auto" class="secondary">自动播放</button><button id="reset" class="secondary">重置</button><span class="stats" id="stats"></span></div>
+</main>
+<script>
+  const N=5;
+  const operations=[
+    {label:'A 入队',type:'enqueue',value:'A'}, {label:'B 入队',type:'enqueue',value:'B'}, {label:'C 入队',type:'enqueue',value:'C'},
+    {label:'出队 A',type:'dequeue'}, {label:'出队 B',type:'dequeue'},
+    {label:'D 入队',type:'enqueue',value:'D'}, {label:'E 入队，rear 绕回 0',type:'enqueue',value:'E'},
+    {label:'F 入队',type:'enqueue',value:'F'}, {label:'尝试 G 入队',type:'enqueue',value:'G'}
+  ];
+  const areas=['s0','s1','s2','s3','s4'];
+  const ringEl=document.getElementById('ring'),opsEl=document.getElementById('ops'),logicalEl=document.getElementById('logical'),eventEl=document.getElementById('event'),statsEl=document.getElementById('stats');
+  const nextBtn=document.getElementById('next'),autoBtn=document.getElementById('auto');
+  let queue,front,rear,step,lastEvent,timer;
+  const isEmpty=()=>front===rear;
+  const isFull=()=>(rear+1)%N===front;
+  function logicalValues(){const out=[];for(let i=front;i!==rear;i=(i+1)%N)out.push(queue[i]);return out}
+  function reset(){stopAuto();queue=Array(N).fill(null);front=0;rear=0;step=0;lastEvent={kind:'ready',title:'初始为空',body:'front = rear = 0。请先完成预测，再点击“下一步”。'};render()}
+  function advance(){
+    if(step>=operations.length)return;
+    const op=operations[step];
+    if(op.type==='enqueue'){
+      const fullBefore=isFull();
+      if(fullBefore){lastEvent={kind:'reject',title:`${op.value} 入队失败`,body:'队满条件成立，状态保持不变。',formula:`(rear + 1) % 5 = (${rear} + 1) % 5 = ${front} = front`}}
+      else{const at=rear;queue[rear]=op.value;rear=(rear+1)%N;lastEvent={kind:'enqueue',title:`${op.value} 写入槽位 ${at}`,body:`rear 从 ${at} 移到 ${rear}${at===4?'，完成绕回':''}。`,formula:`rear = (${at} + 1) % 5 = ${rear}`}}
+    }else{
+      const at=front;const value=queue[front];queue[front]=null;front=(front+1)%N;lastEvent={kind:'dequeue',title:`${value} 从槽位 ${at} 出队`,body:`front 从 ${at} 移到 ${front}。`,formula:`front = (${at} + 1) % 5 = ${front}`}
+    }
+    step++;render();
+  }
+  function renderRing(){
+    ringEl.innerHTML='';
+    for(let i=0;i<N;i++){
+      const slot=document.createElement('div');const reserved=isFull()&&i===rear;slot.className=`slot ${queue[i]!==null?'filled':''} ${reserved?'reserved':''} ${lastEvent.kind==='reject'&&i===rear?'rejected':''}`;slot.style.gridArea=areas[i];
+      let tag='';if(front===rear&&i===front)tag='<span class="tag both">front = rear</span>';else{if(i===front&&!isEmpty())tag+='<span class="tag front">front</span>';if(i===rear)tag+='<span class="tag rear">rear</span>'}
+      slot.innerHTML=`<span class="index">${i}</span><span class="value">${queue[i]??''}</span>${tag}`;ringEl.appendChild(slot);
+    }
+    const center=document.createElement('div');center.className='center';center.innerHTML=`<div class="capacity">${logicalValues().length} / 4</div><small>当前元素 / 可用容量</small>`;ringEl.appendChild(center);
+  }
+  function renderOps(){opsEl.innerHTML=operations.map((o,i)=>`<div class="op ${i<step?'done':''} ${i===step?'current':''}">${i+1}. ${o.label}</div>`).join('')}
+  function render(){
+    renderRing();renderOps();const vals=logicalValues();logicalEl.textContent=vals.length?`队头 → ${vals.join(' → ')} → 队尾`:'[] 空队列';
+    const cls=lastEvent.kind==='reject'?'reject-text':'';eventEl.innerHTML=`<strong class="${cls}">${lastEvent.title}</strong><div>${lastEvent.body}</div>${lastEvent.formula?`<div class="formula">${lastEvent.formula}</div>`:''}`;
+    statsEl.textContent=`步骤 ${step}/${operations.length}　front=${front}　rear=${rear}`;nextBtn.disabled=step>=operations.length;if(nextBtn.disabled)stopAuto();
+  }
+  function startAuto(){if(timer||nextBtn.disabled)return;autoBtn.textContent='暂停';timer=setInterval(advance,900)}
+  function stopAuto(){if(timer)clearInterval(timer);timer=null;autoBtn.textContent='自动播放'}
+  nextBtn.addEventListener('click',advance);autoBtn.addEventListener('click',()=>timer?stopAuto():startAuto());document.getElementById('reset').addEventListener('click',reset);reset();
+</script>
 </body>
 </html>

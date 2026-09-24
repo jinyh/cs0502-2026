@@ -379,7 +379,7 @@ def test_student_guide_covers_commands_and_code_catalog():
         assert f"`{example}`" in code_readme, example
 
     assert len(list((ROOT / "code" / "labs").glob("lab-*"))) == 8
-    assert len(list((ROOT / "code" / "visualizations").glob("*.html"))) == 5
+    assert len(list((ROOT / "code" / "visualizations").glob("*.html"))) == 6
 
 
 def test_no_plaintext_provider_credentials_in_tracked_course_files():

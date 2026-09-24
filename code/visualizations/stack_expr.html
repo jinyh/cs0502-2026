@@ -1,531 +1,219 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>栈的表达式求值动画演示</title>
-    <style>
-        body {
-            font-family: 'Microsoft YaHei', Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-        }
-
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-        }
-
-        .controls {
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        select, button {
-            padding: 10px 20px;
-            margin: 0 10px;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
-        }
-
-        select {
-            background: #f0f0f0;
-            border: 2px solid #ddd;
-        }
-
-        button {
-            background: #4CAF50;
-            color: white;
-            transition: background 0.3s;
-        }
-
-        button:hover {
-            background: #45a049;
-        }
-
-        button:disabled {
-            background: #ccc;
-            cursor: not-allowed;
-        }
-
-        .expression-display {
-            text-align: center;
-            font-size: 24px;
-            font-weight: bold;
-            margin: 20px 0;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 8px;
-            border-left: 5px solid #007bff;
-        }
-
-        .current-token {
-            color: #ff6b6b;
-            background: #ffe0e0;
-            padding: 2px 8px;
-            border-radius: 4px;
-            animation: pulse 1s infinite;
-        }
-
-        @keyframes pulse {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0.7; }
-        }
-
-        .stack-container {
-            display: flex;
-            justify-content: space-around;
-            margin: 30px 0;
-            gap: 20px;
-        }
-
-        .stack {
-            flex: 1;
-            max-width: 300px;
-        }
-
-        .stack-title {
-            text-align: center;
-            font-size: 18px;
-            font-weight: bold;
-            margin-bottom: 15px;
-            padding: 10px;
-            border-radius: 8px;
-        }
-
-        .operand-title {
-            background: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .operator-title {
-            background: #fff3e0;
-            color: #f57c00;
-        }
-
-        .stack-visual {
-            border: 3px solid #ddd;
-            border-radius: 10px;
-            min-height: 400px;
-            position: relative;
-            background: #fafafa;
-            display: flex;
-            flex-direction: column-reverse;
-            align-items: center;
-            padding: 10px;
-        }
-
-        .stack-item {
-            width: 80%;
-            padding: 12px;
-            margin: 2px 0;
-            border-radius: 8px;
-            text-align: center;
-            font-weight: bold;
-            font-size: 18px;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-            transition: all 0.3s ease;
-            animation: stackPush 0.5s ease-out;
-        }
-
-        @keyframes stackPush {
-            from {
-                transform: translateY(-20px);
-                opacity: 0;
-            }
-            to {
-                transform: translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .operand-item {
-            background: linear-gradient(135deg, #42a5f5, #1e88e5);
-            color: white;
-        }
-
-        .operator-item {
-            background: linear-gradient(135deg, #ff9800, #f57c00);
-            color: white;
-        }
-
-        .top-indicator {
-            position: absolute;
-            right: -40px;
-            background: #ff4757;
-            color: white;
-            padding: 5px 10px;
-            border-radius: 15px;
-            font-size: 12px;
-            animation: bounce 1s infinite;
-        }
-
-        @keyframes bounce {
-            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-            40% { transform: translateY(-5px); }
-            60% { transform: translateY(-3px); }
-        }
-
-        .step-info {
-            background: #e8f5e8;
-            border-left: 4px solid #4caf50;
-            padding: 15px;
-            margin: 20px 0;
-            border-radius: 0 8px 8px 0;
-            font-size: 16px;
-        }
-
-        .result {
-            text-align: center;
-            font-size: 20px;
-            font-weight: bold;
-            color: #2e7d32;
-            background: #c8e6c9;
-            padding: 15px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
-
-        .priority-table {
-            background: #f5f5f5;
-            padding: 15px;
-            border-radius: 8px;
-            margin: 20px 0;
-            font-size: 14px;
-        }
-
-        .priority-table h4 {
-            margin-top: 0;
-            color: #333;
-        }
-
-        @media (max-width: 720px) {
-            body { padding: 8px; }
-            .container { padding: 16px; }
-            .controls { display: grid; gap: 8px; }
-            select, button { width: 100%; margin: 0; }
-            .stack-container { flex-direction: column; align-items: center; }
-            .stack { width: 100%; }
-        }
-    </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>双栈表达式求值动画</title>
+  <style>
+    :root { --blue:#004098; --blue2:#1769aa; --pale:#eef5ff; --ink:#172033; --muted:#617086; --line:#cbd8e8; --gold:#f6b73c; --green:#21835a; }
+    * { box-sizing:border-box; }
+    body { margin:0; min-height:100vh; font-family:"Microsoft YaHei","PingFang SC",sans-serif; color:var(--ink); background:#f3f6fa; }
+    main { max-width:1180px; margin:0 auto; padding:24px; }
+    header { border-left:10px solid var(--blue); padding:4px 0 4px 18px; margin-bottom:18px; }
+    h1 { margin:0 0 6px; color:var(--blue); font-size:clamp(26px,3vw,38px); }
+    header p { margin:0; color:var(--muted); font-size:17px; }
+    .predict { background:#fff8e8; border:1px solid #efd18c; padding:12px 16px; margin:14px 0; font-size:17px; }
+    .expression { background:white; border:1px solid var(--line); padding:18px; text-align:center; font:600 clamp(27px,4vw,44px)/1.4 ui-monospace,SFMono-Regular,Consolas,monospace; letter-spacing:.08em; }
+    .token { display:inline-block; min-width:1.05em; border-radius:7px; transition:.25s; }
+    .token.current { background:var(--gold); color:#1e2630; transform:translateY(-3px); box-shadow:0 4px 0 #bd7b00; }
+    .token.done { color:#98a4b5; }
+    .workspace { display:grid; grid-template-columns:.78fr .78fr 1.25fr; gap:18px; margin-top:20px; align-items:stretch; }
+    .stack-card { background:white; border:1px solid var(--line); min-height:390px; padding:16px; display:flex; flex-direction:column; }
+    .stack-card h2 { margin:0; font-size:21px; color:var(--blue); }
+    .stack-card .hint { color:var(--muted); margin:4px 0 10px; }
+    .stack { width:min(260px,92%); min-height:280px; margin:auto auto 0; border:4px solid var(--blue); border-top:0; padding:9px 9px 34px; display:flex; flex-direction:column-reverse; gap:6px; position:relative; }
+    .stack:before { content:"栈底"; position:absolute; left:10px; bottom:7px; color:var(--muted); font-size:13px; line-height:1; }
+    .cell { min-height:48px; border:2px solid var(--blue2); background:var(--pale); display:grid; place-items:center; font:700 25px ui-monospace,monospace; animation:enter .25s ease-out; }
+    .cell.top { background:#dbeaff; position:relative; padding:0 42px; }
+    .cell.top:after { content:"TOP"; position:absolute; right:7px; top:5px; color:var(--blue); font:700 10px sans-serif; letter-spacing:.03em; }
+    .empty { color:#98a4b5; margin:auto; font-size:18px; }
+    .priority-card { background:white; border:1px solid var(--line); padding:16px; }
+    .priority-card h2 { margin:0; font-size:21px; color:var(--blue); }
+    .priority-card .hint { color:var(--muted); margin:4px 0 10px; }
+    .priority-table { width:100%; border-collapse:collapse; table-layout:fixed; font:700 18px ui-monospace,SFMono-Regular,Consolas,monospace; }
+    .priority-table th, .priority-table td { border:1px solid #9cafc7; height:38px; text-align:center; transition:.18s; }
+    .priority-table th { background:#edf3fb; color:var(--blue); }
+    .priority-table .corner { font:600 13px "Microsoft YaHei","PingFang SC",sans-serif; line-height:1.15; }
+    .priority-table td.invalid { color:#aab3bf; background:#f7f8fa; }
+    .priority-table th.axis-active { background:#cfe2fb; box-shadow:inset 0 0 0 2px var(--blue); }
+    .priority-table td.relation-active { background:var(--gold); color:#1d2734; box-shadow:inset 0 0 0 3px #a96700; transform:scale(1.08); }
+    .table-note { min-height:54px; margin-top:10px; padding:8px 10px; background:#f5f8fc; color:var(--muted); font-size:15px; }
+    .table-note strong { color:var(--blue); }
+    .legend { display:flex; flex-wrap:wrap; gap:10px; margin-top:9px; color:var(--muted); font-size:14px; }
+    .legend b { color:var(--ink); }
+    @keyframes enter { from { opacity:0; transform:translateY(-12px); } }
+    .status { margin-top:20px; background:white; border:1px solid var(--line); padding:15px 18px; min-height:92px; }
+    .status strong { color:var(--blue); }
+    .calculation { color:var(--green); font-size:20px; font-weight:700; margin-top:7px; }
+    .controls { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-top:14px; }
+    button { border:0; border-radius:6px; padding:11px 19px; font-size:16px; cursor:pointer; background:var(--blue); color:white; }
+    button.secondary { background:#5d6b7e; }
+    button:disabled { opacity:.45; cursor:not-allowed; }
+    .counter { margin-left:auto; color:var(--muted); }
+    .rule { margin-top:14px; color:var(--muted); font-size:15px; }
+    @media (max-width:980px) { .workspace{grid-template-columns:1fr 1fr}.priority-card{grid-column:1/-1}.priority-table{font-size:17px} }
+    @media (max-width:720px) { main{padding:14px}.workspace{grid-template-columns:1fr}.priority-card{grid-column:auto}.stack-card{min-height:330px}.stack{min-height:220px}.counter{width:100%;margin-left:0}.priority-table th,.priority-table td{height:34px} }
+  </style>
 </head>
 <body>
-    <div class="container">
-        <h1>🔢 栈的表达式求值动画演示</h1>
-        
-        <div class="controls">
-            <label for="expressionSelect" style="position:absolute;left:-9999px;">选择表达式</label>
-            <select id="expressionSelect" aria-label="选择表达式">
-                <option value="5+(6/2)*3">5+(6/2)*3</option>
-                <option value="2+3*4">2+3*4</option>
-                <option value="(1+2)*(3+4)">（1+2）*（3+4）</option>
-                <option value="8/2+3*4-1">8/2+3*4-1</option>
-                <option value="((2+3)*4)/5">（（2+3）*4）/5</option>
-            </select>
-            <button onclick="startAnimation()">开始演示</button>
-            <button onclick="nextStep()" id="nextBtn" disabled>下一步</button>
-            <button onclick="resetAnimation()">重置</button>
-        </div>
-        <p style="text-align:center"><strong>先预测：</strong>写下最终结果，并指出第一个会入栈的数字和运算符。</p>
-
-        <div class="priority-table">
-            <h4>🎯 运算符优先级表</h4>
-            <p><strong>高优先级：</strong> * / （乘除法）</p>
-            <p><strong>低优先级：</strong> + - （加减法）</p>
-            <p><strong>特殊：</strong> ( ) （括号优先级最高，但遇到右括号时触发计算）</p>
-        </div>
-
-        <div class="expression-display" id="expressionDisplay">
-            选择一个表达式开始演示
-        </div>
-
-        <div class="stack-container">
-            <div class="stack">
-                <div class="stack-title operand-title">📊 操作数栈（存储数字）</div>
-                <div class="stack-visual" id="operandStack">
-                    <div style="color: #999; font-style: italic; margin: auto;">空栈</div>
-                </div>
-            </div>
-
-            <div class="stack">
-                <div class="stack-title operator-title">⚙️ 运算符栈（存储运算符）</div>
-                <div class="stack-visual" id="operatorStack">
-                    <div style="color: #999; font-style: italic; margin: auto;">空栈</div>
-                </div>
-            </div>
-        </div>
-
-        <div class="step-info" id="stepInfo" aria-live="polite">
-            点击"开始演示"来查看栈的工作过程
-        </div>
-
-        <div class="result" id="result" style="display: none;">
-            计算结果将在这里显示
-        </div>
-    </div>
-
-    <script>
-        class ExpressionEvaluator {
-            constructor() {
-                this.operandStack = [];
-                this.operatorStack = [];
-                this.expression = '';
-                this.currentIndex = 0;
-                this.steps = [];
-                this.currentStep = 0;
-                this.precedence = {
-                    '+': 1, '-': 1,
-                    '*': 2, '/': 2,
-                    '(': 0, ')': 0
-                };
-            }
-
-            preprocess(expr) {
-                // 预处理表达式，生成步骤
-                this.expression = expr.replace(/\s/g, '');
-                this.operandStack = [];
-                this.operatorStack = [];
-                this.steps = [];
-                this.currentIndex = 0;
-                
-                let i = 0;
-                while (i < this.expression.length) {
-                    const char = this.expression[i];
-                    
-                    if (this.isDigit(char)) {
-                        const start = i;
-                        let num = '';
-                        while (i < this.expression.length && this.isDigit(this.expression[i])) {
-                            num += this.expression[i];
-                            i++;
-                        }
-                        i--; // 回退一位
-                        this.addStep(`读取数字: ${num}`, `将数字 ${num} 推入操作数栈`, 'push_operand', num, start);
-                        
-                    } else if (char === '(') {
-                        this.addStep(`读取左括号: (`, `将左括号 ( 推入运算符栈`, 'push_operator', char, i);
-                        
-                    } else if (char === ')') {
-                        this.addStep(`读取右括号: )`, `遇到右括号，开始计算直到左括号`, 'right_paren', char, i);
-                        
-                    } else if (this.isOperator(char)) {
-                        this.addStep(`读取运算符: ${char}`, `处理运算符 ${char}`, 'operator', char, i);
-                    }
-                    i++;
-                }
-                
-                this.addStep('表达式结束', '计算栈中剩余的运算符', 'finish', '', -1);
-            }
-
-            addStep(action, description, type, token, position) {
-                this.steps.push({
-                    action,
-                    description,
-                    type,
-                    token,
-                    position,
-                    operandStack: [...this.operandStack],
-                    operatorStack: [...this.operatorStack]
-                });
-            }
-
-            isDigit(char) {
-                return char >= '0' && char <= '9';
-            }
-
-            isOperator(char) {
-                return ['+', '-', '*', '/'].includes(char);
-            }
-
-            hasHigherPrecedence(op1, op2) {
-                return this.precedence[op1] > this.precedence[op2];
-            }
-
-            calculate(op, b, a) {
-                switch(op) {
-                    case '+': return a + b;
-                    case '-': return a - b;
-                    case '*': return a * b;
-                    case '/': return a / b;
-                    default: return 0;
-                }
-            }
-
-            executeStep(step) {
-                switch(step.type) {
-                    case 'push_operand':
-                        this.operandStack.push(parseInt(step.token));
-                        break;
-                        
-                    case 'push_operator':
-                        this.operatorStack.push(step.token);
-                        break;
-                        
-                    case 'right_paren':
-                        while (this.operatorStack.length > 0 && this.operatorStack[this.operatorStack.length - 1] !== '(') {
-                            this.performCalculation();
-                        }
-                        if (this.operatorStack.length > 0) {
-                            this.operatorStack.pop(); // 移除左括号
-                        }
-                        break;
-                        
-                    case 'operator':
-                        while (this.operatorStack.length > 0 && 
-                               this.operatorStack[this.operatorStack.length - 1] !== '(' &&
-                               this.precedence[this.operatorStack[this.operatorStack.length - 1]] >= this.precedence[step.token]) {
-                            this.performCalculation();
-                        }
-                        this.operatorStack.push(step.token);
-                        break;
-                        
-                    case 'finish':
-                        while (this.operatorStack.length > 0) {
-                            this.performCalculation();
-                        }
-                        break;
-                }
-            }
-
-            performCalculation() {
-                if (this.operandStack.length >= 2 && this.operatorStack.length > 0) {
-                    const op = this.operatorStack.pop();
-                    const b = this.operandStack.pop();
-                    const a = this.operandStack.pop();
-                    const result = this.calculate(op, b, a);
-                    this.operandStack.push(result);
-                }
-            }
-        }
-
-        let evaluator = new ExpressionEvaluator();
-        let isAnimating = false;
-
-        function updateStackDisplay() {
-            const operandStackEl = document.getElementById('operandStack');
-            const operatorStackEl = document.getElementById('operatorStack');
-            
-            // 更新操作数栈
-            if (evaluator.operandStack.length === 0) {
-                operandStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
-            } else {
-                operandStackEl.innerHTML = '';
-                evaluator.operandStack.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'stack-item operand-item';
-                    div.textContent = item;
-                    if (index === evaluator.operandStack.length - 1) {
-                        div.innerHTML += '<span class="top-indicator">TOP</span>';
-                    }
-                    operandStackEl.appendChild(div);
-                });
-            }
-            
-            // 更新运算符栈
-            if (evaluator.operatorStack.length === 0) {
-                operatorStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
-            } else {
-                operatorStackEl.innerHTML = '';
-                evaluator.operatorStack.forEach((item, index) => {
-                    const div = document.createElement('div');
-                    div.className = 'stack-item operator-item';
-                    div.textContent = item;
-                    if (index === evaluator.operatorStack.length - 1) {
-                        div.innerHTML += '<span class="top-indicator">TOP</span>';
-                    }
-                    operatorStackEl.appendChild(div);
-                });
-            }
-        }
-
-        function updateExpressionDisplay() {
-            const expr = document.getElementById('expressionSelect').value;
-            if (evaluator.currentStep < evaluator.steps.length) {
-                const step = evaluator.steps[evaluator.currentStep];
-                const start = step.position;
-                const end = start + step.token.length;
-                const displayExpr = start >= 0
-                    ? `${expr.slice(0, start)}<span class="current-token">${expr.slice(start, end)}</span>${expr.slice(end)}`
-                    : expr;
-                document.getElementById('expressionDisplay').innerHTML = `表达式: ${displayExpr}`;
-            } else {
-                document.getElementById('expressionDisplay').textContent = `表达式: ${expr}`;
-            }
-        }
-
-        function startAnimation() {
-            const expr = document.getElementById('expressionSelect').value;
-            evaluator = new ExpressionEvaluator();
-            evaluator.preprocess(expr);
-            evaluator.currentStep = 0;
-            isAnimating = true;
-            
-            document.getElementById('nextBtn').disabled = false;
-            document.getElementById('result').style.display = 'none';
-            
-            updateStackDisplay();
-            updateExpressionDisplay();
-            document.getElementById('stepInfo').textContent = '点击"下一步"开始逐步执行';
-        }
-
-        function nextStep() {
-            if (evaluator.currentStep >= evaluator.steps.length) {
-                return;
-            }
-            
-            const step = evaluator.steps[evaluator.currentStep];
-            evaluator.executeStep(step);
-            
-            updateStackDisplay();
-            updateExpressionDisplay();
-            
-            document.getElementById('stepInfo').innerHTML = `
-                <strong>步骤 ${evaluator.currentStep + 1}:</strong> ${step.action}<br>
-                <em>${step.description}</em>
-            `;
-            
-            evaluator.currentStep++;
-            
-            if (evaluator.currentStep >= evaluator.steps.length) {
-                document.getElementById('nextBtn').disabled = true;
-                const result = evaluator.operandStack[0] || 0;
-                document.getElementById('result').innerHTML = `🎉 计算完成！最终结果: ${result}`;
-                document.getElementById('result').style.display = 'block';
-                isAnimating = false;
-            }
-        }
-
-        function resetAnimation() {
-            evaluator = new ExpressionEvaluator();
-            document.getElementById('nextBtn').disabled = true;
-            document.getElementById('result').style.display = 'none';
-            document.getElementById('stepInfo').textContent = '点击"开始演示"来查看栈的工作过程';
-            document.getElementById('expressionDisplay').textContent = '选择一个表达式开始演示';
-            
-            const operandStackEl = document.getElementById('operandStack');
-            const operatorStackEl = document.getElementById('operatorStack');
-            operandStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
-            operatorStackEl.innerHTML = '<div style="color: #999; font-style: italic; margin: auto;">空栈</div>';
-            
-            isAnimating = false;
-        }
-
-        // 初始化
-        resetAnimation();
-    </script>
+<main>
+  <header>
+    <h1>双栈表达式求值</h1>
+    <p>逐个读取 token，观察数值栈 StackD 与算符栈 StackR 的变化</p>
+  </header>
+  <div class="predict"><strong>先预测：</strong>表达式中第一次真正执行的运算是哪一个？遇到右括号时，右括号会立即进入算符栈吗？</div>
+  <div class="expression" id="expression" aria-label="表达式 5 加左括号 6 减 4 除以 2 右括号乘以 3"></div>
+  <section class="workspace">
+    <article class="stack-card">
+      <h2>StackD 数值栈</h2>
+      <div class="hint">先弹出的数是右操作数 b</div>
+      <div class="stack" id="values" aria-label="数值栈"></div>
+    </article>
+    <article class="stack-card">
+      <h2>StackR 算符栈</h2>
+      <div class="hint">初始放入界限符 #</div>
+      <div class="stack" id="operators" aria-label="算符栈"></div>
+    </article>
+    <article class="priority-card">
+      <h2>算符间的优先关系</h2>
+      <div class="hint">行是栈顶算符 θ₁，列是当前算符 θ₂</div>
+      <div id="priorityTable"></div>
+      <div class="table-note" id="tableNote" aria-live="polite"></div>
+      <div class="legend"><span><b>&lt;</b> 当前算符入栈</span><span><b>&gt;</b> 先运算</span><span><b>=</b> 匹配界限符</span></div>
+    </article>
+  </section>
+  <div class="status" id="status" aria-live="polite"></div>
+  <div class="controls">
+    <button id="next">下一步</button>
+    <button id="auto" class="secondary">自动播放</button>
+    <button id="reset" class="secondary">重置</button>
+    <span class="counter" id="counter"></span>
+  </div>
+  <div class="rule">规则：θ₁ &lt; θ₂ 时当前算符入栈；θ₁ &gt; θ₂ 时先计算且不读取新 token；θ₁ = θ₂ 时匹配括号或结束。</div>
+</main>
+<script>
+  const tokens = ['5','+','(','6','-','4','/','2',')','*','3','#'];
+  const expressionEl = document.getElementById('expression');
+  const valuesEl = document.getElementById('values');
+  const operatorsEl = document.getElementById('operators');
+  const priorityTableEl = document.getElementById('priorityTable');
+  const tableNoteEl = document.getElementById('tableNote');
+  const statusEl = document.getElementById('status');
+  const counterEl = document.getElementById('counter');
+  const nextBtn = document.getElementById('next');
+  const autoBtn = document.getElementById('auto');
+  let values, operators, cursor, steps, finished, timer, activeRelation;
+  const operatorOrder = ['+','-','*','/','(',')','#'];
+  const priorityRelations = {
+    '+': {'+':'>','-':'>','*':'<','/':'<','(':'<',')':'>','#':'>'},
+    '-': {'+':'>','-':'>','*':'<','/':'<','(':'<',')':'>','#':'>'},
+    '*': {'+':'>','-':'>','*':'>','/':'>','(':'<',')':'>','#':'>'},
+    '/': {'+':'>','-':'>','*':'>','/':'>','(':'<',')':'>','#':'>'},
+    '(': {'+':'<','-':'<','*':'<','/':'<','(':'<',')':'=','#':null},
+    ')': {'+':'>','-':'>','*':'>','/':'>','(':null,')':'>','#':'>'},
+    '#': {'+':'<','-':'<','*':'<','/':'<','(':'<',')':null,'#':'='}
+  };
+  function relation(top, current) {
+    return priorityRelations[top]?.[current] ?? null;
+  }
+  function calculate(a, op, b) {
+    if (op === '+') return a + b;
+    if (op === '-') return a - b;
+    if (op === '*') return a * b;
+    return a / b;
+  }
+  function renderExpression() {
+    expressionEl.innerHTML = tokens.map((t,i) => `<span class="token ${i===cursor&&!finished?'current':''} ${i<cursor?'done':''}">${t}</span>`).join('');
+  }
+  function renderStack(el, data) {
+    if (!data.length) { el.innerHTML = '<div class="empty">空栈</div>'; return; }
+    el.innerHTML = data.map((v,i) => `<div class="cell ${i===data.length-1?'top':''}">${v}</div>`).join('');
+  }
+  function buildPriorityTable() {
+    const table = document.createElement('table');
+    table.className = 'priority-table';
+    table.setAttribute('aria-label','算符优先关系表，行是栈顶算符，列是当前算符');
+    const head = document.createElement('tr');
+    head.innerHTML = '<th class="corner">θ₁ ＼ θ₂</th>' + operatorOrder.map(op => `<th data-col="${op}">${op}</th>`).join('');
+    table.appendChild(head);
+    operatorOrder.forEach(row => {
+      const tr = document.createElement('tr');
+      tr.innerHTML = `<th data-row="${row}">${row}</th>` + operatorOrder.map(col => {
+        const value = priorityRelations[row][col];
+        return `<td data-row="${row}" data-col="${col}" class="${value===null?'invalid':''}">${value ?? '—'}</td>`;
+      }).join('');
+      table.appendChild(tr);
+    });
+    priorityTableEl.replaceChildren(table);
+  }
+  function renderPriorityTable() {
+    priorityTableEl.querySelectorAll('.axis-active,.relation-active').forEach(el => el.classList.remove('axis-active','relation-active'));
+    if (!activeRelation) {
+      const current = tokens[cursor];
+      tableNoteEl.innerHTML = /^\d+$/.test(current)
+        ? `<strong>当前 token 是数字 ${current}</strong><br>数字直接压入 StackD，不查询算符表。`
+        : '下一次比较时，将同时高亮 θ₁ 所在行、θ₂ 所在列和对应关系。';
+      return;
+    }
+    const {top,current,rel} = activeRelation;
+    priorityTableEl.querySelector(`th[data-row="${top}"]`)?.classList.add('axis-active');
+    priorityTableEl.querySelector(`th[data-col="${current}"]`)?.classList.add('axis-active');
+    priorityTableEl.querySelector(`td[data-row="${top}"][data-col="${current}"]`)?.classList.add('relation-active');
+    tableNoteEl.innerHTML = rel === null
+      ? `<strong>θ₁=${top}，θ₂=${current}：非法组合</strong><br>表中空项表示表达式的界限符不匹配。`
+      : `<strong>查表：θ₁=${top}，θ₂=${current}，得到 ${rel}</strong><br>${rel==='<'?'当前算符入 StackR。':rel==='>'?'弹出栈顶算符并计算；当前 token 保持不动。':'匹配括号或两个 #，不执行算术运算。'}`;
+  }
+  function render() {
+    renderExpression(); renderStack(valuesEl, values); renderStack(operatorsEl, operators);
+    renderPriorityTable();
+    counterEl.textContent = finished ? `完成，共 ${steps} 个原子步骤` : `步骤 ${steps}，当前 token：${tokens[cursor]}`;
+    nextBtn.disabled = finished;
+    if (finished) stopAuto();
+  }
+  function explain(title, body, calc='') {
+    statusEl.innerHTML = `<strong>${title}</strong><div>${body}</div>${calc?`<div class="calculation">${calc}</div>`:''}`;
+  }
+  function nextStep() {
+    if (finished) return;
+    const current = tokens[cursor]; steps++;
+    if (/^\d+$/.test(current)) {
+      activeRelation = null;
+      values.push(Number(current)); cursor++;
+      explain(`读取数字 ${current}`, `${current} 压入 StackD，然后读取下一个 token。`); render(); return;
+    }
+    const top = operators.at(-1); const rel = relation(top, current);
+    activeRelation = {top,current,rel};
+    if (rel === null) {
+      finished = true;
+      explain('表达式不合法', `算符优先表中 θ₁=${top}、θ₂=${current} 对应空项，界限符不匹配。`);
+      render(); return;
+    }
+    if (rel === '<') {
+      operators.push(current); cursor++;
+      explain(`比较 ${top} < ${current}`, `${current} 压入 StackR，然后读取下一个 token。`);
+    } else if (rel === '>') {
+      const op = operators.pop(); const b = values.pop(); const a = values.pop(); const result = calculate(a, op, b);
+      values.push(result);
+      explain(`比较 ${top} > ${current}`, `弹出算符 ${op}；先弹出 b=${b}，再弹出 a=${a}。当前 token ${current} 保持不动。`, `${a} ${op} ${b} = ${result}`);
+    } else if (top === '(' && current === ')') {
+      operators.pop(); cursor++;
+      explain('括号匹配', '弹出左括号，右括号不入栈，然后读取下一个 token。');
+    } else {
+      finished = true;
+      explain('表达式计算完成', 'StackR 栈顶的 # 与当前 token # 匹配，StackD 栈顶就是最终结果。', `结果：${values[0]}`);
+    }
+    render();
+  }
+  function startAuto() { if (timer || finished) return; autoBtn.textContent='暂停'; timer=setInterval(nextStep,850); }
+  function stopAuto() { if (timer) clearInterval(timer); timer=null; autoBtn.textContent='自动播放'; }
+  function reset() {
+    stopAuto(); values=[]; operators=['#']; cursor=0; steps=0; finished=false; activeRelation=null;
+    explain('准备开始', '请先说出预测，再点击“下一步”。'); render();
+  }
+  nextBtn.addEventListener('click', nextStep);
+  autoBtn.addEventListener('click', () => timer ? stopAuto() : startAuto());
+  document.getElementById('reset').addEventListener('click', reset);
+  buildPriorityTable(); reset();
+</script>
 </body>
 </html>
