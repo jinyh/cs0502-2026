@@ -5,96 +5,179 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>汉诺塔递归与调用栈动画</title>
   <style>
-    :root { --blue:#004098; --ink:#172033; --muted:#617086; --line:#cad7e8; --pale:#eef5ff; --gold:#f3b63c; --green:#27845d; --red:#b84242; }
-    *{box-sizing:border-box} body{margin:0;background:#f3f6fa;color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif} main{max-width:1280px;margin:auto;padding:22px}
-    header{border-left:10px solid var(--blue);padding:3px 0 3px 18px} h1{margin:0 0 5px;color:var(--blue);font-size:clamp(26px,3vw,38px)} header p{margin:0;color:var(--muted);font-size:17px}
-    .predict{margin:14px 0;background:#fff8e7;border:1px solid #efd18b;padding:11px 15px;font-size:17px}
-    .layout{display:grid;grid-template-columns:minmax(0,1.65fr) minmax(330px,.9fr);gap:20px}.panel{background:white;border:1px solid var(--line);padding:16px}.panel h2{margin:0 0 8px;color:var(--blue);font-size:21px}
-    .towers{height:390px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px;align-items:end;border-bottom:8px solid #8a6846;padding:20px 7px 0}.tower{height:330px;position:relative;display:flex;flex-direction:column-reverse;align-items:center;padding-bottom:10px}.pole{position:absolute;bottom:0;width:9px;height:285px;background:#8a6846;border-radius:5px 5px 0 0;z-index:0}.disk{height:32px;border:2px solid #163b72;border-radius:8px;background:linear-gradient(#4e93d0,#1769aa);z-index:1;margin-top:3px;color:white;display:grid;place-items:center;font-weight:700;box-shadow:0 2px 3px #6a7687;animation:appear .25s}.tower-label{position:absolute;bottom:-48px;font-size:20px;font-weight:700;color:var(--blue)}
-    @keyframes appear{from{opacity:.25;transform:translateY(-10px)}}
-    .stack-wrap{min-height:390px;display:flex;flex-direction:column}.stack-label{color:var(--muted);font-size:14px}.frames{display:flex;flex-direction:column;gap:7px;margin-top:7px}.frame{border:2px solid #8caed6;background:var(--pale);padding:8px 10px;font-family:ui-monospace,SFMono-Regular,Consolas,monospace}.frame.top{border-color:var(--gold);background:#fff5d8}.frame .call{font-weight:800}.frame .stage{font-family:"Microsoft YaHei","PingFang SC",sans-serif;color:#4e5c70;font-size:14px;margin-top:3px}.empty{display:grid;place-items:center;min-height:220px;color:#9aa5b5}
-    .event{margin-top:18px;background:white;border:1px solid var(--line);min-height:82px;padding:14px 17px}.event strong{color:var(--blue)}.event .move{color:var(--green);font-weight:700;font-size:20px;margin-top:5px}.event .base{color:var(--red);font-weight:700;margin-top:5px}
-    .bar{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin-top:14px}button,select{font:16px inherit;border-radius:6px;padding:10px 17px}button{border:0;background:var(--blue);color:white;cursor:pointer}button.secondary{background:#5d6b7e}button:disabled{opacity:.45;cursor:not-allowed}select{background:white;border:1px solid var(--line)}.stats{margin-left:auto;color:var(--muted)}
-    .lesson{margin-top:14px;color:var(--muted);font-size:15px}.lesson b{color:var(--ink)}
-    @media(max-width:850px){main{padding:14px}.layout{grid-template-columns:1fr}.towers{height:330px}.tower{height:270px}.pole{height:225px}.stats{width:100%;margin-left:0}}
+    :root{--blue:#004098;--ink:#172033;--muted:#52647a;--line:#cad7e8;--gold:#f3b63c;--green:#18774e}
+    [hidden]{display:none!important}*{box-sizing:border-box}body{margin:0;background:#f3f6fa;color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",sans-serif}main{max-width:1280px;margin:auto;padding:22px}h1{margin:0 0 6px;color:var(--blue);font-size:clamp(25px,3vw,36px)}header p{margin:0;color:var(--muted)}
+    .predict{margin:16px 0;padding:12px 16px;background:#fff6df;border-left:4px solid var(--gold)}
+    .controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:16px 0}button,select{font:inherit;padding:9px 13px;border-radius:5px}button{background:var(--blue);color:white;border:1px solid var(--blue);cursor:pointer}button.secondary{background:white;color:var(--blue)}button:disabled{opacity:.4;cursor:default}select{border:1px solid var(--line);background:white}button:focus-visible,select:focus-visible{outline:3px solid var(--gold);outline-offset:3px}
+    .task{background:#eaf2fc;padding:14px 18px;border-left:5px solid var(--blue)}.task h2{font-size:22px;margin:0 0 6px}.task p{margin:0;color:var(--muted);line-height:1.6}
+    .plan{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:14px 0}.step{background:white;border:2px solid var(--line);padding:13px;line-height:1.6}.step.active{border-color:#bc8009;background:#fff5db}.step.done{border-color:var(--green);background:#edf8f2}.step h3{font-size:18px;margin:0 0 5px}.step p{margin:0}.step small{display:block;color:var(--muted);margin-top:6px}.badge{font-size:13px;font-weight:bold;color:var(--blue)}
+    .count-toggle{color:var(--blue);font-size:15px}.count-toggle input{width:18px;height:18px;vertical-align:middle}
+    .step-count{border-top:1px solid var(--line);margin-top:9px;padding-top:7px;color:var(--green);font-size:16px;font-weight:bold}
+    .count-explanation{background:white;border:1px solid var(--line);padding:13px 17px;margin:0 0 14px;line-height:1.6}.count-explanation p{margin:4px 0}.count-explanation strong{color:var(--blue);font-size:20px}.count-explanation .derivation{color:var(--muted);font-size:15px}
+    .meters{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:14px 0}.meter{border-top:3px solid var(--blue);background:#eaf2fc;padding:10px 12px}.meter strong{font-size:25px;display:block;color:var(--blue)}.meter small{display:block;color:var(--muted);line-height:1.5}.checkpoint{border-left:5px solid var(--gold);background:#fff5db;padding:12px 16px;margin:12px 0;line-height:1.6}.checkpoint p{margin:4px 0}.checkpoint strong{color:var(--blue)}
+    .layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:18px}.panel{background:white;border:1px solid var(--line);padding:16px;min-width:0}.panel h2{font-size:20px;color:var(--blue);margin:0 0 8px}.caption{font-size:14px;color:var(--muted);line-height:1.6;margin:0 0 8px}
+    .towers{height:292px;position:relative;margin:0 4px}.pole{position:absolute;top:35px;height:183px;width:7px;background:#997551;border-radius:5px;transform:translateX(-50%)}.floor{position:absolute;left:1%;right:1%;height:7px;top:218px;background:#997551}.tower-label{position:absolute;top:230px;transform:translateX(-50%);text-align:center;white-space:nowrap;font-size:18px;font-weight:bold;color:var(--blue)}.tower-label small{display:block;font-size:12px;color:var(--muted);font-weight:normal}.disk{position:absolute;height:27px;display:grid;place-items:center;border:2px solid #125598;background:#d9eaff;color:#173956;border-radius:7px;transform:translateX(-50%);font-weight:bold;transition:left .45s ease,top .45s ease,width .3s}.disk.moved{background:#ffdf93;border-color:#bc8009}.disk.outside{background:#e5e8ed;border-color:#a3afbd;color:#667586}
+    .code{margin:0;list-style:none;padding:0;font-size:16px;line-height:1.65}.code li{padding:5px 9px;border-left:4px solid transparent}.code li.active{border-color:#bc8009;background:#fff0c9;font-weight:bold}.code .indent{padding-left:22px}.signature{font-family:ui-monospace,monospace;font-size:15px;color:var(--blue);margin-bottom:8px;overflow-wrap:anywhere}
+    .frames{display:flex;flex-direction:column;gap:7px;margin-top:9px}.frame{border-left:4px solid #a9bbd2;padding:8px 10px;background:#f4f7fb;font-size:14px}.frame.top{border-color:#bc8009;background:#fff5db}.call{font-family:ui-monospace,monospace;font-weight:bold}.stage{margin-top:4px;line-height:1.5;color:var(--muted)}.empty{color:var(--muted);padding:15px 0}
+    .event{margin-top:16px;padding:14px 18px;min-height:96px;background:white;border:1px solid var(--line);line-height:1.65}.event strong{font-size:19px;color:var(--blue)}.stats{font-size:14px;color:var(--muted);margin-top:10px}.lesson{line-height:1.7;color:var(--muted);font-size:14px;margin-top:15px}.legend{font-size:13px;color:var(--muted)}
+    @media(max-width:860px){main{padding:14px}.layout{grid-template-columns:1fr}.plan{gap:8px}.step{padding:10px}.step h3{font-size:16px}}
+    @media(max-width:540px){.meters{gap:6px}.meter{padding:8px}.meter strong{font-size:22px}.meter span{font-size:14px}.plan{grid-template-columns:1fr}.step small{margin-top:2px}.task h2{font-size:20px}.controls{gap:8px}.controls button{padding:8px 10px}.towers{height:292px}.panel{padding:12px}}
+    @media(prefers-reduced-motion:reduce){.disk{transition:none}}
   </style>
 </head>
 <body>
 <main>
-  <header><h1>汉诺塔：递归与调用栈</h1><p>圆盘移动和函数调用同步显示，基本情形统一为 n = 0 立即返回</p></header>
-  <div class="predict"><strong>先预测：</strong>n = 3 时最多同时存在几个 Hanoi 栈帧？总共移动多少次？到达 Hanoi(0, …) 时会不会移动圆盘？</div>
+  <header><h1>汉诺塔：把同一个问题逐层拆小</h1><p>先理解三个子任务，再展开递归，观察调用栈怎样保存未完成的工作。</p></header>
+  <div class="predict"><strong>先预测：</strong>要把最大的盘从 X 搬到 Z，上面的盘必须先放到哪里？最大的盘搬好后，还剩下什么任务？</div>
+  <div class="controls">
+    <label>圆盘数 <select id="count"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
+    <label>观察方式 <select id="mode"><option value="idea">递归思路</option><option value="detail">逐步展开与调用栈</option></select></label>
+    <button id="reset" class="secondary">重置</button>
+    <label class="count-toggle"><input type="checkbox" id="showCounts" checked> 显示次数解释（P15）</label>
+  </div>
+  <section class="task" id="task"></section>
+  <section class="plan" id="plan" aria-label="当前任务的三个步骤"></section>
+  <section id="countExplanation" class="count-explanation" aria-label="当前任务的搬盘次数拆解"></section>
+  <section id="meters" class="meters" aria-label="整体搬盘次数和调用栈深度"></section>
+  <aside id="checkpoint" class="checkpoint" aria-live="polite" hidden></aside>
   <section class="layout">
-    <article class="panel"><h2>三根塔柱</h2><div class="towers" id="towers" aria-label="汉诺塔圆盘状态"></div></article>
-    <article class="panel stack-wrap"><h2>调用栈</h2><div class="stack-label">栈顶在上方；黄色栈帧正在执行</div><div class="frames" id="frames" aria-label="递归调用栈"></div></article>
+    <article class="panel"><h2>圆盘的位置</h2><p class="caption" id="roles"></p><div class="towers" id="towers" aria-label="汉诺塔圆盘状态"></div><div class="legend">金色标出刚移动的盘；灰色圆盘属于外层任务。圆盘的位置过渡只表示状态变化。</div></article>
+    <article class="panel"><h2>每次调用都执行同一段过程</h2>
+      <div class="signature">Hanoi(n, 源柱, 辅助柱, 目标柱)</div>
+      <ol class="code" id="code">
+        <li data-line="base">若 n = 0：立即返回</li>
+        <li class="indent" data-line="first">① Hanoi(n−1, 源柱, 目标柱, 辅助柱)</li>
+        <li class="indent" data-line="move">② 将盘 n 从源柱移到目标柱</li>
+        <li class="indent" data-line="second">③ Hanoi(n−1, 辅助柱, 源柱, 目标柱)</li>
+        <li data-line="return">本次任务完成，返回调用者</li>
+      </ol>
+      <div id="stackPanel"><h2 style="margin-top:18px">调用栈：返回后接着做什么</h2><p class="caption">栈顶在上方。外层任务暂停，等待子任务完成。</p><div class="frames" id="frames" aria-label="递归调用栈"></div></div>
+    </article>
   </section>
   <div class="event" id="event" aria-live="polite"></div>
-  <div class="bar">
-    <label>圆盘数 <select id="count"><option>1</option><option>2</option><option selected>3</option><option>4</option></select></label>
-    <button id="next">下一步</button><button id="auto" class="secondary">自动播放</button><button id="reset" class="secondary">重置</button>
-    <span class="stats" id="stats"></span>
+  <div class="controls">
+    <button id="prev" class="secondary">上一步</button><button id="next">下一步</button>
+    <button id="expand" class="secondary">展开这个子问题</button><button id="auto" class="secondary">自动播放</button>
   </div>
-  <div class="lesson"><b>观察重点：</b>调用递归函数时压入栈帧；n = 0 的栈帧不搬盘并立即返回；搬盘是当前栈帧中的普通操作。</div>
+  <div class="stats" id="stats"></div>
+  <div class="lesson">递归的关键：把 n 个盘的任务交给两个 n−1 个盘的同类任务，中间只亲自移动一次最大盘。每次调用的规模减 1，最终到 n=0 返回。返回后从保存的位置继续。X、Y、Z 是固定柱名，“源、辅助、目标”是每次调用中的角色。</div>
 </main>
 <script>
   const names=['X','Y','Z'];
-  const towersEl=document.getElementById('towers'), framesEl=document.getElementById('frames'), eventEl=document.getElementById('event'), statsEl=document.getElementById('stats');
-  const nextBtn=document.getElementById('next'), autoBtn=document.getElementById('auto'), countEl=document.getElementById('count');
-  let events=[], index=-1, timer=null, diskCount=3;
+  const $=id=>document.getElementById(id);
+  let events=[], index=0, timer=null, diskCount=3;
   const clone=x=>JSON.parse(JSON.stringify(x));
-
+  const call=f=>`Hanoi(${f.n}, ${f.from}, ${f.aux}, ${f.to})`;
+  const goal=f=>`把 ${f.n} 个盘从 ${f.from} 搬到 ${f.to}，借助 ${f.aux}`;
   function buildTrace(n){
-    const towers=[[],[],[]]; for(let d=n;d>=1;d--)towers[0].push(d);
-    const frames=[]; const out=[]; let moves=0,maxDepth=0,id=0;
-    const snapshot=(kind,text,detail='')=>out.push({kind,text,detail,towers:clone(towers),frames:clone(frames),moves,maxDepth});
+    const towers=[[],[],[]];for(let d=n;d>=1;d--)towers[0].push(d);
+    const frames=[],out=[];let moves=0,maxDepth=0,id=0;
+    const snap=(kind,text,detail,focus,line,moved=null)=>{
+      out.push({kind,text,detail,focus:clone(focus),line,towers:clone(towers),frames:clone(frames),moves,maxDepth,moved});
+    };
+    const root={id:0,n,from:'X',aux:'Y',to:'Z',phase:0,counts:[0,0,0]};
+    snap('ready','先看整体：怎样让最大的盘能够移动？',`盘 ${n} 上方的 ${n-1} 个盘必须先搬到 Y。三步中，①和③都是规模更小的汉诺塔问题。`,root,null);
     function visit(k,from,aux,to){
-      const frame={id:++id,n:k,from:names[from],aux:names[aux],to:names[to],stage:'刚进入，准备检查基本情形'};
-      frames.push(frame); maxDepth=Math.max(maxDepth,frames.length);
-      snapshot('push',`压栈 Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to})`,'新调用还没有完成，计算机先保存参数和返回位置。');
+      const f={id:++id,n:k,from:names[from],aux:names[aux],to:names[to],phase:0,counts:[0,0,0],stage:'检查 n 是否为 0'};
+      frames.push(f);maxDepth=Math.max(maxDepth,frames.length);
+      snap('enter',`进入子任务：${goal(f)}`,k?`仍然使用同样的三步，只是规模变为 ${k}，各柱的角色也随参数改变。`:'没有圆盘要搬，直接结束这个调用。',f,'base');
       if(k===0){
-        frame.stage='n = 0，立即返回'; snapshot('base','到达基本情形 n = 0','不移动任何圆盘。');
-        frames.pop(); snapshot('pop',`弹栈 Hanoi(0, ${frame.from}, ${frame.aux}, ${frame.to})`,'控制权回到上一层调用。'); return;
+        f.phase=4;snap('base','n = 0：任务已经完成','不搬盘，立即返回上一层。',f,'base');
+      }else{
+        f.phase=1;f.stage=`等待第一子任务；返回后移动盘 ${k}：${f.from} → ${f.to}`;
+        snap('first',`① 先搬走上面的 ${k-1} 个盘`,`${f.from} 是源柱，${f.aux} 是这个子任务的目标柱，${f.to} 暂作辅助柱。展开后会再次看到相同的三步。`,f,'first');
+        visit(k-1,from,to,aux);
+        f.phase=2;f.stage=`第一子任务完成，下一步移动盘 ${k}`;
+        snap('firstDone',`① 已完成，现在可以移动盘 ${k}`,`上面的 ${k-1} 个盘已经在 ${f.aux}，源柱 ${f.from} 上的盘 ${k} 已经露出。返回后从②继续，不从函数开头重来。`,f,'move');
+        const disk=towers[from].pop();if(disk!==k||(towers[to].length&&towers[to].at(-1)<disk))throw Error('非法搬盘');
+        towers[to].push(disk);moves++;
+        // A physical move contributes to the active phase of every unfinished ancestor task.
+        frames.forEach(frame=>frame.counts[frame.phase-1]++);
+        f.phase=3;f.stage='最大盘已移动，准备第二子任务';
+        snap('move',`② 移动盘 ${k}：${f.from} → ${f.to}`,`最大盘已经到位。剩下的任务是把 ${f.aux} 上的 ${k-1} 个盘搬到 ${f.to}。`,f,'move',disk);
+        f.stage='等待第二子任务；返回后结束本次调用';
+        snap('second',`③ 再搬回上面的 ${k-1} 个盘`,`${f.aux} 成为源柱，${f.to} 是目标柱，${f.from} 变成辅助柱。仍然调用同一个过程。`,f,'second');
+        visit(k-1,aux,from,to);
+        f.phase=4;f.stage='三个步骤均已完成，准备返回';
+        snap('complete',`完成：${goal(f)}`,'两个较小任务加一次搬盘，共同完成了当前任务。',f,'return');
       }
-      frame.stage=`等待 Hanoi(${k-1}, ${names[from]}, ${names[to]}, ${names[aux]}) 返回`;
-      snapshot('descend','执行第一次递归',`先把上面的 ${k-1} 个圆盘从 ${names[from]} 移到 ${names[aux]}。`);
-      visit(k-1,from,to,aux);
-      frame.stage=`第一次递归完成，移动盘 ${k}`; snapshot('resume',`恢复 Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to})`,'现在执行这个栈帧中尚未完成的搬盘动作。');
-      const disk=towers[from].pop(); towers[to].push(disk); moves++;
-      frame.stage=`盘 ${k} 已移动，准备第二次递归`; snapshot('move',`移动盘 ${k}：${names[from]} → ${names[to]}`,`这是普通操作，没有产生新栈帧。`);
-      frame.stage=`等待 Hanoi(${k-1}, ${names[aux]}, ${names[from]}, ${names[to]}) 返回`;
-      snapshot('descend','执行第二次递归',`把 ${k-1} 个圆盘从 ${names[aux]} 移到 ${names[to]}。`);
-      visit(k-1,aux,from,to);
-      frame.stage='三步完成，准备返回'; snapshot('return',`Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to}) 完成`,'这个调用已经没有尚未完成的工作。');
-      frames.pop(); snapshot('pop',`弹栈 Hanoi(${k}, ${frame.from}, ${frame.aux}, ${frame.to})`,frames.length?'继续执行上一层调用。':'最外层调用结束。');
+      frames.pop();const parent=frames.at(-1);
+      if(parent){
+        if(parent.phase===1){parent.phase=2;parent.stage=`第一子任务完成，下一步移动盘 ${parent.n}`}
+        else{parent.phase=4;parent.stage='第二子任务完成，准备返回调用者'}
+      }
+      snap('pop',`返回：${call(f)}`,parent?`回到 ${call(parent)}。${parent.stage}`:'最外层任务完成，所有圆盘已经到达 Z。',parent||f,parent?(parent.phase===2?'move':'return'):'return');
     }
-    snapshot('ready','准备开始','点击“下一步”，观察调用怎样压栈。'); visit(n,0,1,2);
-    return out;
+    visit(n,0,1,2);return out;
   }
-  function renderTowers(state){
-    towersEl.innerHTML='';
-    state.towers.forEach((stack,t)=>{
-      const tower=document.createElement('div'); tower.className='tower';
-      tower.innerHTML='<div class="pole"></div>';
-      stack.forEach(d=>{const disk=document.createElement('div');disk.className='disk';disk.style.width=`${42+d*31}px`;disk.textContent=d;tower.appendChild(disk)});
-      const label=document.createElement('div');label.className='tower-label';label.textContent=names[t];tower.appendChild(label);towersEl.appendChild(tower);
-    });
+  function overviewIndices(){return events.flatMap((e,i)=>i===0||(e.focus.id===1&&['first','firstDone','move','complete'].includes(e.kind))||i===events.length-1?[i]:[])}
+  function renderPlan(s){
+    const f=s.focus,p=f.phase,showCounts=$('showCounts').checked;
+    $('task').innerHTML=`<h2>${f.n===0?'当前子任务：0 个盘，无需搬动':`当前任务：${goal(f)}`}</h2><p>${$('mode').value==='idea'?'先把每个子任务看作一个整体；点击“展开这个子问题”查看它内部如何重复这三步。':`${call(f)}。同一段代码处理不同规模、不同柱角色的任务。`}</p>`;
+    const parts=[
+      ['① 搬走上面的小盘',`把 ${Math.max(0,f.n-1)} 个盘从 ${f.from} 搬到 ${f.aux}`,`子任务：源 ${f.from}，辅助 ${f.to}，目标 ${f.aux}`],
+      ['② 移动当前最大盘',`把盘 ${f.n} 从 ${f.from} 搬到 ${f.to}`,'只搬一个盘，不产生递归调用'],
+      ['③ 搬回上面的小盘',`把 ${Math.max(0,f.n-1)} 个盘从 ${f.aux} 搬到 ${f.to}`,`子任务：源 ${f.aux}，辅助 ${f.from}，目标 ${f.to}`]
+    ];
+    $('plan').hidden=f.n===0;
+    $('plan').innerHTML=parts.map(([title,body,sub],i)=>{const num=i+1;const done=p>num;const active=p===num;return `<article class="step ${done?'done':active?'active':''}"><span class="badge">${done?'已完成':active?'当前步骤':'待执行'}</span><h3>${title}</h3><p>${body}</p><small>${sub}</small>${showCounts?`<div class="step-count">本阶段已搬 ${f.counts[i]} 次${done?'（完成）':''}</div>`:''}</article>`}).join('');
+    $('roles').textContent=`本次调用：源柱 ${f.from} · 辅助柱 ${f.aux} · 目标柱 ${f.to}`;
+    document.querySelectorAll('#code li').forEach(el=>el.classList.toggle('active',el.dataset.line===s.line));
   }
-  function renderFrames(state){
-    if(!state.frames.length){framesEl.innerHTML='<div class="empty">调用栈为空</div>';return}
-    framesEl.innerHTML=[...state.frames].reverse().map((f,i)=>`<div class="frame ${i===0?'top':''}"><div class="call">Hanoi(${f.n}, ${f.from}, ${f.aux}, ${f.to})</div><div class="stage">${f.stage}</div></div>`).join('');
+  function renderCounts(s){
+    const show=$('showCounts').checked,f=s.focus,total=f.counts.reduce((a,b)=>a+b,0);
+    $('countExplanation').hidden=!show;$('meters').hidden=!show;
+    if(show){
+      const terms=f.counts.map((v,i)=>f.phase>i+1?String(v):'?');
+      $('countExplanation').innerHTML=f.n===0
+        ? '<strong>当前子任务：T(0) = 0 次</strong><p>0 个盘无需搬动，直接返回。这个调用仍占用一个栈帧。</p>'
+        : `<strong>当前 ${f.n} 个盘的任务：${terms.join(' ＋ ')} ＝ ${f.phase===4?total:'?'} 次</strong><p>本次调用及其子任务已搬 ${total} 次。每个阶段完成后揭示该项，尚未完成的项用 ? 表示。</p><p class="derivation">T(n) 表示搬动 n 个盘的总次数。两个 n−1 个盘的子任务，各需 T(n−1) 次；中间搬最大盘 1 次。</p><p class="derivation">T(0) = 0，T(n) = T(n−1) + 1 + T(n−1)。${f.phase===4?`因此 T(${f.n}) = ${f.counts.join(' + ')} = ${total}；一般式为 T(n) = 2ⁿ − 1。`:''}</p>`;
+      $('meters').innerHTML=`<div class="meter"><span>整体累计搬盘</span><strong>${s.moves} 次</strong><small>只在真正搬盘时增加</small></div><div class="meter"><span>当前栈深度</span><strong>${s.frames.length} 帧</strong><small>调用时增加，返回时减少</small></div><div class="meter"><span>历史最大栈深度</span><strong>${s.maxDepth} 帧</strong><small>记录同时存在的最多帧数，含 n=0</small></div>`;
+    }
+    const atFirstBase=s.kind==='base'&&s.moves===0;
+    $('checkpoint').hidden=!show||!atFirstBase;
+    if(show&&atFirstBase){
+      $('checkpoint').innerHTML=`<strong>停一停：栈已经有 ${s.frames.length} 层，为什么还没有搬盘？</strong><p>调用链：${s.frames.map(frame=>frame.n).join(' → ')}。每一层都先调用较小任务，尚未执行搬盘那一步，所以累计搬盘仍为 0。</p><p>n=0 返回后，深度先降到 ${s.frames.length-1}；随后 n=1 的调用执行第一次搬盘。最大深度为 n+1，此处是 ${diskCount}+1=${s.maxDepth}。</p><p>点击“下一步”观察返回，再观察第一次搬盘。</p>`;
+      stopAuto();
+    }
+  }
+  function initTowers(){
+    $('towers').innerHTML='<div class="floor"></div>'+names.map((v,i)=>`<div class="pole" style="left:${(i+.5)*100/3}%"></div><div class="tower-label" style="left:${(i+.5)*100/3}%">${v}<small id="role-${v}"></small></div>`).join('');
+    for(let d=1;d<=diskCount;d++){const el=document.createElement('div');el.className='disk';el.id=`disk-${d}`;el.textContent=d;$('towers').appendChild(el)}
+  }
+  function renderTowers(s){
+    const f=s.focus;
+    names.forEach(name=>$(`role-${name}`).textContent=name===f.from?'源柱':name===f.aux?'辅助柱':'目标柱');
+    s.towers.forEach((pile,t)=>pile.forEach((d,level)=>{
+      const el=$(`disk-${d}`);el.style.left=`${(t+.5)*100/3}%`;el.style.top=`${218-(level+1)*30}px`;el.style.width=`${11+d*4.5}%`;
+      el.className=`disk ${s.moved===d?'moved':''} ${d>f.n?'outside':''}`;
+    }));
   }
   function render(){
-    const state=events[index]; renderTowers(state); renderFrames(state);
-    const extra=state.kind==='move'?`<div class="move">${state.text}</div>`:state.kind==='base'?`<div class="base">${state.text}</div>`:`<strong>${state.text}</strong>`;
-    eventEl.innerHTML=`${extra}<div>${state.detail}</div>`;
-    statsEl.textContent=`事件 ${index}/${events.length-1}　移动 ${state.moves}/${2**diskCount-1}　当前深度 ${state.frames.length}　最大深度 ${state.maxDepth}`;
-    nextBtn.disabled=index>=events.length-1; countEl.disabled=index>0;
-    if(nextBtn.disabled)stopAuto();
+    const s=events[index];renderPlan(s);renderCounts(s);renderTowers(s);
+    $('stackPanel').hidden=$('mode').value==='idea';
+    $('frames').innerHTML=s.frames.length?[...s.frames].reverse().map((f,i)=>`<div class="frame ${i===0?'top':''}"><div class="call">${call(f)}</div><div class="stage">${f.stage}</div></div>`).join(''):'<div class="empty">调用栈为空</div>';
+    $('event').innerHTML=`<strong>${s.text}</strong><div>${s.detail}</div>`;
+    $('stats').textContent=`已搬盘 ${s.moves} 次 / 共 ${2**diskCount-1} 次　${$('mode').value==='detail'?`当前栈深度 ${s.frames.length} · 已达到最大深度 ${s.maxDepth}（含 n=0 帧）`:'思路模式每次完成一个阶段，内部仍逐个合法搬盘。'}`;
+    $('prev').disabled=index===0;$('next').disabled=index===events.length-1;
+    $('expand').hidden=$('mode').value!=='idea';$('expand').disabled=!['first','move'].includes(s.kind);
+    if($('next').disabled)stopAuto();
   }
-  function next(){if(index<events.length-1){index++;render()}}
-  function startAuto(){if(timer||nextBtn.disabled)return;autoBtn.textContent='暂停';timer=setInterval(next,700)}
-  function stopAuto(){if(timer)clearInterval(timer);timer=null;autoBtn.textContent='自动播放'}
-  function reset(){stopAuto();diskCount=Number(countEl.value);events=buildTrace(diskCount);index=0;countEl.disabled=false;render()}
-  nextBtn.addEventListener('click',next);autoBtn.addEventListener('click',()=>timer?stopAuto():startAuto());document.getElementById('reset').addEventListener('click',reset);countEl.addEventListener('change',reset);reset();
+  function advance(delta){
+    if($('mode').value==='detail')index=Math.max(0,Math.min(events.length-1,index+delta));
+    else{const candidates=overviewIndices().filter(i=>delta>0?i>index:i<index);if(candidates.length)index=delta>0?candidates[0]:candidates.at(-1)}
+    render();
+  }
+  function next(){advance(1)}
+  function startAuto(){if(timer||$('next').disabled)return;$('auto').textContent='暂停';timer=setInterval(next,$('mode').value==='idea'?2400:1300)}
+  function stopAuto(){if(timer)clearInterval(timer);timer=null;$('auto').textContent='自动播放'}
+  function reset(){stopAuto();diskCount=Number($('count').value);events=buildTrace(diskCount);index=0;initTowers();render()}
+  $('next').onclick=()=>{stopAuto();advance(1)};$('prev').onclick=()=>{stopAuto();advance(-1)};
+  $('expand').onclick=()=>{stopAuto();$('mode').value='detail';index++;render()};
+  $('auto').onclick=()=>timer?stopAuto():startAuto();$('reset').onclick=reset;$('count').onchange=reset;
+  $('mode').onchange=()=>{stopAuto();if($('mode').value==='idea'){const earlier=overviewIndices().filter(i=>i<=index);index=earlier.at(-1)||0}render()};
+  $('showCounts').onchange=()=>{stopAuto();render()};
+  reset();
 </script>
 </body>
 </html>

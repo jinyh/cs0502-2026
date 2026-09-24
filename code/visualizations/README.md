@@ -12,12 +12,20 @@
 
 | 文件 | 主题 | 对应卡片 | 嵌入方式 |
 |---|---|---|---|
-| `traffic_conflicts.html` | 五岔路口：车流轨迹与交叉冲突图 | 第 3 讲「数据结构一」第 8 页补充 | 浏览器直接打开，离线使用 |
-| `binary_heap.html` | 二叉堆的插入与下沉 | `05-data-structure-advanced` | iframe 或新标签打开 |
-| `circular_queue.html` | 5 格留一空位的循环队列下标追踪 | `05-data-structure-advanced` | 同上 |
-| `Hanoi.html` | 采用 `n=0` 基例的汉诺塔递归与调用栈 | `05-data-structure-advanced` | 同上 |
-| `stack_expr.html` | `5+(6-4/2)*3` 的双栈求值过程 | `05-data-structure-advanced` | 同上 |
+| [traffic_conflicts.html](traffic_conflicts.html) | 五岔路口：车流轨迹与交叉冲突图 | 第 3 讲「数据结构一」第 8 页补充 | 浏览器直接打开，离线使用 |
+| [binary_heap.html](binary_heap.html) | 二叉堆的插入与下沉 | `05-data-structure-advanced` | iframe 或新标签打开 |
+| [circular_queue.html](circular_queue.html) | 5 格留一空位的循环队列下标追踪 | `05-data-structure-advanced` | 同上 |
+| [Hanoi.html](Hanoi.html) | 汉诺塔递归拆解、调用栈与搬盘次数（`n=0` 基例） | `05-data-structure-advanced` | 同上 |
+| [stack_expr.html](stack_expr.html) | `5+(6-4/2)*3` 的双栈求值过程 | `05-data-structure-advanced` | 同上 |
 | `TuringMachine.html` | 多带图灵机回文检查器（选学扩展） | `08-turing-machine` | 同上 |
+
+## Slide02—04 课堂入口
+
+- Slide02：[无人船巡检实验室](usv-inspection/index.html)，包括 Python 执行追踪。
+- Slide03：[交通流与冲突图](traffic_conflicts.html)，配合数据关系案例。
+- Slide04：[双栈表达式求值](stack_expr.html)（P8 算符表与 P10 过程联动）、[汉诺塔](Hanoi.html)（P14 递归与 P15 次数）、[循环队列](circular_queue.html)（P19）、[二叉堆](binary_heap.html)。
+
+汉诺塔先用“递归思路”观察三个任务，再点击“展开这个子问题”查看同样的三步与调用栈。“显示次数解释（P15）”随阶段完成揭示 `3+1+3=7`，同时区分累计搬盘次数、当前栈深度与历史最大深度；详细模式第一次到达 `n=0` 时暂停，解释为什么栈已达最深但尚未搬盘。
 
 ## 学生使用（PAI-DSW）
 
