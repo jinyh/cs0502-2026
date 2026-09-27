@@ -6,6 +6,7 @@
   <div class="course-actions">
     <a class="course-button course-button-primary" href="https://jinyh.github.io/cs0502-2026/docs/course/overview/">进入课程说明</a>
     <a class="course-button" href="https://jinyh.github.io/cs0502-2026/docs/course/schedule/">查看教学日历</a>
+    <a class="course-button" href="https://jinyh.github.io/cs0502-2026/code/visualizations/">交互可视化（可选）</a>
   </div>
 </div>
 

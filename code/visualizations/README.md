@@ -1,6 +1,16 @@
-# 可视化（code/visualizations/）
+# 交互可视化
 
-现有 6 个自包含 HTML 可视化（内嵌 CSS+JS，单文件，浏览器直接打开）。另有采用本地模块资源的无人船巡检实验室，通过 HTTP 启动。
+点击下方主题即可从课程网站直接体验。6 个概念演示是自包含 HTML 页面；无人船巡检实验室使用独立页面和配套资源。它们用于预测、观察和复盘，默认不属于课程必做内容。
+
+## 直接打开
+
+- [无人船巡检实验室](usv-inspection/index.html)：路线、断网记录、图像复核与 Python 追踪。
+- [交通流与冲突图](traffic_conflicts.html)：观察轨迹交叉，判断图中是否连边。
+- [双栈表达式求值](stack_expr.html)：逐步追踪算符栈与数值栈。
+- [汉诺塔递归](Hanoi.html)：观察调用栈与搬盘次数。
+- [循环队列](circular_queue.html)：追踪 `front`、`rear` 和队满条件。
+- [二叉堆](binary_heap.html)：观察插入、上浮与下沉。
+- [多带图灵机](TuringMachine.html)：选学扩展，在掌握单带状态追踪后使用。
 
 ## 第 1—2 讲：无人船巡检交互实验室
 
@@ -17,7 +27,7 @@
 | [circular_queue.html](circular_queue.html) | 5 格留一空位的循环队列下标追踪 | `05-data-structure-advanced` | 同上 |
 | [Hanoi.html](Hanoi.html) | 汉诺塔递归拆解、调用栈与搬盘次数（`n=0` 基例） | `05-data-structure-advanced` | 同上 |
 | [stack_expr.html](stack_expr.html) | `5+(6-4/2)*3` 的双栈求值过程 | `05-data-structure-advanced` | 同上 |
-| `TuringMachine.html` | 多带图灵机回文检查器（选学扩展） | `08-turing-machine` | 同上 |
+| [TuringMachine.html](TuringMachine.html) | 多带图灵机回文检查器（选学扩展） | `08-turing-machine` | 同上 |
 
 ## Slide02—04 课堂入口
 
