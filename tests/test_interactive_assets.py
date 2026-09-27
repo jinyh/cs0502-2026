@@ -48,7 +48,7 @@ def execute_clone_update(course_root, monkeypatch, git_path=None, clone_package=
 
 def test_html_visualizations_are_self_contained_and_prediction_first():
     html_files = sorted(VISUALIZATIONS.glob("*.html"))
-    assert len(html_files) == 6
+    assert len(html_files) == 7
     for path in html_files:
         text = path.read_text(encoding="utf-8")
         assert "先预测" in text, path

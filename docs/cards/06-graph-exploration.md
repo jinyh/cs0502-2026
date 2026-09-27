@@ -16,7 +16,7 @@ labs: [lab-02-graph]
 figures: [06-bfs-dfs.svg]
 related_cards: [trees-heaps, algorithm-strategies, ai-search-planning-agents, 04-data-structure-basics, 05-data-structure-advanced, 07-greedy-algorithm]
 related_deep: []
-related_visualizations: []
+related_visualizations: [graph_search]
 last_reviewed: 2026-08-21
 ---
 
@@ -60,6 +60,8 @@ last_reviewed: 2026-08-21
 - 图模型只保留所选关系；没有进入图的数据不会被算法考虑。
 
 完整示例：[06_graph_bfs_dfs.py](../../code/examples/06_graph_bfs_dfs.py)。
+
+[交互演示：DFS 调用栈与 BFS 队列](../../code/visualizations/graph_search.html)。先预测下一步，再观察图、容器与伪代码如何同步变化。
 
 ## 主动学习与考核迁移
 

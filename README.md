@@ -51,6 +51,13 @@
   <a class="module-link" href="code/visualizations/usv-inspection/index.html">进入无人船巡检实验室 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide05 · 图探索</span>
+  <h2>DFS 与 BFS：栈和队列怎样驱动搜索</h2>
+  <p>在同一张图上逐步观察递归调用栈、先进先出队列与首次发现顺序。先预测下一步，再验证压栈、返回、入队和出队。</p>
+  <a class="module-link" href="code/visualizations/graph_search.html">打开 DFS / BFS 交互演示 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">

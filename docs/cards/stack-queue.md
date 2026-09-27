@@ -18,7 +18,7 @@ labs: [lab-01-structures]
 figures: [05-stack-queue-recursion.svg]
 related_cards: [04-data-structure-basics, ext-search-hashing, ext-recursion-divide-conquer, 06-graph-exploration, operating-systems]
 related_deep: []
-related_visualizations: [stack_expr, circular_queue]
+related_visualizations: [stack_expr, circular_queue, graph_search]
 last_reviewed: 2026-08-21
 ---
 
@@ -75,6 +75,8 @@ last_reviewed: 2026-08-21
 
 - 运行 [`05_structures.py`](../../code/examples/05_structures.py)。
 - 用 [`stack_expr.html`](../../code/visualizations/stack_expr.html) 和 [`circular_queue.html`](../../code/visualizations/circular_queue.html) 逐步预测下一状态。
+
+[交互演示：DFS 调用栈与 BFS 队列](../../code/visualizations/graph_search.html)。先预测下一步，再观察图、容器与伪代码如何同步变化。
 
 ## 主动学习与考核迁移
 

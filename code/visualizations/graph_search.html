@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DFS 与 BFS · 栈和队列如何驱动搜索</title>
+<style>
+:root{--blue:#0754ae;--ink:#18314f;--muted:#596d83;--line:#d9e2ed;--paper:#f3f6fa;--amber:#a95700;--green:#087568}*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif}button,select{font:inherit;color:inherit}button{cursor:pointer;border:1px solid var(--line);border-radius:8px;background:white;padding:10px 17px;font-weight:600}button:hover:not(:disabled){border-color:var(--blue)}button:disabled{opacity:.4;cursor:default}button:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #d98512;outline-offset:3px}header{background:white;border-bottom:1px solid var(--line)}.header-inner,main{max-width:1280px;margin:auto;padding:22px 28px}.header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}.eyebrow{font-size:12px;letter-spacing:.12em;color:var(--blue);font-weight:700}h1{margin:7px 0;font-size:29px;letter-spacing:-.025em}.subtitle{margin:0;color:var(--muted);font-size:15px;line-height:1.6}.home{color:var(--blue);font-size:14px;white-space:nowrap;text-decoration:none}.toolbar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;margin-bottom:17px}.modes{display:flex;gap:8px}.modes button{padding:11px 20px}.modes [aria-pressed=true],.primary{background:var(--blue);color:white;border-color:var(--blue)}.transport{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.transport button{font-size:14px;padding:10px 13px}select{padding:8px;border:1px solid var(--line);border-radius:7px;background:white}label{font-size:13px}.workspace{display:grid;grid-template-columns:1.08fr 1fr;gap:18px}.panel{background:white;border:1px solid var(--line);border-radius:13px;padding:21px;min-width:0}h2{font-size:18px;margin:0 0 8px}.small{font-size:13px;line-height:1.7;color:var(--muted);margin:0}.panel-top{display:flex;align-items:center;justify-content:space-between;gap:12px}#graph{display:block;width:100%;height:290px}svg text{font-family:inherit}.edge{stroke:#c5d0de;stroke-width:3}.edge.tree{stroke:var(--green);stroke-width:4}.edge.focus{stroke:var(--amber);stroke-width:5}.edge.return{stroke-dasharray:8 5}.node circle{fill:#fff;stroke:#8a9bae;stroke-width:2.5}.node.pending circle{fill:#e8f1ff;stroke:var(--blue)}.node.done circle{fill:#e0f3ee;stroke:var(--green)}.node.current circle{fill:#fff0d9;stroke:var(--amber);stroke-width:4}.node .letter{font-size:25px;font-weight:700;fill:var(--ink)}.node .state-label{font-size:13px;fill:var(--muted)}.legend{display:flex;gap:14px;flex-wrap:wrap;font-size:12px;color:var(--muted)}.legend span{display:flex;gap:5px;align-items:center}.dot{width:10px;height:10px;border:1px solid #8a9bae;border-radius:50%;background:white}.dot.blue{background:#e8f1ff;border-color:var(--blue)}.dot.orange{background:#ffe0ad;border-color:var(--amber)}.dot.green{background:#d1eee5;border-color:var(--green)}.order{border-top:1px solid var(--line);margin-top:17px;padding-top:13px;display:flex;gap:16px;align-items:center;min-height:49px}.order strong{font-size:13px}.sequence{letter-spacing:.08em;font-size:22px;font-weight:700;color:var(--blue)}.rule{font-size:13px;color:var(--blue);font-weight:600}.structure{height:242px;display:flex;align-items:center;justify-content:center;margin-top:8px;position:relative}.stack-shell{width:100%;max-width:360px;display:flex;align-items:center;gap:12px}.stack{flex:1;min-height:207px;display:flex;flex-direction:column-reverse;justify-content:flex-start;gap:5px;border:solid #9ab0c9;border-width:0 2px 3px;padding:0 9px 7px}.frame{border:1px solid #adc5e3;background:#edf4ff;border-radius:5px;padding:7px 11px;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:16px}.frame small{font-size:12px;color:var(--muted)}.frame.top{border-color:var(--amber);background:#fff2df}.stack-label{flex-shrink:0;font-size:12px;line-height:1.8;color:var(--muted);width:53px}.queue-shell{width:100%}.queue-labels{display:flex;justify-content:space-between;color:var(--blue);font-weight:600;font-size:13px;margin-bottom:12px}.queue{display:flex;gap:8px;align-items:center;min-height:72px;border-top:2px solid #9ab0c9;border-bottom:2px solid #9ab0c9;padding:10px 5px}.queue .frame{flex-direction:column;justify-content:center;min-width:52px;padding:8px;gap:4px}.empty{color:var(--muted);font-size:14px;text-align:center;padding:12px;width:100%}.working{margin-top:17px;text-align:center;font-size:14px;color:var(--amber);min-height:24px}.structure-note{font-size:13px;line-height:1.65;color:var(--muted);margin:0;min-height:44px}.action{margin-top:16px;border-top:1px solid var(--line);padding-top:12px;display:flex;gap:12px;align-items:baseline;min-height:57px}.action-label{color:var(--blue);font-size:12px;white-space:nowrap;font-weight:700}.action p{margin:0;font-size:15px;line-height:1.65}.lower{display:grid;grid-template-columns:1.08fr 1fr;gap:18px;margin-top:18px}.question{border-left:4px solid var(--amber)}.question h2{font-size:15px;color:var(--amber)}#question{font-size:18px;line-height:1.7;margin:12px 0}#question-hint{margin:0;color:var(--muted);font-size:13px;line-height:1.7}.code{margin:9px 0 0;padding:0;list-style:none;counter-reset:line;font:13px/1.65 ui-monospace,SFMono-Regular,Consolas,monospace}.code li{counter-increment:line;white-space:pre-wrap;padding:1px 7px;border-left:3px solid transparent}.code li::before{content:counter(line);display:inline-block;width:22px;color:#8898a9}.code li.active{background:#edf4ff;border-left-color:var(--blue);color:#064996}.step-count{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}details{margin-top:18px;border-top:1px solid var(--line);padding-top:16px}summary{font-size:14px;font-weight:600;cursor:pointer}.guide{font-size:14px;line-height:1.85;max-width:950px}.guide li{margin:8px 0}.guide p{color:var(--muted)}footer{font-size:12px;color:var(--muted);line-height:1.8;margin-top:18px}.arrive{animation:arrive .35s ease-out}@keyframes arrive{from{opacity:.25;transform:translateY(-9px)}to{opacity:1;transform:translateY(0)}}@media(prefers-reduced-motion:reduce){.arrive{animation:none}}@media(max-width:800px){.workspace,.lower{grid-template-columns:1fr}.header-inner,main{padding:18px}.home{display:none}h1{font-size:25px}.toolbar{align-items:flex-start}.panel{padding:17px}#graph{height:265px}.structure{height:230px}.modes{width:100%}.modes button{flex:1}.transport{gap:6px}.transport button{padding:10px}.sequence{font-size:19px}}@media(min-width:1100px) and (max-height:850px){.header-inner{padding-top:13px;padding-bottom:13px}main{padding-top:15px}.panel{padding:16px}#graph{height:249px}.structure{height:207px}.order{margin-top:10px}.action{margin-top:8px}.lower{margin-top:13px}#question{font-size:17px;margin:8px 0}.code{font-size:12px}}
+@media(min-width:1100px) and (max-height:760px){.header-inner{padding-top:10px;padding-bottom:10px}.subtitle{display:none}h1{font-size:26px}#graph{height:195px}.structure{height:174px}.stack{min-height:162px}.frame{padding:5px 9px}.panel{padding:14px}.structure-note{font-size:12px}.action p{font-size:14px}.action{min-height:51px}.order{padding-top:9px;min-height:40px}.lower h2{font-size:16px}}
+</style>
+</head>
+<body>
+<header><div class="header-inner"><div><div class="eyebrow">CS0502 / SLIDE05 / 图探索</div><h1>栈和队列，怎样驱动搜索？</h1><p class="subtitle">同一张图，同一个起点。追踪每次进入、返回与等待。</p></div><a class="home" href="https://jinyh.github.io/cs0502-2026/code/visualizations/">全部交互演示 ↗</a></div></header>
+<main>
+<div class="toolbar"><nav class="modes" aria-label="搜索算法"><button id="dfs" aria-pressed="true">DFS · 深度优先</button><button id="bfs" aria-pressed="false">BFS · 广度优先</button></nav><div class="transport"><button id="prev" aria-label="上一步">← 上一步</button><button id="play" class="primary">播放</button><button id="next" aria-label="下一步">下一步 →</button><button id="reset">重置</button><label>速度 <select id="speed"><option value="1800">慢速</option><option value="1100" selected>标准</option><option value="600">快速</option></select></label></div></div>
+<div class="workspace">
+<section class="panel"><div class="panel-top"><h2>同一张无向图</h2><span class="step-count" id="step-count"></span></div><p class="small">从 A 出发 · 邻居按字母顺序检查 · 每条边长度为 1</p><svg id="graph" viewBox="0 0 530 285" role="img" aria-labelledby="graph-title graph-desc"><title id="graph-title">DFS 与 BFS 搜索图</title><desc id="graph-desc">无向边 A-B、A-C、B-D、C-D、D-E。顶点状态与右侧栈或队列同步。</desc><g id="edges"></g><g id="nodes"></g></svg><div class="legend"><span><i class="dot"></i>未发现</span><span><i class="dot blue"></i>已发现</span><span><i class="dot orange"></i>当前执行</span><span><i class="dot green"></i>已完成</span></div><div class="order"><strong>首次发现顺序</strong><span class="sequence" id="order">—</span></div></section>
+<section class="panel"><div class="panel-top"><h2 id="structure-title"></h2><span class="rule" id="rule"></span></div><p class="small" id="structure-subtitle"></p><div id="structure" class="structure"></div><p class="structure-note" id="structure-note"></p><div class="action" aria-live="polite" aria-atomic="true"><span class="action-label" id="event-label"></span><p id="action-text"></p></div></section>
+</div>
+<div class="lower"><section class="panel question"><h2 id="question-title">先预测，再运行</h2><p id="question"></p><p id="question-hint"></p></section><section class="panel"><div class="panel-top"><h2>伪代码与当前步骤</h2><span class="small">蓝色行正在执行</span></div><ol class="code" id="code"></ol></section></div>
+<details><summary>课堂讲解与对照 · Slide05 第 24 / 31 页</summary><div class="guide"><ol><li><strong>DFS：</strong>先看 A → B → D → C 的调用链。C 没有未发现邻居时，自动播放暂停：让学生预测弹出谁、恢复谁，再单步返回 D、进入 E。回到 D 不会再次加入首次发现序列。</li><li><strong>BFS：</strong>切换算法，从 A 开始。处理完 B 后自动暂停，此时队列为 [C, D]：C 先入队，所以先处理 C。检查 C 的邻居 D 时，D 已被标记，无须重复入队。</li><li><strong>比较：</strong>DFS 的栈保存尚未结束的函数调用，包括返回后继续检查邻居的位置；BFS 的队列保存已发现、等待处理的顶点。DFS 的“返回”不是发现新顶点；BFS 的“出队”也不是首次发现。</li></ol><p>DFS = depth-first search（深度优先搜索）；BFS = breadth-first search（广度优先搜索）。栈（stack）后进先出；队列（queue）先进先出。BFS 的距离按边数计，只在无权／等权条件下对应最短距离。</p></div></details>
+<footer>配套 2026 版 Slide05「图探索」第 24、31 页；衔接上一讲的栈与队列。页面可离线使用。图中的绿色实线是发现新顶点的搜索树边，橙色线表示当前检查或返回的边，返回用虚线表示。</footer>
+</main>
+<script id="search-model">
+'use strict';
+// 独立的算法状态轨迹：每个快照同时驱动图、容器和伪代码。
+const GRAPH = {A:['B','C'], B:['A','D'], C:['A','D'], D:['B','C','E'], E:['D']};
+function buildTrace(mode) {
+  const states = [], seen = [], done = [], tree = [], stack = [], queue = [], distances = {};
+  let current = null;
+  function emit(kind, text, line, extra = {}) {
+    states.push(JSON.parse(JSON.stringify({kind,text,line,current,seen,done,tree,stack,queue,distances,edge:null,checkpoint:false,...extra})));
+  }
+  emit('准备', '点击下一步，从 A 开始。先预测第一个进入容器的顶点。', -1);
+  if (mode === 'dfs') {
+    function visit(node, parent) {
+      current = node; seen.push(node); stack.push({node,next:0});
+      if (parent) tree.push([parent,node]);
+      emit('压栈 / push', `进入 DFS(${node})，标记 ${node} 并记入首次发现序列。`, 1, {edge:parent?[parent,node]:null});
+      for (const neighbor of GRAPH[node]) {
+        stack[stack.length-1].next++;
+        const known = seen.includes(neighbor);
+        emit('检查邻居', `检查 ${node} → ${neighbor}：${known?'已经发现，跳过。':'尚未发现，下一步递归进入它。'}`, known?2:3, {edge:[node,neighbor]});
+        if (!known) visit(neighbor,node);
+      }
+      emit('准备返回', `${node} 的邻居已全部检查，下一步结束这次调用。`, 4, {checkpoint:node==='C'});
+      stack.pop(); done.push(node); current = stack.length?stack[stack.length-1].node:null;
+      emit('弹栈 / pop', `DFS(${node}) 返回${current?`，恢复 DFS(${current})，从保存的位置继续检查邻居。`:'，调用栈已空。'}`, 4, {edge:current?[node,current]:null});
+    }
+    visit('A',null);
+  } else {
+    seen.push('A');queue.push('A');distances.A=0;
+    emit('标记并入队', '发现 A，距离为 0；标记 A，并从队尾加入。', 0);
+    while (queue.length) {
+      current=queue.shift();
+      emit('出队 / dequeue', `从队头取出 ${current}，开始检查它的邻居。`, 2);
+      for (const neighbor of GRAPH[current]) {
+        const known=seen.includes(neighbor);
+        emit('检查邻居', `检查 ${current} → ${neighbor}：${known?'已经发现，不重复入队。':'尚未发现，下一步标记并入队。'}`, 3, {edge:[current,neighbor]});
+        if (!known) {
+          seen.push(neighbor);queue.push(neighbor);distances[neighbor]=distances[current]+1;tree.push([current,neighbor]);
+          emit('标记并入队', `标记 ${neighbor}，距离 ${distances[current]} + 1 = ${distances[neighbor]}；从队尾加入。`, 4, {edge:[current,neighbor]});
+        }
+      }
+      const processed=current;done.push(processed);current=null;
+      emit('处理完成', `${processed} 的邻居已全部检查。${queue.length?'下一步从队头取出等待中的顶点。':'队列已空。'}`, 1, {checkpoint:processed==='B'});
+    }
+  }
+  emit('搜索完成', `首次发现顺序：${seen.join(' → ')}。${mode==='dfs'?'所有调用均已返回，栈为空。':'所有顶点均已处理，队列为空。'}`, -1);
+  return states;
+}
+</script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id), NS='http://www.w3.org/2000/svg';
+const POS={A:[70,140],B:[220,55],C:[220,230],D:[360,140],E:[480,140]};
+const EDGES=[['A','B'],['A','C'],['B','D'],['C','D'],['D','E']];
+const CODE={dfs:['DFS(u)：','  标记 u；进入调用栈；记录首次发现','  按字母顺序检查 u 的邻居 v','    若 v 未发现：调用 DFS(v)','  邻居检查完：返回，弹出当前调用'],bfs:['标记 A，dist[A] = 0；A 入队','只要队列非空，重复：','  u = 队头出队','  按字母顺序检查 u 的邻居 v','    若未发现：标记 v，dist[v] = dist[u]+1；v 入队']};
+let mode=location.hash==='#bfs'?'bfs':'dfs', states=buildTrace(mode), index=0, timer=null;
+function svg(tag,attrs,text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;}
+function sameEdge(a,b){return a&&b&&[...a].sort().join('')===[...b].sort().join('');}
+function stop(){clearTimeout(timer);timer=null;$('play').textContent='播放';}
+function render(){
+  const s=states[index],dfs=mode==='dfs';
+  $('dfs').setAttribute('aria-pressed',dfs);$('bfs').setAttribute('aria-pressed',!dfs);
+  $('prev').disabled=index===0;$('next').disabled=index===states.length-1;$('play').disabled=index===states.length-1;
+  $('step-count').textContent=`${index} / ${states.length-1} 步`;
+  $('structure-title').textContent=dfs?'递归调用栈':'等待处理的队列';$('rule').textContent=dfs?'LIFO · 后进先出':'FIFO · 先进先出';
+  $('structure-subtitle').textContent=dfs?'每一格是一层尚未结束的 DFS 调用':'每一格是一个已发现、尚未出队的顶点';
+  $('edges').replaceChildren();$('nodes').replaceChildren();
+  for(const edge of EDGES){const [a,b]=edge,[x1,y1]=POS[a],[x2,y2]=POS[b];$('edges').append(svg('line',{x1,y1,x2,y2,class:`edge${s.tree.some(e=>sameEdge(e,edge))?' tree':''}${sameEdge(s.edge,edge)?' focus':''}${s.kind==='弹栈 / pop'&&sameEdge(s.edge,edge)?' return':''}`}));}
+  for(const [v,[x,y]] of Object.entries(POS)){
+    const status=s.current===v?'current':s.done.includes(v)?'done':s.seen.includes(v)?'pending':'';
+    const g=svg('g',{class:`node ${status}`,transform:`translate(${x},${y})`});
+    g.append(svg('circle',{r:25}),svg('text',{'text-anchor':'middle',dy:9,class:'letter'},v));
+    const label=s.current===v?'当前':s.done.includes(v)?'完成':s.seen.includes(v)?(dfs?'调用中':'待处理'):'未发现';
+    g.append(svg('text',{'text-anchor':'middle',y:46,class:'state-label'},`${label}${!dfs&&v in s.distances?' · d='+s.distances[v]:''}`));$('nodes').append(g);
+  }
+  $('order').textContent=s.seen.length?s.seen.join(' → '):'—';
+  const entering=s.kind==='压栈 / push'||s.kind==='标记并入队';
+  if(dfs){
+    $('structure').innerHTML=`<div class="stack-shell"><div class="stack-label">栈顶 ↑<br>进入<br>返回<br><br>栈底 ↓</div><div class="stack">${s.stack.map((f,i)=>`<div class="frame ${i===s.stack.length-1?'top':''} ${entering&&i===s.stack.length-1?'arrive':''}"><b>DFS(${f.node})</b><small>${i===s.stack.length-1?'执行中':'等待返回'} · ${f.next<GRAPH[f.node].length?'待查 '+GRAPH[f.node].slice(f.next).join(', '):'邻居已查完'}</small></div>`).join('')||'<div class="empty">调用栈为空</div>'}</div></div>`;
+    $('structure-note').textContent='调用保存顶点和继续执行的位置。上层调用返回后，才恢复下层调用；弹栈不会再次记录首次发现。';
+  }else{
+    $('structure').innerHTML=`<div class="queue-shell"><div class="queue-labels"><span>← 队头 · 从这里取出</span><span>队尾 · 从这里加入 ←</span></div><div class="queue">${s.queue.map((v,i)=>`<div class="frame ${i===0?'top':''} ${entering&&i===s.queue.length-1?'arrive':''}"><b>${v}</b><small>d = ${s.distances[v]}</small></div>`).join('')||'<div class="empty">队列为空</div>'}</div><div class="working">${s.current?'正在处理 '+s.current+'（已出队，不在队列中）':'当前没有正在处理的顶点'}</div></div>`;
+    $('structure-note').textContent='首次发现时就标记并入队，避免重复加入。d 是从 A 出发的最少边数；队列中的距离从队头到队尾不递减。';
+  }
+  $('event-label').textContent=s.kind;$('action-text').textContent=s.text;
+  $('code').replaceChildren(...CODE[mode].map((line,i)=>{const li=document.createElement('li');li.textContent=line;if(i===s.line)li.className='active';return li;}));
+  $('question-title').textContent=s.checkpoint?'停一下 · 先预测':'先预测，再运行';
+  $('question').textContent=s.checkpoint?(dfs?'C 的邻居都已发现。下一步弹出谁？返回后由谁继续？':'队头 → [C, D] → 队尾。接下来处理 C 还是 D？为什么？'):index===states.length-1?(dfs?'回退时又回到 D，为什么首次发现序列中只出现一次 D？':'为什么 D 被 B 发现后，C 不会把 D 再入队一次？'):(dfs?'下一步会进入新的调用，还是从当前调用返回？':'下一步会从队头取出谁，或向队尾加入谁？');
+  $('question-hint').textContent=s.checkpoint?'自动播放已暂停。说出理由，再点击“下一步”验证。':index===states.length-1?'切换另一种算法，比较同一张图的处理顺序和容器状态。':'先观察容器和高亮的伪代码，再点击“下一步”。播放也会在关键位置暂停。';
+}
+function schedule(){timer=setTimeout(()=>{index++;render();if(states[index].checkpoint||index===states.length-1)stop();else schedule();},Number($('speed').value));}
+function choose(next){stop();mode=next;states=buildTrace(mode);index=0;render();}
+$('dfs').onclick=()=>{choose('dfs');location.hash='dfs';};$('bfs').onclick=()=>{choose('bfs');location.hash='bfs';};
+window.addEventListener('hashchange',()=>{const next=location.hash==='#bfs'?'bfs':'dfs';if(next!==mode)choose(next);});
+$('prev').onclick=()=>{stop();index=Math.max(0,index-1);render();};$('next').onclick=()=>{stop();index=Math.min(states.length-1,index+1);render();};$('reset').onclick=()=>choose(mode);
+$('play').onclick=()=>{if(timer){stop();return;}if(index===states.length-1)return;$('play').textContent='暂停';schedule();};
+$('speed').onchange=()=>{if(timer){clearTimeout(timer);schedule();}};
+document.addEventListener('visibilitychange',()=>{if(document.hidden)stop();});
+render();
+</script>
+</body>
+</html>
