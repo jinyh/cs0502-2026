@@ -91,26 +91,51 @@ function activityTrace(activities,rule) {
   return {states,order,optimum:bestActivities(activities),activities:structuredClone(activities),rule};
 }
 function graphEdges(weight=1){return BASE_EDGES.map(([a,b,w])=>[a,b,a==='c'&&b==='d'?weight:w]);}
+// 每个未确定顶点只保留一个队列项；距离改善时原位 decrease-key。
+// 二叉最小堆用位置表定位顶点，距离相同按原顶点顺序决定先后。
+class MinPriorityQueue {
+  constructor(vertices) {
+    this.rank=new Map(vertices.map((v,i)=>[v,i]));
+    this.heap=vertices.map(vertex=>({vertex,priority:Infinity}));
+    this.position=new Map(vertices.map((v,i)=>[v,i]));
+  }
+  less(a,b){return a.priority<b.priority||(a.priority===b.priority&&this.rank.get(a.vertex)<this.rank.get(b.vertex));}
+  swap(i,j){[this.heap[i],this.heap[j]]=[this.heap[j],this.heap[i]];this.position.set(this.heap[i].vertex,i);this.position.set(this.heap[j].vertex,j);}
+  up(i){while(i>0){const parent=Math.floor((i-1)/2);if(!this.less(this.heap[i],this.heap[parent]))break;this.swap(i,parent);i=parent;}}
+  down(i){while(true){let smallest=i;for(const child of [2*i+1,2*i+2])if(child<this.heap.length&&this.less(this.heap[child],this.heap[smallest]))smallest=child;if(smallest===i)break;this.swap(i,smallest);i=smallest;}}
+  peek(){return this.heap[0]||null;}
+  decreaseKey(vertex,priority) {
+    const i=this.position.get(vertex);
+    if(i===undefined||!Number.isFinite(priority)||priority>this.heap[i].priority)throw new Error('decrease-key 要求顶点在队列中且新键不增大');
+    this.heap[i].priority=priority;this.up(i);
+  }
+  extractMin() {
+    if(!this.heap.length)return null;
+    const minimum=this.heap[0],last=this.heap.pop();this.position.delete(minimum.vertex);
+    if(this.heap.length){this.heap[0]=last;this.position.set(last.vertex,0);this.down(0);}
+    return minimum;
+  }
+  ordered(){return [...this.heap].sort((a,b)=>this.less(a,b)?-1:this.less(b,a)?1:0);}
+}
 function dijkstraTrace(vertices, edges, source, target) {
   if(!vertices.includes(source)||!vertices.includes(target)||edges.some(([a,b,w])=>!vertices.includes(a)||!vertices.includes(b)||!Number.isFinite(w)||w<0))throw new Error('Dijkstra 要求顶点存在且边权非负');
   const distance=Object.fromEntries(vertices.map(v=>[v,Infinity])),parent=Object.fromEntries(vertices.map(v=>[v,null]));
-  const states=[],done=[];distance[source]=0;
-  const pending=()=>vertices.filter(v=>!done.includes(v)).sort((a,b)=>distance[a]-distance[b]||vertices.indexOf(a)-vertices.indexOf(b));
-  const emit=(kind,text,line,extra={})=>snapshot(states,{kind,text,line,distance,parent,done,candidates:pending(),focus:null,edge:null,changed:null,checkpoint:false,...extra});
-  emit('初始化',`d(${source}) = 0，其余为 ∞；所有顶点尚未确定。`,0);
-  while(done.length<vertices.length) {
-    const u=pending()[0];
+  const states=[],done=[],queue=new MinPriorityQueue(vertices);distance[source]=0;queue.decreaseKey(source,0);
+  const emit=(kind,text,line,extra={})=>snapshot(states,{kind,text,line,distance,parent,done,candidates:queue.ordered().map(entry=>entry.vertex),priorityQueue:queue.ordered(),heap:queue.heap,focus:null,edge:null,changed:null,checkpoint:false,...extra});
+  emit('初始化优先队列',`Q 保存（顶点，暂定距离）。${source} 的键为 0，其余为 ∞；键越小越优先。`,0);
+  while(queue.peek()) {
+    const u=queue.peek().vertex;
     if(!Number.isFinite(distance[u]))break;
-    emit('比较候选',`未确定顶点中，${u} 的暂定距离 ${distance[u]} 最小。下一步确定它。`,1,{focus:u,checkpoint:done.length===2});
-    done.push(u);
-    emit('确定距离',`确定 ${u}：从 ${source} 到 ${u} 的最短距离为 ${distance[u]}。`,2,{focus:u});
+    emit('查看最小键 / peek',`Q 的最小项是（${u}, ${distance[u]}）。下一步从优先队列取出它。`,1,{focus:u,checkpoint:done.length===2});
+    queue.extractMin();done.push(u);
+    emit('确定距离',`extract-min 取出（${u}, ${distance[u]}），确定 ${u} 的距离并加入 S。`,2,{focus:u});
     for(const [a,v,w] of edges.filter(e=>e[0]===u)) {
       if(done.includes(v)){emit('邻点已确定',`${v} 已确定，无须更新。`,3,{focus:u,edge:[a,v]});continue;}
       const candidate=distance[u]+w,old=distance[v];
       emit('检查出边',`经 ${u} 到 ${v}：${distance[u]} + ${w} = ${candidate}；当前 d(${v}) = ${Number.isFinite(old)?old:'∞'}。`,3,{focus:u,edge:[a,v],checkpoint:u==='c'&&v==='d'});
       if(candidate<old) {
-        distance[v]=candidate;parent[v]=u;
-        emit('松弛 / 更新',`d(${v})：${Number.isFinite(old)?old:'∞'} → ${candidate}；前驱改为 ${u}。${v} 尚未确定。`,4,{focus:u,edge:[a,v],changed:v});
+        distance[v]=candidate;parent[v]=u;queue.decreaseKey(v,candidate);
+        emit('松弛 / 更新',`d(${v})：${Number.isFinite(old)?old:'∞'} → ${candidate}；前驱改为 ${u}。decrease-key 同步降低队列中 ${v} 的键，${v} 尚未出队。`,4,{focus:u,edge:[a,v],changed:v});
       } else emit('保持距离',`经 ${u} 的路线不更短，d(${v}) 保持 ${distance[v]}。`,4,{focus:u,edge:[a,v]});
     }
   }
@@ -125,7 +150,7 @@ function dijkstraTrace(vertices, edges, source, target) {
 const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
 const TITLES={coins:['取最大面额，真的最省吗？','目标：张数最少 · 各面额数量无限 · 每张不可拆分','余量与已选张数'],schedule:['一台仪器，能安排多少个预约？','目标：活动数量最多 · 区间 [开始, 结束) · 首尾相接允许','已选活动与候选顺序'],dijkstra:['从 s 到 t，哪条路线最短？','课件有向图 · 箭头表示方向 · 边权非负，可相加','暂定距离与已确定集合']};
 const RULE_NAMES={finish:'最早结束',start:'最早开始',duration:'最短时长'};
-const CODES={coins:['按面额从大到小排列；余量 = 目标','只要余量 > 0：找不超过余量的最大面额','  选它；余量 -= 面额；张数 += 1','返回已选面额；另用更优可行解检验'],schedule:['按选择规则排序候选活动','逐一检查：是否与已选活动兼容？','  兼容：加入已选集合','  冲突：跳过这个活动','返回已选集合；核对数量'],dijkstra:['d[s] = 0；其他 d = ∞；已确定集合 S = ∅','从未确定顶点中取 d 最小的 u','  确定 u 的距离；将 u 加入 S','  对 u 的每条出边 u → v 检查：','    若 d[u] + w < d[v]：更新 d[v] 与前驱','返回距离；沿前驱还原最短路径']};
+const CODES={coins:['按面额从大到小排列；余量 = 目标','只要余量 > 0：找不超过余量的最大面额','  选它；余量 -= 面额；张数 += 1','返回已选面额；另用更优可行解检验'],schedule:['按选择规则排序候选活动','逐一检查：是否与已选活动兼容？','  兼容：加入已选集合','  冲突：跳过这个活动','返回已选集合；核对数量'],dijkstra:['初始化 d 与 S；Q 中每项为（顶点, d）','查看 Q 的最小键：距离越小越优先','  u = Q.extractMin()；确定 u 并加入 S','  对 u 的每条出边 u → v 检查：','    更短：更新距离、前驱；Q.decreaseKey(v, d[v])','返回距离；沿前驱还原最短路径']};
 const POS={s:[60,72],b:[250,72],c:[60,244],d:[250,244],e:[465,72],t:[465,244]};
 let mode=['coins','schedule','dijkstra'].includes(location.hash.slice(1))?location.hash.slice(1):'coins';
 let preset='stamps',activityRule='finish',weight=1,trace,index=0,timer=null,revealed=false,autoPaused=false;
@@ -141,6 +166,9 @@ function settings(){
     const output=document.createElement('output');output.id='weight-value';output.textContent=weight;
     input.oninput=()=>{weight=Number(input.value);output.textContent=weight;rebuild();};label.append(input,output);$('settings').append(label);
     const note=document.createElement('span');note.textContent='修改即重置 · 试试 1 与 10，预测路线怎样改变';$('settings').append(note);
+    const bridge=document.createElement('p');bridge.className='small';bridge.style.width='100%';bridge.style.margin='0';
+    bridge.append('BFS：普通队列按入队先后处理；Dijkstra：优先队列按暂定距离处理。');
+    const link=document.createElement('a');link.href='graph_search.html#bfs';link.textContent='回看 BFS 队列 ↗';bridge.append(' ',link);$('settings').append(bridge);
   }else{
     const label=document.createElement('label');label.textContent=mode==='coins'?'例子：':'选择规则：';
     const select=document.createElement('select');select.id=mode==='coins'?'coin-preset':'activity-rule';
@@ -181,7 +209,7 @@ function drawGraph(s){
   for(const v of VERTICES){const [x,y]=POS[v],g=svg('g',{transform:`translate(${x},${y})`,class:'vertex '+(s.focus===v?'current':s.done.includes(v)?'done':'')});g.append(svg('circle',{r:23}),svg('text',{'text-anchor':'middle',dy:7},v),svg('text',{'text-anchor':'middle',y:45,class:'distance'},`d = ${finite(s.distance[v])}${s.done.includes(v)?' ✓':''}`));drawing.append(g);}
   $('visual').replaceChildren(drawing);
   const cellClass=v=>s.focus===v?'current':s.done.includes(v)?'done':'';
-  $('state').innerHTML='<div class="table-wrap"><table><caption class="small">d(v)：从 s 到 v 的当前最好距离</caption><thead><tr><th>顶点</th>'+VERTICES.map(v=>`<th class="${cellClass(v)}">${v}</th>`).join('')+'</tr></thead><tbody><tr><th>距离</th>'+VERTICES.map(v=>`<td class="${s.changed===v?'changed':cellClass(v)}">${finite(s.distance[v])}</td>`).join('')+'</tr><tr><th>前驱</th>'+VERTICES.map(v=>`<td class="${cellClass(v)}">${s.parent[v]||'—'}</td>`).join('')+'</tr><tr><th>状态</th>'+VERTICES.map(v=>`<td class="${cellClass(v)}">${s.done.includes(v)?'确定':'暂定'}</td>`).join('')+'</tr></tbody></table></div><h3>未确定顶点 · 按暂定距离排序</h3><div class="state-list">'+s.candidates.map(v=>`<span class="chip ${s.focus===v?'current':''}">${v} : ${finite(s.distance[v])}</span>`).join('')+(s.candidates.length?'':'<span class="empty">候选集合为空</span>')+'</div><p class="small">已确定集合 S = {'+s.done.join(', ')+'}。绿色边表示当前前驱；最终蓝色边表示到 t 的最短路。</p>';
+  $('state').innerHTML='<div class="table-wrap"><table><caption class="small">d(v)：从 s 到 v 的当前最好距离</caption><thead><tr><th>顶点</th>'+VERTICES.map(v=>`<th class="${cellClass(v)}">${v}</th>`).join('')+'</tr></thead><tbody><tr><th>距离</th>'+VERTICES.map(v=>`<td class="${s.changed===v?'changed':cellClass(v)}">${finite(s.distance[v])}</td>`).join('')+'</tr><tr><th>前驱</th>'+VERTICES.map(v=>`<td class="${cellClass(v)}">${s.parent[v]||'—'}</td>`).join('')+'</tr><tr><th>状态</th>'+VERTICES.map(v=>`<td class="${cellClass(v)}">${s.done.includes(v)?'确定':'暂定'}</td>`).join('')+'</tr></tbody></table></div><h3>优先队列 Q · 最小距离优先</h3><div class="state-list" aria-label="优先队列，按键从小到大展示">'+s.priorityQueue.map((entry,i)=>`<span class="chip ${i===0?'current':''}">(${entry.vertex}, ${finite(entry.priority)})</span>`).join('')+(s.priorityQueue.length?'':'<span class="empty">优先队列为空</span>')+'</div><p class="small">每格记录（顶点，暂定距离），最小键在左。按优先级排序展示，底层用二叉最小堆。S = {'+s.done.join(', ')+'}。</p>';
 }
 function comparison(){
   const final=trace.states.at(-1);
@@ -194,7 +222,7 @@ function question(s){
   if(mode==='schedule')return s.kind==='结果'?['换一个选择规则，结果会变吗？','保持活动不变，比较最早开始、最短时长与最早结束。']:s.kind==='检查候选'?['活动 '+s.focus+' 能接受吗？它和谁冲突？','指出区间是否重叠；结束时刻等于下一个开始时刻是允许的。']:['按“'+RULE_NAMES[activityRule]+'”，下一项检查谁？','按当前规则确定候选，再核对它是否与已选集合兼容。'];
   if(s.kind==='检查出边')return ['这条出边会让邻点的暂定距离变小吗？','比较 d(u) + 边权 与 d(v)；更新距离不等于确定距离。'];
   if(s.kind==='结果')return ['如果只选最近的一条边，会得到同一路线吗？','Dijkstra 比较的是从源点累积的暂定距离；改变 c → d 边权，再预测路线。'];
-  return ['下一轮该确定哪个顶点？为什么？','比较所有未确定顶点的暂定距离；不是比较单条边的长度。'];
+  return ['下一轮该确定哪个顶点？为什么？','看优先队列的最小键：每项的优先级是从源点累计的暂定距离。'];
 }
 function render(){
   const s=trace.states[index],[title,subtitle,stateTitle]=TITLES[mode];
@@ -202,7 +230,7 @@ function render(){
   $('visual-title').textContent=title;$('visual-subtitle').textContent=subtitle;$('state-title').textContent=stateTitle;
   $('step-count').textContent=`${index} / ${trace.states.length-1} 步`;$('progress').max=trace.states.length-1;$('progress').value=index;
   $('prev').disabled=index===0;$('next').disabled=index===trace.states.length-1;$('play').disabled=index===trace.states.length-1;
-  $('rule').textContent=mode==='coins'?'选择规则：每次取不超过余量的最大面额。':mode==='schedule'?'选择规则：'+RULE_NAMES[activityRule]+'优先；有冲突就跳过。':'选择规则：确定暂定距离最小的未确定顶点，再松弛其出边。';
+  $('rule').textContent=mode==='coins'?'选择规则：每次取不超过余量的最大面额。':mode==='schedule'?'选择规则：'+RULE_NAMES[activityRule]+'优先；有冲突就跳过。':'用优先队列取出暂定距离最小的顶点；松弛成功时同步降低邻点的键。';
   if(mode==='coins')drawCoins(s);else if(mode==='schedule')drawActivities(s);else drawGraph(s);
   $('legend').innerHTML=mode==='coins'?'<span><i class="dot orange"></i>当前选择</span><span><i class="dot green"></i>已选</span>':mode==='schedule'?'<span><i class="dot"></i>未检查</span><span><i class="dot orange"></i>当前检查</span><span><i class="dot green"></i>已选</span><span><i class="dot red"></i>已拒绝</span>':'<span><i class="dot"></i>未确定</span><span><i class="dot orange"></i>当前顶点／出边</span><span><i class="dot green"></i>已确定／前驱边</span>';
   $('event-label').textContent=s.kind;$('action-text').textContent=s.text;

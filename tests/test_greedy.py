@@ -68,6 +68,25 @@ for(let trial=0;trial<45;trial++){
 }
 // Shortest paths are checked against Bellman-Ford rather than another Dijkstra implementation.
 function bellman(vertices,edges,source){const d=Object.fromEntries(vertices.map(v=>[v,Infinity]));d[source]=0;for(let i=1;i<vertices.length;i++)for(const [a,b,w] of edges)d[b]=Math.min(d[b],d[a]+w);return d;}
+function checkHeap(heap,rank){
+  const less=(a,b)=>a.priority<b.priority||(a.priority===b.priority&&rank.indexOf(a.vertex)<rank.indexOf(b.vertex));
+  for(let i=1;i<heap.length;i++)assert(!less(heap[i],heap[Math.floor((i-1)/2)]));
+  assert.equal(new Set(heap.map(entry=>entry.vertex)).size,heap.length);
+}
+// Exercise decrease-key, stable ties, removal and the vertex-position map independently.
+const pq=new MinPriorityQueue(['a','b','c','d','e']);
+for(const [v,d] of [['e',12],['c',7],['b',7],['d',11],['e',3],['a',0]]){
+  pq.decreaseKey(v,d);checkHeap(pq.heap,['a','b','c','d','e']);
+  for(const [i,entry] of pq.heap.entries())assert.equal(pq.position.get(entry.vertex),i);
+}
+assert.deepEqual(pq.ordered().map(entry=>entry.vertex),['a','e','b','c','d']);
+for(const v of ['a','e','b','c','d']){
+  assert.equal(pq.extractMin().vertex,v);assert(!pq.position.has(v));
+  checkHeap(pq.heap,['a','b','c','d','e']);
+  for(const [i,entry] of pq.heap.entries())assert.equal(pq.position.get(entry.vertex),i);
+}
+assert.equal(pq.extractMin(),null);assert.equal(pq.peek(),null);
+assert.throws(()=>pq.decreaseKey('a',1));
 for(let weight=0;weight<=12;weight++){
   const edges=graphEdges(weight),trace=dijkstraTrace(VERTICES,edges,'s','t'),final=trace.states.at(-1);
   assert.deepEqual(final.distance,bellman(VERTICES,edges,'s'));
@@ -75,6 +94,11 @@ for(let weight=0;weight<=12;weight++){
   const sum=trace.path.slice(1).reduce((total,v,i)=>total+edges.find(([a,b])=>a===trace.path[i]&&b===v)[2],0);
   assert.equal(sum,final.distance.t);
   for(const [i,s] of trace.states.entries()){
+    checkHeap(s.heap,VERTICES);
+    assert.deepEqual(s.priorityQueue.map(entry=>entry.vertex),s.candidates);
+    assert.equal(s.heap.length,s.candidates.length);
+    for(const entry of s.heap)assert.equal(entry.priority,s.distance[entry.vertex]);
+    if(s.heap.length)assert.equal(s.heap[0].vertex,s.candidates[0]);
     assert(s.candidates.every(v=>!s.done.includes(v)));
     assert.equal(s.candidates.length+s.done.length,VERTICES.length);
     for(let j=1;j<s.candidates.length;j++)assert(s.distance[s.candidates[j-1]]<=s.distance[s.candidates[j]]);
@@ -83,8 +107,16 @@ for(let weight=0;weight<=12;weight++){
       const before=trace.states[i-1];
       assert.equal(s.focus,before.candidates[0]);
       assert.equal(s.done.length,before.done.length+1);
+      assert.deepEqual(s.candidates,[...before.candidates.slice(1)]);
     }
   }
+}
+for(let trial=0;trial<35;trial++){
+  const vertices=['a','b','c','d','e'],edges=[];
+  for(const a of vertices)for(const b of vertices)if(a!==b&&rand(3)===0)edges.push([a,b,rand(9)]);
+  const source=vertices[rand(5)],trace=dijkstraTrace(vertices,edges,source,'e');
+  assert.deepEqual(trace.states.at(-1).distance,bellman(vertices,edges,source));
+  for(const s of trace.states)checkHeap(s.heap,vertices);
 }
 const dijkstra=dijkstraTrace(VERTICES,BASE_EDGES,'s','t');
 assert.deepEqual(dijkstra.states.at(-1).distance,{s:0,b:5,c:6,d:7,e:9,t:12});
