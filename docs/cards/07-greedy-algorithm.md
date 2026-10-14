@@ -16,7 +16,7 @@ labs: [lab-03-greedy]
 figures: [07-greedy-dijkstra.svg]
 related_cards: [algorithm-strategies, ai-search-planning-agents, computability-limits, 05-data-structure-advanced, 06-graph-exploration]
 related_deep: []
-related_visualizations: []
+related_visualizations: [greedy.html]
 last_reviewed: 2026-08-21
 ---
 
@@ -59,6 +59,8 @@ last_reviewed: 2026-08-21
 - Dijkstra 不是 BFS；只有所有边权相同或可忽略时才退化为按层扩展。
 
 完整示例：[07_greedy_dijkstra.py](../../code/examples/07_greedy_dijkstra.py)。
+
+交互演示：[贪心算法：这一步选什么？](../../code/visualizations/greedy.html)。在邮票找零中检验最大面额优先；在相同活动上切换选择规则；沿课件有向图追踪 Dijkstra 的暂定距离、前驱与已确定集合。
 
 ## 主动学习与考核迁移
 

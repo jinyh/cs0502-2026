@@ -58,6 +58,13 @@
   <a class="module-link" href="code/visualizations/graph_search.html">打开 DFS / BFS 交互演示 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide06 · 贪心算法与最短路径</span>
+  <h2>贪心算法：这一步选什么？</h2>
+  <p>比较找零反例与活动选择规则，再逐步观察 Dijkstra 的候选、暂定距离和前驱。先预测局部选择，再检验结果。</p>
+  <a class="module-link" href="code/visualizations/greedy.html">打开贪心算法交互演示 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">

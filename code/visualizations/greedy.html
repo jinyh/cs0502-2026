@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="CS0502 第6讲贪心算法交互演示：找零反例、活动选择和 Dijkstra 最短路径。先预测，再单步追踪局部选择。">
+<title>贪心算法：这一步选什么？ · CS0502</title>
+<style>
+:root{--blue:#064996;--ink:#142b47;--muted:#53687d;--line:#dce5ee;--pale:#edf4fc;--orange:#b7500a;--orange-bg:#fff2df;--green:#18724d;--green-bg:#e7f5ed;--red:#aa3140;--red-bg:#fbecef}*{box-sizing:border-box}body{margin:0;background:#f4f7fa;color:var(--ink);font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif}header{background:white;border-top:5px solid var(--blue);border-bottom:1px solid var(--line)}.header-inner,main{max-width:1250px;margin:auto;padding:22px 28px}.header-inner{display:flex;align-items:center;justify-content:space-between;gap:20px}.eyebrow{color:var(--blue);font-size:12px;font-weight:700;letter-spacing:1.4px}h1{font-size:30px;margin:8px 0}h2{font-size:19px;margin:0}h3{font-size:16px;margin:0 0 10px}.subtitle{margin:0;color:var(--muted);font-size:15px;line-height:1.7}a{color:var(--blue)}.home{text-decoration:none;white-space:nowrap;font-size:14px}button,select,input{font:inherit}button,select{background:white;color:var(--ink);border:1px solid #c4d1df;border-radius:7px;padding:10px 13px}button{cursor:pointer;font-weight:600}button:hover:not(:disabled){background:var(--pale);border-color:var(--blue)}button:disabled{opacity:.42;cursor:default}button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible,summary:focus-visible{outline:3px solid #e7a846;outline-offset:3px}.primary,button[aria-pressed="true"]{background:var(--blue);color:white;border-color:var(--blue)}button.primary:hover:not(:disabled),button[aria-pressed="true"]:hover{background:#063c7b}.toolbar,.transport,.modes,.panel-top,.settings{display:flex;gap:10px;align-items:center}.toolbar{flex-wrap:wrap;justify-content:space-between;margin-bottom:16px}.transport{gap:7px;flex-wrap:wrap;font-size:14px}.transport label{color:var(--muted)}.transport select{padding:9px}.settings{flex-wrap:wrap;min-height:44px;margin-bottom:14px;font-size:14px;color:var(--muted)}.settings label{display:flex;gap:9px;align-items:center}.settings input{width:170px;accent-color:var(--blue)}.workspace,.lower{display:grid;grid-template-columns:1.14fr 1fr;gap:18px}.lower{margin-top:18px;grid-template-columns:1fr}.workspace .prediction{margin-top:14px;padding:14px}.panel{padding:22px;background:white;border:1px solid var(--line);border-radius:12px;min-width:0}.panel-top{justify-content:space-between;align-items:flex-start;gap:12px}.small{font-size:13px;line-height:1.65;color:var(--muted);margin:10px 0 12px}.step-count{white-space:nowrap;font-size:13px;color:var(--muted)}#visual{min-height:295px}.legend{display:flex;gap:15px;flex-wrap:wrap;font-size:12px;color:var(--muted);margin-top:9px}.legend span{display:flex;gap:5px;align-items:center}.dot{display:inline-block;width:10px;height:10px;border:1px solid #95a9bc;border-radius:50%;background:#f0f4f8}.dot.orange{background:var(--orange);border-color:var(--orange)}.dot.green{background:var(--green);border-color:var(--green)}.dot.red{background:var(--red);border-color:var(--red)}.metrics{display:flex;gap:12px;margin:16px 0}.metric{flex:1;padding:12px;background:#f4f7fa;border-radius:8px}.metric span{font-size:12px;color:var(--muted);display:block}.metric strong{display:block;font-size:27px;margin-top:5px;line-height:1.2}.rule{padding:10px 12px;background:var(--pale);border-left:3px solid var(--blue);font-size:14px;line-height:1.6;margin:14px 0}.action{border-top:1px solid var(--line);margin-top:16px;padding-top:12px;min-height:90px}.action-label{font-size:12px;color:var(--orange);font-weight:700}.action p{font-size:17px;line-height:1.65;margin:6px 0 0}.state-list{display:flex;gap:7px;flex-wrap:wrap;align-items:center;min-height:40px}.chip{padding:7px 11px;border:1px solid var(--line);border-radius:6px;font-size:14px;background:#f4f7fa}.chip.current{background:var(--orange-bg);color:var(--orange);border-color:#e5b781}.chip.accepted{background:var(--green-bg);color:var(--green);border-color:#a2cbb4}.chip.rejected{background:var(--red-bg);color:var(--red);border-color:#e2b5bc;text-decoration:line-through}.coin-bank{display:flex;justify-content:space-around;gap:8px;padding:24px 0 18px}.coin-item{text-align:center;font-size:12px;color:var(--muted)}.coin{width:66px;height:66px;border:2px solid #acbcd0;border-radius:50%;display:grid;place-items:center;font-size:25px;font-weight:700;color:var(--ink);background:#f4f7fa;margin-bottom:9px}.coin.active{background:var(--orange-bg);border-color:var(--orange);color:var(--orange)}.coin.unavailable{opacity:.36}.chosen-coins{display:flex;gap:7px;flex-wrap:wrap;min-height:78px;padding:16px 0}.chosen-coins .chip{font-size:21px;min-width:43px;text-align:center}.empty{font-size:14px;color:var(--muted);padding:12px 0}.amount-line{height:16px;background:#eaf0f6;border-radius:8px;overflow:hidden;margin:16px 0 8px}.amount-fill{height:100%;background:var(--green);transition:width .25s}.amount-caption{display:flex;justify-content:space-between;font-size:12px;color:var(--muted)}.diagram{display:block;width:100%;height:296px}.diagram text{font-family:inherit}.axis{stroke:#aabccd;stroke-width:1}.tick{fill:var(--muted);font-size:12px}.activity{fill:#e9eff6;stroke:#aabccd;stroke-width:1.5}.activity.current{fill:var(--orange-bg);stroke:var(--orange);stroke-width:2.5}.activity.accepted{fill:var(--green-bg);stroke:var(--green)}.activity.rejected{fill:var(--red-bg);stroke:var(--red)}.activity-label{font-size:14px;fill:var(--ink);font-weight:600}.edge{stroke:#becad7;stroke-width:2.5;fill:none}.edge.tree{stroke:var(--green);stroke-width:3}.edge.focus{stroke:var(--orange);stroke-width:4}.edge.path{stroke:var(--blue);stroke-width:5}.weight{fill:var(--blue);font-size:17px;font-weight:700;paint-order:stroke;stroke:white;stroke-width:7px;stroke-linejoin:round}.vertex circle{fill:#f3f6fa;stroke:#a7b8c9;stroke-width:2}.vertex text{fill:var(--ink);font-size:21px;font-weight:700}.vertex.done circle{fill:var(--green-bg);stroke:var(--green)}.vertex.current circle{fill:var(--orange-bg);stroke:var(--orange);stroke-width:3}.vertex .distance{fill:var(--muted);font-size:13px;font-weight:400}.table-wrap{overflow:auto}table{border-collapse:collapse;width:100%;font-size:14px;margin:10px 0 12px}th,td{padding:8px 7px;text-align:center;border-bottom:1px solid var(--line)}th{color:var(--muted);font-size:12px}tr.current,td.current,th.current{background:var(--orange-bg)}tr.done,td.done,th.done{color:var(--green)}td.changed{font-weight:700;color:var(--orange)}.prediction{background:#f8fbff;border-color:#c6d7ed}#question{font-size:19px;line-height:1.7;margin:12px 0}#hint{font-size:14px;color:var(--muted);line-height:1.7;margin-bottom:0}.code{margin:14px 0 0;padding-left:30px;font-family:Menlo,Consolas,monospace;font-size:13px;line-height:1.8}.code li{white-space:pre-wrap;overflow-wrap:anywhere;padding:3px 7px;color:var(--muted)}.code li.active{color:var(--blue);background:var(--pale);border-radius:4px;font-weight:700}.comparison{margin-top:16px;padding:14px;background:var(--green-bg);border:1px solid #b8d8c7;border-radius:8px;font-size:15px;line-height:1.8}.comparison p{margin:5px 0}.comparison[hidden]{display:none}.reveal{margin-top:12px;font-size:13px;color:var(--blue);padding:7px 10px}.scrubber{display:flex;align-items:center;gap:10px;margin-top:14px;font-size:12px;color:var(--muted)}.scrubber input{width:100%;accent-color:var(--blue)}details{margin-top:18px;border:1px solid var(--line);border-radius:10px;background:white;padding:15px 20px}summary{cursor:pointer;font-size:14px;font-weight:600;color:var(--blue)}.guide{font-size:14px;line-height:1.9;max-width:950px}.guide li{margin:8px 0}.guide p{color:var(--muted)}footer{font-size:12px;color:var(--muted);line-height:1.8;margin-top:17px}.checkpoint{border-color:#d9a151;background:#fff8ed}#pause-note{color:var(--orange);font-weight:600;font-size:13px;min-height:20px;margin:9px 0 0}button.fullscreen{padding:9px;font-size:13px}body:fullscreen{overflow:auto}@media(prefers-reduced-motion:reduce){.amount-fill{transition:none}}@media(max-width:850px){.workspace,.lower{grid-template-columns:1fr}.header-inner,main{padding:18px}.home{display:none}h1{font-size:25px}.panel{padding:18px}.toolbar{align-items:flex-start}.modes{width:100%}.modes button{flex:1;font-size:13px;padding:10px 5px}.coin-bank{gap:4px}.coin{width:48px;height:48px;font-size:19px}.transport{gap:5px}.transport button{padding:10px}.diagram{height:auto}.settings label{flex-wrap:wrap}}@media(min-width:1000px) and (max-height:850px){.header-inner{padding-top:13px;padding-bottom:13px}main{padding-top:15px}.panel{padding:16px}.diagram{height:250px}#visual{min-height:250px}.metrics{margin:10px 0}.metric{padding:9px}.metric strong{font-size:24px}.coin-bank{padding-top:15px}.action{margin-top:10px;min-height:75px}.lower{margin-top:13px}.code{line-height:1.6}#question{font-size:17px}.settings{margin-bottom:9px}}
+@media(min-width:1000px) and (max-height:760px){.header-inner{padding-top:8px;padding-bottom:8px}h1{font-size:26px;margin:5px 0}.subtitle{display:none}main{padding-top:12px}.toolbar{margin-bottom:10px}.transport button,.transport select,.modes button{padding:8px 11px}.settings{min-height:32px;margin-bottom:8px}.settings select{padding:6px 9px}.panel{padding:14px}.diagram{height:235px}#visual{min-height:200px}table{margin:5px 0 8px}th,td{padding:5px 4px}caption.small{margin:4px 0}.state-list{min-height:32px}.chip{padding:5px 9px}.workspace .prediction{margin-top:10px;padding:10px}.coin-bank{padding:8px 0 12px}.coin{width:52px;height:52px;font-size:22px}.chosen-coins{min-height:54px;padding:10px 0}.amount-line{margin:10px 0 8px}.metrics{margin:10px 0}.metric{padding:8px}.metric strong{font-size:24px}.rule{margin:10px 0;padding:8px 10px}.action{min-height:65px;padding-top:9px}.action p{font-size:15px}.lower{margin-top:12px}.code{font-size:12px;line-height:1.5;margin-top:8px}.code li{padding:2px 5px}#question{font-size:16px;margin:8px 0}#hint{font-size:13px;margin-top:5px}#pause-note{margin-top:5px}.scrubber label{white-space:nowrap}.comparison{font-size:14px}}
+</style>
+</head>
+<body>
+<header><div class="header-inner"><div><div class="eyebrow">CS0502 / SLIDE06 / GREEDY ALGORITHM</div><h1>贪心算法：这一步选什么？</h1><p class="subtitle">每次做当前最有利的可行选择。这个规则，什么时候能走到全局最优？</p></div><a class="home" href="https://jinyh.github.io/cs0502-2026/code/visualizations/">全部交互演示 ↗</a></div></header>
+<main>
+<div class="toolbar"><nav class="modes" aria-label="贪心案例"><button id="coins" aria-pressed="true">01 · 找零反例</button><button id="schedule" aria-pressed="false">02 · 活动选择</button><button id="dijkstra" aria-pressed="false">03 · 最短路径</button></nav><div class="transport"><button id="prev">← 上一步</button><button id="play" class="primary">播放</button><button id="next">下一步 →</button><button id="reset">重置</button><label>速度 <select id="speed"><option value="1800">慢速</option><option value="1100" selected>标准</option><option value="500">快速</option></select></label><button id="fullscreen" class="fullscreen">全屏</button></div></div>
+<div class="settings" id="settings"></div>
+<div class="workspace">
+<section class="panel"><div class="panel-top"><h2 id="visual-title"></h2><span class="step-count" id="step-count"></span></div><p class="small" id="visual-subtitle"></p><div id="visual"></div><div class="legend" id="legend"></div><div class="scrubber"><label for="progress">步骤</label><input id="progress" type="range" min="0" max="1" value="0" aria-label="选择演示步骤"></div><section class="panel prediction" id="prediction-panel"><h2 id="question-title">先预测，再运行</h2><p id="question"></p><p id="hint"></p><p id="pause-note" role="status"></p></section></section>
+<section class="panel"><h2 id="state-title"></h2><div class="rule" id="rule"></div><div id="state"></div><div class="action" aria-live="polite" aria-atomic="true"><span id="event-label" class="action-label"></span><p id="action-text"></p></div><button id="reveal" class="reveal" aria-expanded="false">揭示结果对照</button><div id="comparison" class="comparison" hidden></div></section>
+</div>
+<div class="lower"><section class="panel"><div class="panel-top"><h2>伪代码与当前步骤</h2><span class="small">蓝色行正在执行</span></div><ol class="code" id="code"></ol></section></div>
+<details><summary>课堂怎么讲 · 建议用 8–10 分钟穿起三个案例</summary><div class="guide"><ol><li><strong>找零，约 2 分钟：</strong>先明确目标“张数最少”。取 100 后停在余量 40，让学生预测下一张，再走到 8 张的结果。揭示 70 + 70，追问“取最大可用面额，为什么会错？”也可切换 1、3、4 凑 6 的小反例。</li><li><strong>活动选择，约 3 分钟：</strong>目标是同一台仪器完成最多个预约，活动不能拆分、不能重叠，前一项结束时可以立即开始下一项。先试最早开始，再试最短时长，最后试最早结束。让学生指出反例，再用“第一个结束得更早，就不会挤占后面的时间”解释交换直觉。</li><li><strong>Dijkstra，约 4 分钟：</strong>沿用课件有向图，从 s 出发。到 b 已确定、d 的暂定距离是 12 时，暂停问“下一轮选 c 还是 d？”观察 d 如何从 12 更新为 7，再观察 t 从 16 更新为 12。提醒学生选的是“从 s 累积的暂定距离最小的点”，而不是最短的一条边。</li><li><strong>收束，约 1 分钟：</strong>让学生分别说出候选集合、可行性和选择规则。局部选择不自动保证最优；活动数量最大化、非负边权最短路径各有成立条件。</li></ol><p>贪心算法（greedy algorithm）每步作出局部选择，通常不回溯。松弛（relaxation）指检查经当前顶点走到邻点是否更短，若更短就更新距离和前驱。Dijkstra 仅适用于非负边权；这里按距离排序显示逻辑候选集合，方便理解，并未模拟堆的内部数组。</p><p>找零与最短路沿用 Slide06 的公开教学例子；活动区间是新构造的教学反例。背包仍按课件讲授：可分背包与 0/1 背包的结论不同。</p></div></details>
+<footer>第6讲「贪心算法与最短路径」· 单文件、无外部依赖，下载后可离线打开。找零对照用动态规划计算最少张数，活动对照用小规模穷举核验，它们仅用于检验贪心规则。<a href="https://github.com/jinyh/cs0502-2026/blob/main/code/visualizations/greedy.html">查看演示源代码 ↗</a></footer>
+</main>
+<script id="greedy-model">
+'use strict';
+// 每一帧是独立快照。算法先生成轨迹，页面再同步呈现选择、距离和伪代码。
+const COIN_PRESETS = {
+  stamps:{name:'课件邮票 · 凑 140',faces:[100,70,34,21,10,1],target:140},
+  small:{name:'小反例 · 1、3、4 凑 6',faces:[4,3,1],target:6}
+};
+const ACTIVITIES = [
+  {id:'A',start:0,end:10},{id:'B',start:1,end:4},{id:'C',start:3,end:5},
+  {id:'D',start:4,end:8},{id:'E',start:8,end:10},{id:'F',start:1,end:9}
+];
+const VERTICES = ['s','b','c','d','e','t'];
+const BASE_EDGES = [['s','b',5],['s','c',6],['b','c',4],['b','d',7],['c','d',1],['d','e',2],['d','t',9],['e','t',3]];
+function snapshot(states, value) {
+  // structuredClone 保留 Infinity，不能用 JSON 往返复制距离。
+  states.push(structuredClone(value));
+}
+function minimumCoins(faces, target) {
+  if (!Number.isInteger(target)||target<0||faces.some(x=>!Number.isInteger(x)||x<=0)) throw new Error('面额须为正整数，目标须为非负整数');
+  const counts=Array(target+1).fill(Infinity), last=Array(target+1).fill(null);counts[0]=0;
+  for(let amount=1;amount<=target;amount++) for(const face of faces) {
+    if(face<=amount&&counts[amount-face]+1<counts[amount]){counts[amount]=counts[amount-face]+1;last[amount]=face;}
+  }
+  const chosen=[];
+  if(Number.isFinite(counts[target])) for(let amount=target;amount>0;amount-=last[amount]) chosen.push(last[amount]);
+  return {count:counts[target],chosen};
+}
+function coinTrace(faces, target) {
+  const ordered=[...faces].sort((a,b)=>b-a), states=[], chosen=[];let remaining=target;
+  const optimum=minimumCoins(ordered,target);
+  const emit=(kind,text,line,extra={})=>snapshot(states,{kind,text,line,remaining,chosen,focus:null,checkpoint:false,...extra});
+  emit('准备',`目标 ${target}，每步选择不超过余量的最大面额。`,0);
+  while(remaining>0) {
+    const face=ordered.find(x=>x<=remaining);
+    if(face===undefined){emit('无法继续','所有面额都大于余量，当前贪心路线无法凑齐目标。',1);break;}
+    emit('检查候选',`余量 ${remaining}，当前最大可用面额是 ${face}。下一步取它。`,1,{focus:face,checkpoint:chosen.length===1});
+    chosen.push(face);remaining-=face;
+    emit('作出选择',`取 ${face}，余量变成 ${remaining}。已选 ${chosen.length} 张。`,2,{focus:face});
+  }
+  emit('结果',remaining===0?`贪心得到 ${chosen.length} 张。用一个更好的可行解检验这条规则。`:'贪心没有找到可行解。',3);
+  return {states,optimum,faces:ordered,target};
+}
+function compatible(a,b){return a.end<=b.start||b.end<=a.start;}
+function bestActivities(activities) {
+  let best=[];
+  for(let mask=0;mask<2**activities.length;mask++) {
+    const subset=activities.filter((_,i)=>mask&(2**i));
+    if(subset.length<=best.length)continue;
+    if(subset.every((a,i)=>subset.slice(i+1).every(b=>compatible(a,b))))best=subset;
+  }
+  return [...best].sort((a,b)=>a.start-b.start).map(a=>a.id);
+}
+function activityTrace(activities,rule) {
+  const key=rule==='finish'?a=>a.end:rule==='start'?a=>a.start:a=>a.end-a.start;
+  const order=[...activities].sort((a,b)=>key(a)-key(b)||a.start-b.start||a.id.localeCompare(b.id));
+  const states=[],chosen=[],rejected=[];let inspected=[];
+  const emit=(kind,text,line,extra={})=>snapshot(states,{kind,text,line,chosen,rejected,inspected,focus:null,checkpoint:false,...extra});
+  emit('准备','按选定规则排列候选活动，逐一检查是否与已选活动冲突。',0);
+  for(const activity of order) {
+    emit('检查候选',`检查 ${activity.id} [${activity.start}, ${activity.end})：是否与已选活动重叠？`,1,{focus:activity.id,checkpoint:inspected.length===1});
+    const conflicts=activities.filter(a=>chosen.includes(a.id)&&!compatible(a,activity));
+    inspected=[...inspected,activity.id];
+    if(conflicts.length){rejected.push(activity.id);emit('拒绝冲突',`${activity.id} 与已选 ${conflicts.map(a=>a.id).join('、')} 重叠，跳过。`,3,{focus:activity.id});}
+    else {chosen.push(activity.id);emit('作出选择',`${activity.id} 与已选活动均兼容，接受。已选 ${chosen.length} 个活动。`,2,{focus:activity.id});}
+  }
+  emit('结果',`本策略选中 ${chosen.join('、')}，共 ${chosen.length} 个活动。`,4);
+  return {states,order,optimum:bestActivities(activities),activities:structuredClone(activities),rule};
+}
+function graphEdges(weight=1){return BASE_EDGES.map(([a,b,w])=>[a,b,a==='c'&&b==='d'?weight:w]);}
+function dijkstraTrace(vertices, edges, source, target) {
+  if(!vertices.includes(source)||!vertices.includes(target)||edges.some(([a,b,w])=>!vertices.includes(a)||!vertices.includes(b)||!Number.isFinite(w)||w<0))throw new Error('Dijkstra 要求顶点存在且边权非负');
+  const distance=Object.fromEntries(vertices.map(v=>[v,Infinity])),parent=Object.fromEntries(vertices.map(v=>[v,null]));
+  const states=[],done=[];distance[source]=0;
+  const pending=()=>vertices.filter(v=>!done.includes(v)).sort((a,b)=>distance[a]-distance[b]||vertices.indexOf(a)-vertices.indexOf(b));
+  const emit=(kind,text,line,extra={})=>snapshot(states,{kind,text,line,distance,parent,done,candidates:pending(),focus:null,edge:null,changed:null,checkpoint:false,...extra});
+  emit('初始化',`d(${source}) = 0，其余为 ∞；所有顶点尚未确定。`,0);
+  while(done.length<vertices.length) {
+    const u=pending()[0];
+    if(!Number.isFinite(distance[u]))break;
+    emit('比较候选',`未确定顶点中，${u} 的暂定距离 ${distance[u]} 最小。下一步确定它。`,1,{focus:u,checkpoint:done.length===2});
+    done.push(u);
+    emit('确定距离',`确定 ${u}：从 ${source} 到 ${u} 的最短距离为 ${distance[u]}。`,2,{focus:u});
+    for(const [a,v,w] of edges.filter(e=>e[0]===u)) {
+      if(done.includes(v)){emit('邻点已确定',`${v} 已确定，无须更新。`,3,{focus:u,edge:[a,v]});continue;}
+      const candidate=distance[u]+w,old=distance[v];
+      emit('检查出边',`经 ${u} 到 ${v}：${distance[u]} + ${w} = ${candidate}；当前 d(${v}) = ${Number.isFinite(old)?old:'∞'}。`,3,{focus:u,edge:[a,v],checkpoint:u==='c'&&v==='d'});
+      if(candidate<old) {
+        distance[v]=candidate;parent[v]=u;
+        emit('松弛 / 更新',`d(${v})：${Number.isFinite(old)?old:'∞'} → ${candidate}；前驱改为 ${u}。${v} 尚未确定。`,4,{focus:u,edge:[a,v],changed:v});
+      } else emit('保持距离',`经 ${u} 的路线不更短，d(${v}) 保持 ${distance[v]}。`,4,{focus:u,edge:[a,v]});
+    }
+  }
+  const path=[];
+  if(Number.isFinite(distance[target]))for(let v=target;v!==null;v=parent[v])path.unshift(v);
+  emit('结果',path.length?`最短路 ${path.join(' → ')}，总长度 ${distance[target]}。`:`从 ${source} 无法到达 ${target}，距离保持 ∞。`,5);
+  return {states,vertices:[...vertices],edges:structuredClone(edges),path,source,target};
+}
+</script>
+<script>
+'use strict';
+const $=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+const TITLES={coins:['取最大面额，真的最省吗？','目标：张数最少 · 各面额数量无限 · 每张不可拆分','余量与已选张数'],schedule:['一台仪器，能安排多少个预约？','目标：活动数量最多 · 区间 [开始, 结束) · 首尾相接允许','已选活动与候选顺序'],dijkstra:['从 s 到 t，哪条路线最短？','课件有向图 · 箭头表示方向 · 边权非负，可相加','暂定距离与已确定集合']};
+const RULE_NAMES={finish:'最早结束',start:'最早开始',duration:'最短时长'};
+const CODES={coins:['按面额从大到小排列；余量 = 目标','只要余量 > 0：找不超过余量的最大面额','  选它；余量 -= 面额；张数 += 1','返回已选面额；另用更优可行解检验'],schedule:['按选择规则排序候选活动','逐一检查：是否与已选活动兼容？','  兼容：加入已选集合','  冲突：跳过这个活动','返回已选集合；核对数量'],dijkstra:['d[s] = 0；其他 d = ∞；已确定集合 S = ∅','从未确定顶点中取 d 最小的 u','  确定 u 的距离；将 u 加入 S','  对 u 的每条出边 u → v 检查：','    若 d[u] + w < d[v]：更新 d[v] 与前驱','返回距离；沿前驱还原最短路径']};
+const POS={s:[60,72],b:[250,72],c:[60,244],d:[250,244],e:[465,72],t:[465,244]};
+let mode=['coins','schedule','dijkstra'].includes(location.hash.slice(1))?location.hash.slice(1):'coins';
+let preset='stamps',activityRule='finish',weight=1,trace,index=0,timer=null,revealed=false,autoPaused=false;
+const finite=value=>Number.isFinite(value)?value:'∞';
+function svg(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;}
+function stop(){clearTimeout(timer);timer=null;$('play').textContent='播放';}
+function rebuild(){stop();index=0;revealed=false;autoPaused=false;trace=mode==='coins'?coinTrace(COIN_PRESETS[preset].faces,COIN_PRESETS[preset].target):mode==='schedule'?activityTrace(ACTIVITIES,activityRule):dijkstraTrace(VERTICES,graphEdges(weight),'s','t');render();}
+function settings(){
+  $('settings').replaceChildren();
+  if(mode==='dijkstra'){
+    const label=document.createElement('label');label.textContent='改变 c → d 的边权：';
+    const input=document.createElement('input');input.type='range';input.min=0;input.max=12;input.step=1;input.value=weight;input.id='edge-weight';input.setAttribute('aria-label','c 到 d 的边权');
+    const output=document.createElement('output');output.id='weight-value';output.textContent=weight;
+    input.oninput=()=>{weight=Number(input.value);output.textContent=weight;rebuild();};label.append(input,output);$('settings').append(label);
+    const note=document.createElement('span');note.textContent='修改即重置 · 试试 1 与 10，预测路线怎样改变';$('settings').append(note);
+  }else{
+    const label=document.createElement('label');label.textContent=mode==='coins'?'例子：':'选择规则：';
+    const select=document.createElement('select');select.id=mode==='coins'?'coin-preset':'activity-rule';
+    for(const [value,name] of Object.entries(mode==='coins'?Object.fromEntries(Object.entries(COIN_PRESETS).map(([k,v])=>[k,v.name])):RULE_NAMES)){
+      const option=document.createElement('option');option.value=value;option.textContent=name;option.selected=value===(mode==='coins'?preset:activityRule);select.append(option);
+    }
+    select.onchange=()=>{if(mode==='coins')preset=select.value;else activityRule=select.value;rebuild();};label.append(select);$('settings').append(label);
+    const note=document.createElement('span');note.textContent=mode==='coins'?'每一步只看当前余量；暂不回头改选':'改变规则后，用同一组活动比较结果';$('settings').append(note);
+  }
+}
+function metrics(pairs){return '<div class="metrics">'+pairs.map(([name,value])=>`<div class="metric"><span>${name}</span><strong>${value}</strong></div>`).join('')+'</div>';}
+function drawCoins(s){
+  $('visual').innerHTML=`<div class="coin-bank">${trace.faces.map(face=>`<div class="coin-item"><div class="coin ${face===s.focus?'active':face>s.remaining?'unavailable':''}">${face}</div><span>${face===s.focus&&s.kind==='作出选择'?'本步已选':face>s.remaining?'大于余量':'可用'}</span></div>`).join('')}</div><h3>已选面额</h3><div class="chosen-coins">${s.chosen.map(face=>`<span class="chip accepted">${face}</span>`).join('')||'<span class="empty">还没有选择</span>'}</div><div class="amount-line"><div class="amount-fill" style="width:${100*(trace.target-s.remaining)/trace.target}%"></div></div><div class="amount-caption"><span>已凑 ${trace.target-s.remaining}</span><span>目标 ${trace.target}</span></div>`;
+  $('state').innerHTML=metrics([['当前余量',s.remaining],['已选张数',s.chosen.length]])+'<h3>当前可用面额 · 从大到小</h3><div class="state-list">'+trace.faces.filter(face=>face<=s.remaining).map(face=>`<span class="chip ${face===s.focus?'current':''}">${face}</span>`).join('')+(s.remaining===0?'<span class="empty">目标已凑齐</span>':'')+'</div>';
+}
+function drawActivities(s){
+  const drawing=svg('svg',{viewBox:'0 0 560 300',class:'diagram',role:'img','aria-label':'六个活动的时间区间；橙色为当前检查，绿色已选，红色拒绝'});
+  const x=time=>60+time*46;
+  for(let t=0;t<=10;t++){drawing.append(svg('line',{x1:x(t),x2:x(t),y1:22,y2:268,class:'axis',opacity:t%2?'.18':'.4'}),svg('text',{x:x(t),y:289,'text-anchor':'middle',class:'tick'},t));}
+  ACTIVITIES.forEach((a,i)=>{
+    const y=25+i*40,status=a.id===s.focus?'current':s.chosen.includes(a.id)?'accepted':s.rejected.includes(a.id)?'rejected':'';
+    drawing.append(svg('text',{x:25,y:y+21,class:'activity-label'},a.id),svg('rect',{x:x(a.start),y,width:(a.end-a.start)*46,height:29,rx:5,class:'activity '+status}),svg('text',{x:(x(a.start)+x(a.end))/2,y:y+20,'text-anchor':'middle',class:'activity-label'},`${a.start}–${a.end}`));
+    if(s.rejected.includes(a.id))drawing.append(svg('text',{x:542,y:y+22,'text-anchor':'end',class:'tick'},'×'));
+  });
+  $('visual').replaceChildren(drawing);
+  $('state').innerHTML=metrics([['已选活动',s.chosen.length],['已检查',s.inspected.length+' / '+ACTIVITIES.length]])+'<h3>候选顺序 · '+RULE_NAMES[activityRule]+'</h3><div class="state-list">'+trace.order.map(a=>`<span class="chip ${a.id===s.focus?'current':s.chosen.includes(a.id)?'accepted':s.rejected.includes(a.id)?'rejected':''}">${a.id} · ${activityRule==='duration'?a.end-a.start:activityRule==='start'?a.start:a.end}</span>`).join('')+'</div><p class="small">已选集合：'+(s.chosen.join('、')||'∅')+'。判断兼容时检查所有已选活动；首尾相接不算重叠。</p>';
+}
+function drawGraph(s){
+  const drawing=svg('svg',{viewBox:'0 0 560 315',class:'diagram',role:'img','aria-label':'Dijkstra 有向图，边权与课件一致，节点旁显示暂定距离'}),defs=svg('defs');
+  for(const [name,color] of [['base','#becad7'],['tree','#18724d'],['focus','#b7500a'],['path','#064996']]){const m=svg('marker',{id:'arrow-'+name,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:5,markerHeight:5,orient:'auto'});m.append(svg('path',{d:'M 0 0 L 10 5 L 0 10 z',fill:color}));defs.append(m);}drawing.append(defs);
+  for(const [a,b,w] of trace.edges){
+    const [x1,y1]=POS[a],[x2,y2]=POS[b],dx=x2-x1,dy=y2-y1,len=Math.hypot(dx,dy),ux=dx/len,uy=dy/len;
+    const inPath=index===trace.states.length-1&&trace.path.some((v,i)=>v===a&&trace.path[i+1]===b),focus=s.edge&&s.edge[0]===a&&s.edge[1]===b;
+    const type=inPath?'path':focus?'focus':s.parent[b]===a?'tree':'base';
+    drawing.append(svg('line',{x1:x1+ux*24,y1:y1+uy*24,x2:x2-ux*29,y2:y2-uy*29,class:'edge '+type,'marker-end':'url(#arrow-'+type+')'}));
+    drawing.append(svg('text',{x:(x1+x2)/2-uy*16,y:(y1+y2)/2+ux*16-3,'text-anchor':'middle',class:'weight'},w));
+  }
+  for(const v of VERTICES){const [x,y]=POS[v],g=svg('g',{transform:`translate(${x},${y})`,class:'vertex '+(s.focus===v?'current':s.done.includes(v)?'done':'')});g.append(svg('circle',{r:23}),svg('text',{'text-anchor':'middle',dy:7},v),svg('text',{'text-anchor':'middle',y:45,class:'distance'},`d = ${finite(s.distance[v])}${s.done.includes(v)?' ✓':''}`));drawing.append(g);}
+  $('visual').replaceChildren(drawing);
+  const cellClass=v=>s.focus===v?'current':s.done.includes(v)?'done':'';
+  $('state').innerHTML='<div class="table-wrap"><table><caption class="small">d(v)：从 s 到 v 的当前最好距离</caption><thead><tr><th>顶点</th>'+VERTICES.map(v=>`<th class="${cellClass(v)}">${v}</th>`).join('')+'</tr></thead><tbody><tr><th>距离</th>'+VERTICES.map(v=>`<td class="${s.changed===v?'changed':cellClass(v)}">${finite(s.distance[v])}</td>`).join('')+'</tr><tr><th>前驱</th>'+VERTICES.map(v=>`<td class="${cellClass(v)}">${s.parent[v]||'—'}</td>`).join('')+'</tr><tr><th>状态</th>'+VERTICES.map(v=>`<td class="${cellClass(v)}">${s.done.includes(v)?'确定':'暂定'}</td>`).join('')+'</tr></tbody></table></div><h3>未确定顶点 · 按暂定距离排序</h3><div class="state-list">'+s.candidates.map(v=>`<span class="chip ${s.focus===v?'current':''}">${v} : ${finite(s.distance[v])}</span>`).join('')+(s.candidates.length?'':'<span class="empty">候选集合为空</span>')+'</div><p class="small">已确定集合 S = {'+s.done.join(', ')+'}。绿色边表示当前前驱；最终蓝色边表示到 t 的最短路。</p>';
+}
+function comparison(){
+  const final=trace.states.at(-1);
+  if(mode==='coins')return `<strong>贪心：${final.chosen.join(' + ')}，${final.chosen.length} 张</strong><p>最少张数：${trace.optimum.chosen.join(' + ')}，${trace.optimum.count} 张。</p><p>最大面额优先只顾当前余量；换一种面额系统，就可能失去最优保证。</p>`;
+  if(mode==='schedule')return `<strong>${RULE_NAMES[activityRule]}：${final.chosen.join('、')}，${final.chosen.length} 个</strong><p>最多可安排 ${trace.optimum.length} 个，例如 ${trace.optimum.join('、')}。</p><p>${activityRule==='finish'?'最早结束给后续活动留下最多时间。把某个最优安排的首项换成最早结束的活动，不会妨碍后面的安排。':'这组活动就是该规则的反例。切换到“最早结束”，在相同输入上比较。'} 此结论的目标是活动数量最多。</p>`;
+  return `<strong>${trace.path.join(' → ')}，总长度 ${final.distance.t}</strong><p>已确定顺序：${final.done.join(' → ')}。</p><p>因为边权非负，后续绕经其他顶点不会让已选最小距离变得更短。暂定距离可以变，已确定距离可安全固定。</p>`;
+}
+function question(s){
+  if(mode==='coins')return s.kind==='结果'?['哪个选择把贪心引向了更差的结果？','揭示结果对照，比较两种方案的第一张，指出局部规则忽略了什么。']:['余量 '+s.remaining+' 时，下一张按规则应该取多少？','先说出“最大且不超过余量”的面额，再预测能否得到最少张数。'];
+  if(mode==='schedule')return s.kind==='结果'?['换一个选择规则，结果会变吗？','保持活动不变，比较最早开始、最短时长与最早结束。']:s.kind==='检查候选'?['活动 '+s.focus+' 能接受吗？它和谁冲突？','指出区间是否重叠；结束时刻等于下一个开始时刻是允许的。']:['按“'+RULE_NAMES[activityRule]+'”，下一项检查谁？','按当前规则确定候选，再核对它是否与已选集合兼容。'];
+  if(s.kind==='检查出边')return ['这条出边会让邻点的暂定距离变小吗？','比较 d(u) + 边权 与 d(v)；更新距离不等于确定距离。'];
+  if(s.kind==='结果')return ['如果只选最近的一条边，会得到同一路线吗？','Dijkstra 比较的是从源点累积的暂定距离；改变 c → d 边权，再预测路线。'];
+  return ['下一轮该确定哪个顶点？为什么？','比较所有未确定顶点的暂定距离；不是比较单条边的长度。'];
+}
+function render(){
+  const s=trace.states[index],[title,subtitle,stateTitle]=TITLES[mode];
+  for(const name of Object.keys(TITLES))$(name).setAttribute('aria-pressed',mode===name);
+  $('visual-title').textContent=title;$('visual-subtitle').textContent=subtitle;$('state-title').textContent=stateTitle;
+  $('step-count').textContent=`${index} / ${trace.states.length-1} 步`;$('progress').max=trace.states.length-1;$('progress').value=index;
+  $('prev').disabled=index===0;$('next').disabled=index===trace.states.length-1;$('play').disabled=index===trace.states.length-1;
+  $('rule').textContent=mode==='coins'?'选择规则：每次取不超过余量的最大面额。':mode==='schedule'?'选择规则：'+RULE_NAMES[activityRule]+'优先；有冲突就跳过。':'选择规则：确定暂定距离最小的未确定顶点，再松弛其出边。';
+  if(mode==='coins')drawCoins(s);else if(mode==='schedule')drawActivities(s);else drawGraph(s);
+  $('legend').innerHTML=mode==='coins'?'<span><i class="dot orange"></i>当前选择</span><span><i class="dot green"></i>已选</span>':mode==='schedule'?'<span><i class="dot"></i>未检查</span><span><i class="dot orange"></i>当前检查</span><span><i class="dot green"></i>已选</span><span><i class="dot red"></i>已拒绝</span>':'<span><i class="dot"></i>未确定</span><span><i class="dot orange"></i>当前顶点／出边</span><span><i class="dot green"></i>已确定／前驱边</span>';
+  $('event-label').textContent=s.kind;$('action-text').textContent=s.text;
+  $('comparison').hidden=!revealed;$('comparison').innerHTML=comparison();$('reveal').setAttribute('aria-expanded',revealed);$('reveal').textContent=revealed?'收起结果对照':'揭示结果对照';
+  $('code').replaceChildren(...CODES[mode].map((text,i)=>{const li=document.createElement('li');li.textContent=text;if(s.line===i)li.className='active';return li;}));
+  const [prompt,hint]=question(s);$('question').textContent=prompt;$('hint').textContent=hint;
+  $('question-title').textContent=s.checkpoint?'停一下 · 先预测':'先预测，再运行';$('prediction-panel').classList.toggle('checkpoint',s.checkpoint);
+  $('pause-note').textContent=autoPaused?'已暂停，留出思考时间。点击“下一步”或“播放”继续。':'';
+}
+function tick(){timer=null;if(index>=trace.states.length-1){stop();return;}index++;autoPaused=false;render();if(trace.states[index].checkpoint){stop();autoPaused=true;render();return;}if(index===trace.states.length-1){stop();return;}timer=setTimeout(tick,Number($('speed').value));}
+$('play').onclick=()=>{if(timer!==null){stop();return;}autoPaused=false;$('play').textContent='暂停';timer=setTimeout(tick,Number($('speed').value));render();};
+for(const [id,delta] of [['prev',-1],['next',1]])$(id).onclick=()=>{stop();autoPaused=false;index=Math.max(0,Math.min(trace.states.length-1,index+delta));render();};
+$('reset').onclick=rebuild;$('progress').oninput=()=>{stop();autoPaused=false;index=Number($('progress').value);render();};
+$('reveal').onclick=()=>{revealed=!revealed;render();};
+for(const name of Object.keys(TITLES))$(name).onclick=()=>{if(mode===name)return;mode=name;history.replaceState(null,'','#'+name);settings();rebuild();};
+window.addEventListener('hashchange',()=>{const name=location.hash.slice(1);if(Object.keys(TITLES).includes(name)&&mode!==name){mode=name;settings();rebuild();}});
+$('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('fullscreen').textContent='请用浏览器全屏';}};
+document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'退出全屏':'全屏';});
+settings();rebuild();
+</script>
+</body>
+</html>

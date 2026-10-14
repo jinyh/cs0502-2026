@@ -68,7 +68,7 @@ lectures:
     supporting_cards: [ext-search-hashing, ext-recursion-divide-conquer, 07-greedy-algorithm]
     examples: [06_algorithm_strategies.py, 07_greedy_dijkstra.py]
     labs: [lab-03-greedy]
-    visualizations: []
+    visualizations: [greedy.html]
     figures: [05-complexity-growth.svg, 06-algorithm-strategies.svg, 07-greedy-dijkstra.svg]
     assessment_tags: [复杂度分析, 策略选择, 反例构造]
   - id: L07
