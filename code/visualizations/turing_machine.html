@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>单带图灵机 · 读写一步，计算一步</title>
+<style>
+:root { --blue:#0754ae; --ink:#18314f; --muted:#596d83; --line:#d9e2ed; --paper:#f3f6fa; --amber:#a95700; --green:#087568; }
+* { box-sizing:border-box; }
+body { margin:0; background:var(--paper); color:var(--ink); font-family:-apple-system,BlinkMacSystemFont,"PingFang SC","Microsoft YaHei",sans-serif; }
+button,input,select { font:inherit; color:inherit; }
+button { cursor:pointer; border:1px solid var(--line); border-radius:7px; background:white; padding:9px 14px; font-weight:600; }
+button:hover:not(:disabled) { border-color:var(--blue); }
+button:disabled { opacity:.42; cursor:default; }
+button:focus-visible,input:focus-visible,select:focus-visible,summary:focus-visible,a:focus-visible { outline:3px solid #d98512; outline-offset:3px; }
+a { color:var(--blue); }
+header { background:white; border-bottom:1px solid var(--line); }
+.header-inner,main { max-width:1280px; margin:auto; padding:18px 26px; }
+.header-inner { display:flex; align-items:center; justify-content:space-between; gap:20px; }
+.eyebrow { font-size:12px; letter-spacing:.1em; color:var(--blue); font-weight:700; }
+h1 { margin:6px 0; font-size:29px; letter-spacing:-.025em; }
+.subtitle,.small { color:var(--muted); font-size:14px; line-height:1.65; margin:0; }
+.home { font-size:14px; text-decoration:none; white-space:nowrap; }
+.toolbar,.transport,.modes,.inputs,.presets,.panel-top { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+.toolbar { justify-content:space-between; margin-bottom:12px; gap:14px; }
+.modes [aria-pressed=true],.primary { background:var(--blue); color:white; border-color:var(--blue); }
+.transport { font-size:14px; }
+.transport label { display:flex; align-items:center; gap:5px; }
+select,input { border:1px solid var(--line); border-radius:6px; background:white; padding:7px 9px; }
+.inputs { background:white; padding:12px 16px; border:1px solid var(--line); border-radius:9px; margin-bottom:14px; gap:12px; }
+.inputs label { font-size:14px; }
+#bits { width:190px; font-family:ui-monospace,monospace; }
+.add-input { width:66px; }
+.presets { gap:5px; }
+.presets button { font-size:13px; padding:6px 9px; font-weight:500; }
+#input-range { font-size:12px; color:var(--muted); }
+#error { color:#ac2839; font-size:14px; margin:0; width:100%; }
+[hidden] { display:none !important; }
+.workspace { display:grid; grid-template-columns:minmax(0,1.5fr) minmax(350px,1fr); gap:16px; }
+.panel { background:white; border:1px solid var(--line); border-radius:10px; padding:18px 20px; min-width:0; }
+.panel-top { justify-content:space-between; gap:10px; }
+h2 { margin:0; font-size:18px; }
+.step { color:var(--blue); font-size:15px; font-variant-numeric:tabular-nums; font-weight:600; }
+.state-line { display:flex; gap:20px; flex-wrap:wrap; margin:14px 0 0; font-size:14px; }
+.state-line strong { font:700 22px ui-monospace,SFMono-Regular,Consolas,monospace; color:var(--blue); }
+.tape-window { display:flex; align-items:center; gap:6px; overflow:hidden; padding:42px 0 22px; }
+.ellipsis { color:var(--muted); font-size:23px; flex-shrink:0; }
+.tape { display:flex; flex:1; min-width:0; }
+.cell { position:relative; flex:1; min-width:0; border:1px solid #a7b9ce; border-right:0; height:50px; display:flex; align-items:center; justify-content:center; background:white; font:26px ui-monospace,SFMono-Regular,Consolas,monospace; }
+.cell:last-child { border-right:1px solid #a7b9ce; }
+.cell.head { background:#e8f1ff; box-shadow:inset 0 0 0 2px var(--blue); color:var(--blue); }
+.cell.head::before { content:"▼"; position:absolute; top:-30px; font-size:21px; color:var(--blue); }
+.cell.written { background:#fff0d9; box-shadow:inset 0 0 0 2px var(--amber); }
+.cell .position { position:absolute; bottom:-23px; color:var(--muted); font-size:12px; }
+.legend { display:flex; gap:16px; flex-wrap:wrap; font-size:12px; color:var(--muted); margin:7px 0 13px; }
+.legend span::before { content:""; display:inline-block; width:9px; height:9px; border:1px solid currentColor; margin-right:5px; }
+.legend .blue { color:var(--blue); }.legend .amber { color:var(--amber); }
+.action { border-top:1px solid var(--line); padding-top:12px; min-height:58px; font-size:16px; line-height:1.65; }
+.action strong { color:var(--amber); }
+.status { font-size:14px; color:var(--muted); margin:7px 0 0; min-height:22px; }
+.status.halted { color:var(--green); font-weight:700; }
+.rules-note { margin:8px 0 12px; }
+table { width:100%; border-collapse:collapse; font-size:14px; font-variant-numeric:tabular-nums; }
+th { text-align:left; font-size:12px; font-weight:600; color:var(--muted); padding:9px 7px; border-bottom:1px solid var(--line); white-space:nowrap; }
+td { padding:10px 7px; border-bottom:1px solid #e8edf3; }
+.rules td { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; }
+.rules tr.active { background:#e8f1ff; color:var(--blue); font-weight:700; }
+.rules tr.active td:first-child { box-shadow:inset 3px 0 var(--blue); }
+.rules tr.applied { background:#fff0d9; color:var(--amber); }
+.rule-caption { font-size:13px; line-height:1.65; margin:12px 0 0; color:var(--blue); }
+.prediction { border-left:4px solid var(--amber); margin-top:14px; display:flex; align-items:center; justify-content:space-between; gap:18px; padding:14px 18px; }
+.prediction h2 { font-size:14px; color:var(--amber); }
+#question { margin:6px 0 3px; font-size:18px; line-height:1.6; }
+#reveal { white-space:nowrap; border-color:var(--amber); color:var(--amber); }
+.history { margin-top:14px; }
+.trace-scroll { overflow:auto; max-height:260px; margin-top:10px; }
+.history th { position:sticky; top:0; background:white; z-index:1; }
+.history td { vertical-align:top; }
+.history tr.current { background:#e8f1ff; }
+.tape-text { font-family:ui-monospace,SFMono-Regular,Consolas,monospace; word-break:break-all; min-width:150px; line-height:1.5; }
+.history .event { min-width:130px; color:var(--muted); font-size:12px; }
+details { margin-top:18px; font-size:14px; line-height:1.8; }
+summary { cursor:pointer; font-weight:600; }
+.guide { max-width:900px; }
+.guide li { margin:8px 0; }
+footer { margin:20px 0 5px; font-size:12px; color:var(--muted); line-height:1.8; }
+@media(min-width:1000px) and (max-height:800px) {
+ .header-inner { padding-top:11px; padding-bottom:11px; } h1 { font-size:26px; }
+ main { padding-top:14px; }.panel { padding:14px 17px; }
+ .tape-window { padding-top:36px; }.cell { height:45px; }
+ .state-line { margin-top:10px; }.prediction { padding:11px 16px; }
+}
+@media(max-width:800px) {
+ .header-inner,main { padding:16px; }.home { display:none; } h1 { font-size:24px; }
+ main { display:flex; flex-direction:column; }
+ .toolbar { order:0; }.inputs { order:1; }
+ .prediction { order:2; margin-top:0; margin-bottom:14px; }
+ .workspace { order:3; }.history { order:4; }details { order:5; }footer { order:6; }
+ .workspace { grid-template-columns:1fr; }.panel { padding:16px; }
+ .modes { width:100%; }.modes button { flex:1; }.transport { gap:6px; }
+ .transport button { padding:9px 10px; }.inputs { padding:12px; }
+ .prediction { align-items:flex-start; flex-direction:column; gap:8px; }
+ .cell { font-size:23px; }.state-line { gap:14px; }
+ #question { font-size:17px; }.trace-scroll { max-height:330px; }
+}
+</style>
+</head>
+<body>
+<header><div class="header-inner">
+ <div><div class="eyebrow">CS0502 / SLIDE07 / 图灵机</div><h1>读写一步，计算一步</h1><p class="subtitle">先预测，再执行。观察状态、纸带与读写头怎样共同决定下一步。</p></div>
+ <a class="home" href="./">全部交互演示 ↗</a>
+</div></header>
+<main>
+<div class="toolbar">
+ <nav class="modes" aria-label="机器类型"><button id="flip" aria-pressed="true">逐位翻转</button><button id="addition" aria-pressed="false">一元加法</button></nav>
+ <div class="transport">
+  <button id="prev">← 回退</button><button id="play">播放</button><button id="next" class="primary">单步 →</button><button id="reset">重置</button>
+  <label>速度 <select id="speed"><option value="1800">慢速</option><option value="1100" selected>标准</option><option value="600">快速</option></select></label>
+  <label><input id="predict" type="checkbox" checked>预测暂停</label>
+ </div>
+</div>
+<form id="input-form" class="inputs" novalidate>
+ <div id="flip-input"><label for="bits">输入串 </label><input id="bits" value="0110" maxlength="32" autocomplete="off" spellcheck="false" aria-describedby="input-range"></div>
+ <div id="addition-input" hidden><label for="x">x </label><input id="x" class="add-input" type="number" min="0" max="20" step="1" value="3" aria-describedby="input-range"> + <label for="y">y </label><input id="y" class="add-input" type="number" min="0" max="20" step="1" value="4" aria-describedby="input-range"></div>
+ <button id="load" type="submit">载入</button><div id="presets" class="presets" aria-label="输入预设"></div><span id="input-range"></span>
+ <p id="error" role="alert" hidden></p>
+</form>
+<div class="workspace">
+ <section class="panel"><div class="panel-top"><h2>纸带（tape）与读写头</h2><span id="step-count" class="step"></span></div>
+  <div class="state-line"><span>当前状态 <strong id="state"></strong></span><span>头位置 <strong id="head"></strong></span><span>读取 <strong id="read"></strong></span></div>
+  <div class="tape-window" role="img" aria-label="纸带配置"><span class="ellipsis">…</span><div id="tape" class="tape"></div><span class="ellipsis">…</span></div>
+  <div class="legend"><span class="blue">蓝色箭头：当前头位置</span><span class="amber">橙色：本次写入的位置</span><span>□ 空白 · 两端可继续延伸</span></div>
+  <div id="action" class="action" aria-live="polite" aria-atomic="true"></div><p id="status" class="status"></p>
+ </section>
+ <section class="panel"><h2>转移规则（transition rules）</h2><p class="small rules-note">用「当前状态＋读取符号」查找一行规则。</p>
+  <table class="rules" aria-label="完整转移表"><thead><tr><th scope="col">状态</th><th scope="col">读取</th><th scope="col">写入</th><th scope="col">移动</th><th scope="col">新状态</th></tr></thead><tbody id="rules"></tbody></table>
+  <p id="rule-caption" class="rule-caption"></p>
+ </section>
+</div>
+<section class="panel prediction" aria-label="先预测再运行">
+ <div><h2 id="question-title">先预测，再运行</h2><p id="question"></p><p id="question-hint" class="small"></p></div><button id="reveal">揭示下一步 →</button>
+</section>
+<section class="panel history"><div class="panel-top"><h2>已执行的配置（configuration）</h2><span class="small">初始为第 0 步 · 一次完整转移记一步</span></div><div class="trace-scroll">
+ <table aria-label="配置追踪表"><thead><tr><th scope="col">步数</th><th scope="col">状态</th><th scope="col">头位置</th><th scope="col">纸带内容</th><th scope="col">刚完成的动作</th></tr></thead><tbody id="trace"></tbody></table>
+ </div><p class="small">纸带内容省略两端空白；格子编号与读写头位置在上方单独显示。</p>
+</section>
+<details><summary>课堂讲解与对照 · Slide07 P9–20</summary><div class="guide">
+ <ol><li><strong>P9–10：一步执行。</strong>先找匹配规则，再观察写入发生在原读写头所在格。头移动到下一格时，不会自动改写新位置。</li>
+ <li><strong>P12–13：逐位翻转。</strong>先预测输入 0110 的输出与转移次数。数字处理完后，机器还需要读取空白并执行停机规则。用 101 或空串再次预测。</li>
+ <li><strong>P17–20：一元加法。</strong>输入 ▷1…101…1◁，头从位置 1 开始。0 是分隔符，两个数由左右两段 1 的数量表示。先改分隔符，再找结束符，最后收尾；试试 0+4、4+0 和 0+0。</li></ol>
+ <p>状态（state）记录当前处理阶段，同一状态可以重复使用。配置则包括状态、头位置和整条纸带；两个配置的状态相同，下一步仍可能不同。加法中 q1 找分隔符，q2 找结束符，q3 收尾。</p>
+ <p>进入 halt 才按本例约定停机。缺少规则会报告规则错误；达到 1000 次转移上限只报告“本次未观察到停机”。界面输入范围是为了便于观察，并非图灵机的理论存储限制。</p>
+ <p>课后可运行 <a href="../examples/08_turing_machine.py">Python 示例</a>，或比较<a href="TuringMachine.html">多带回文检查器（选学）</a>。</p>
+</div></details>
+<footer>2026 版 Slide07「图灵机」· 可离线使用 · 规则固定，输入可改。蓝色规则行对应当前配置；演示写入时，橙色规则行表示正在执行的规则。</footer>
+</main>
+<script id="turing-model">
+'use strict';
+// 纯模型：每次转移返回新配置，界面与测试共用这一份实现。
+const MACHINE_RULES = {
+  flip: [
+    {state:'scan', read:'0', write:'1', move:'R', next:'scan'},
+    {state:'scan', read:'1', write:'0', move:'R', next:'scan'},
+    {state:'scan', read:'_', write:'_', move:'R', next:'halt'}
+  ],
+  addition: [
+    {state:'q1', read:'1', write:'1', move:'R', next:'q1'},
+    {state:'q1', read:'0', write:'1', move:'R', next:'q2'},
+    {state:'q2', read:'1', write:'1', move:'R', next:'q2'},
+    {state:'q2', read:'◁', write:'_', move:'L', next:'q3'},
+    {state:'q3', read:'1', write:'◁', move:'R', next:'halt'}
+  ]
+};
+function readSymbol(config) { return config.tape[config.head] ?? '_'; }
+function matchingRule(config, rules) {
+  return rules.find(rule => rule.state === config.state && rule.read === readSymbol(config));
+}
+function createMachine(mode, input) {
+  let encoded, state, head;
+  if (mode === 'flip') {
+    if (typeof input.text !== 'string' || /[^01]/.test(input.text) || input.text.length > 32)
+      throw new Error('请输入最多 32 位的 0 / 1 字符串，也可以留空。');
+    encoded = input.text; state = 'scan'; head = 0;
+  } else if (mode === 'addition') {
+    const {x,y} = input;
+    if (![x,y].every(n => Number.isInteger(n) && n >= 0 && n <= 20))
+      throw new Error('x 和 y 都须是 0–20 的整数。');
+    encoded = '▷' + '1'.repeat(x) + '0' + '1'.repeat(y) + '◁';
+    state = 'q1'; head = 1;
+  } else throw new Error('未知的机器类型。');
+  const tape = Object.fromEntries(Array.from(encoded, (symbol, i) => [i, symbol]));
+  return {step:0, state, head, tape, status:'running', message:'', last:null};
+}
+function stepMachine(config, rules, maxSteps = 1000) {
+  const copy = {...config, tape:{...config.tape}};
+  if (config.state === 'halt') return {...copy, status:'halted'};
+  if (config.status !== 'running') return copy;
+  if (config.step >= maxSteps)
+    return {...copy, status:'step_limit', message:'达到步数上限：本次未观察到停机。'};
+  const rule = matchingRule(config, rules);
+  if (!rule) return {...copy, status:'missing_rule', message:'规则错误：当前状态和符号没有匹配规则。'};
+  if (!['L','R'].includes(rule.move)) throw new Error('移动方向必须是 L 或 R。');
+  copy.tape[config.head] = rule.write;
+  return {...copy, step:config.step + 1, state:rule.next,
+    head:config.head + (rule.move === 'R' ? 1 : -1),
+    status:rule.next === 'halt' ? 'halted' : 'running',
+    last:{head:config.head, state:config.state, read:rule.read, write:rule.write, move:rule.move, next:rule.next}};
+}
+function tapeContents(config) {
+  const positions = Object.keys(config.tape).map(Number).filter(i => config.tape[i] !== '_');
+  if (!positions.length) return '';
+  const left = Math.min(...positions), right = Math.max(...positions);
+  return Array.from({length:right-left+1}, (_,i) => config.tape[left+i] ?? '_').join('');
+}
+function predictionQuestion(mode, config) {
+  if (config.status !== 'running') return '';
+  if (config.step === 0) return mode === 'flip'
+    ? '这段输入的输出是什么？进入 halt 一共需要几次转移？'
+    : '最终会留下几个 1？进入 halt 一共需要几次转移？';
+  if (mode === 'flip' && readSymbol(config) === '_') return '数字已经处理完，机器停了吗？执行下一步后，状态和头位置是什么？';
+  if (mode === 'addition') {
+    if (config.state === 'q1' && readSymbol(config) === '0') return '即将处理分隔符。哪一格会改写？1 的数量会怎样变化？';
+    if (config.state === 'q2' && readSymbol(config) === '◁') return '读到结束符。会擦掉哪一格？读写头向哪边移动？';
+    if (config.state === 'q3') return '收尾时改写哪个格子？这一步之后，输出、状态和头位置分别是什么？';
+  }
+  return '';
+}
+</script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const shown = symbol => symbol === '_' ? '□' : symbol;
+const stateNames = {scan:'扫描并翻转', q1:'寻找分隔符', q2:'寻找结束符', q3:'收尾', halt:'停机'};
+const PRESETS = {flip:[['0110','0110'],['101','101'],['空串','']], addition:[['3+4',3,4],['0+4',0,4],['4+0',4,0],['0+0',0,0]]};
+let mode = location.hash === '#addition' ? 'addition' : 'flip';
+let loadedInput, history = [], index = 0, timer = null, animationTimer = null, playing = false, busy = false, generation = 0;
+function current() { return history[index]; }
+function waiting() { return $('predict').checked && Boolean(predictionQuestion(mode, current())); }
+function cell(tag, text, className) {
+  const node = document.createElement(tag); node.textContent = text;
+  if (className) node.className = className;
+  return node;
+}
+function stop() { clearTimeout(timer); timer = null; playing = false; $('play').textContent = '播放'; }
+function cancelAnimation() { generation++; clearTimeout(animationTimer); animationTimer = null; busy = false; }
+function drawTape(config, written = null) {
+  const count = window.matchMedia('(max-width:800px)').matches ? 7 : 11;
+  const left = Math.max(-2, config.head - Math.floor(count/2));
+  const nodes = [];
+  for (let i = left; i < left + count; i++) {
+    const c = cell('div', shown(config.tape[i] ?? '_'), 'cell' + (i === config.head ? ' head' : '') + (i === written ? ' written' : ''));
+    c.append(cell('span', String(i), 'position')); nodes.push(c);
+  }
+  $('tape').replaceChildren(...nodes);
+  document.querySelector('.tape-window').setAttribute('aria-label', '状态 ' + config.state + '，头位置 ' + config.head + '，当前符号 ' + shown(readSymbol(config)) + '，纸带 ' + (tapeContents(config).replaceAll('_','□') || '全空白'));
+}
+function drawRules(config, applied = false) {
+  const match = config.status === 'running' ? matchingRule(config, MACHINE_RULES[mode]) : null;
+  $('rules').replaceChildren(...MACHINE_RULES[mode].map(rule => {
+    const tr = document.createElement('tr');
+    if (rule === match) tr.className = applied ? 'applied' : 'active';
+    [rule.state,shown(rule.read),shown(rule.write),rule.move,rule.next].forEach(value => tr.append(cell('td',value)));
+    return tr;
+  }));
+}
+function controls() {
+  const finished = current().status !== 'running';
+  $('prev').disabled = busy || index === 0;
+  $('next').disabled = busy || finished || waiting();
+  $('play').disabled = busy || finished || waiting();
+  $('reveal').disabled = busy;
+  $('reveal').hidden = !waiting();
+  $('predict').disabled = busy;
+  $('speed').disabled = busy;
+  $('play').textContent = playing ? '暂停' : '播放';
+}
+function renderTrace() {
+  $('trace').replaceChildren(...history.slice(0,index+1).map((s,i) => {
+    const tr = document.createElement('tr'); if (i === index) tr.className = 'current';
+    [s.step,s.state,s.head].forEach(value => tr.append(cell('td',String(value))));
+    tr.append(cell('td',tapeContents(s).replaceAll('_','□') || '（全空白）','tape-text'));
+    tr.append(cell('td',s.last ? '格 ' + s.last.head + '：' + shown(s.last.read) + ' → ' + shown(s.last.write) + '；' + s.last.move : '初始配置','event'));
+    return tr;
+  }));
+  const scroll = document.querySelector('.trace-scroll'); scroll.scrollTop = scroll.scrollHeight;
+}
+function render() {
+  const s = current();
+  $('step-count').textContent = '已执行 ' + s.step + ' 步';
+  $('state').textContent = s.state; $('head').textContent = s.head; $('read').textContent = shown(readSymbol(s));
+  drawTape(s, s.last?.head ?? null); drawRules(s); renderTrace();
+  $('action').textContent = s.last
+    ? '第 ' + s.step + ' 步：在格 ' + s.last.head + ' 写入 ' + shown(s.last.write) + '，' + (s.last.move === 'R' ? '右移' : '左移') + '到格 ' + s.head + '，进入 ' + s.state + '。'
+    : '从当前格开始。先用状态与符号查表，再执行一次完整转移。';
+  $('status').className = 'status' + (s.status === 'halted' ? ' halted' : '');
+  $('status').textContent = s.status === 'halted'
+    ? '已停机 · 输出 ' + (mode === 'flip' ? (tapeContents(s) || '空串') : String(Array.from(tapeContents(s)).filter(v => v === '1').length)) + ' · 共 ' + s.step + ' 次转移'
+    : s.message || '处理阶段：' + stateNames[s.state] + '。';
+  $('rule-caption').textContent = s.status === 'halted' ? '进入 halt 后不再执行规则。'
+    : 'L 左移一格，R 右移一格。蓝色行由当前配置匹配。';
+  const question = predictionQuestion(mode,s);
+  $('question-title').textContent = waiting() ? '停一下 · 先预测' : '观察与解释';
+  $('question').textContent = question || (s.status === 'halted' ? '回看轨迹：哪些步骤改变了状态？为什么最后还需要停机规则？' : '下一步会改写哪一格？头位置与状态将怎样变化？');
+  $('question-hint').textContent = waiting() ? '先口头回答，再点击“揭示下一步”。揭示只执行一步，之后由你继续。'
+    : '状态记录处理阶段；步数记录已经执行了多少次转移。';
+  controls();
+}
+function resetTo(input) {
+  // 先校验，非法输入不会破坏已执行的轨迹。
+  const initial = createMachine(mode,input);
+  stop(); cancelAnimation(); loadedInput = {...input}; history = [initial]; index = 0;
+  $('error').hidden = true; render();
+}
+function loadInputs() {
+  stop();
+  // 若正在演示写入，取消中间帧并恢复最后一个完整配置。
+  cancelAnimation(); render();
+  try {
+    const input = mode === 'flip' ? {text:$('bits').value} : {
+      x:$('x').value.trim() === '' ? NaN : Number($('x').value),
+      y:$('y').value.trim() === '' ? NaN : Number($('y').value)
+    };
+    resetTo(input);
+  } catch (error) { $('error').textContent = error.message; $('error').hidden = false; }
+}
+function choose(nextMode) {
+  stop(); cancelAnimation(); mode = nextMode;
+  $('flip').setAttribute('aria-pressed',mode === 'flip'); $('addition').setAttribute('aria-pressed',mode === 'addition');
+  $('flip-input').hidden = mode !== 'flip'; $('addition-input').hidden = mode !== 'addition';
+  $('bits').value = '0110'; $('x').value = '3'; $('y').value = '4';
+  $('input-range').textContent = mode === 'flip' ? '演示范围：0–32 位，空串可直接载入' : '演示范围：x、y 各为 0–20 的整数';
+  $('presets').replaceChildren(...PRESETS[mode].map(preset => {
+    const button = cell('button',preset[0]); button.type = 'button';
+    button.onclick = () => {
+      if (mode === 'flip') $('bits').value = preset[1];
+      else { $('x').value = preset[1]; $('y').value = preset[2]; }
+      loadInputs();
+    }; return button;
+  }));
+  resetTo(mode === 'flip' ? {text:'0110'} : {x:3,y:4});
+}
+function schedule() {
+  clearTimeout(timer);
+  timer = setTimeout(() => { timer = null; advance(); }, Number($('speed').value));
+}
+function advance(reveal = false) {
+  if (busy || current().status !== 'running') return;
+  if (waiting() && !reveal) { stop(); controls(); return; }
+  const before = current(), after = stepMachine(before, MACHINE_RULES[mode]);
+  if (after.step === before.step) {
+    history[index] = after; stop(); render(); return;
+  }
+  const token = generation;
+  busy = true; controls();
+  const written = {...before, tape:{...before.tape, [before.head]:after.last.write}};
+  drawTape(written,before.head); drawRules(before,true);
+  $('action').textContent = '正在执行：先在原位置 ' + before.head + ' 写入 ' + shown(after.last.write) + '；随后移头并更新状态。本次转移尚未计步。';
+  const delay = window.matchMedia('(prefers-reduced-motion:reduce)').matches ? 0 : 280;
+  animationTimer = setTimeout(() => {
+    if (generation !== token) return;
+    busy = false; animationTimer = null;
+    history = history.slice(0,index+1); history.push(after); index++;
+    if (reveal || after.status !== 'running' || waiting()) stop();
+    render();
+    if (playing) schedule();
+  }, delay);
+}
+$('input-form').onsubmit = event => { event.preventDefault(); loadInputs(); };
+$('flip').onclick = () => { choose('flip'); location.hash = 'flip'; };
+$('addition').onclick = () => { choose('addition'); location.hash = 'addition'; };
+window.addEventListener('hashchange',() => {
+  const nextMode = location.hash === '#addition' ? 'addition' : 'flip';
+  if (nextMode !== mode) choose(nextMode);
+});
+$('prev').onclick = () => { if (busy) return; stop(); index = Math.max(0,index-1); render(); };
+$('next').onclick = () => { stop(); advance(); };
+$('reveal').onclick = () => { stop(); advance(true); };
+$('reset').onclick = () => {
+  if (mode === 'flip') $('bits').value = loadedInput.text;
+  else { $('x').value = loadedInput.x; $('y').value = loadedInput.y; }
+  resetTo(loadedInput);
+};
+$('play').onclick = () => {
+  if (busy) return;
+  if (playing) { stop(); controls(); return; }
+  if (waiting() || current().status !== 'running') return;
+  playing = true; controls(); schedule();
+};
+$('predict').onchange = () => { stop(); render(); };
+$('speed').onchange = () => { if (playing) schedule(); };
+document.addEventListener('visibilitychange',() => { if (document.hidden) { stop(); cancelAnimation(); render(); } });
+window.addEventListener('resize',() => { if (!busy) drawTape(current(),current().last?.head ?? null); });
+choose(mode);
+</script>
+</body>
+</html>

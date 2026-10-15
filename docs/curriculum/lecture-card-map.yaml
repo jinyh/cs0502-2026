@@ -77,7 +77,7 @@ lectures:
     supporting_cards: [ext-complexity, algorithm-strategies]
     examples: [08_turing_machine.py]
     labs: [lab-04-turing-machine]
-    visualizations: []
+    visualizations: [turing_machine.html]
     extension_visualizations: [TuringMachine.html]
     figures: [08-turing-transition.svg]
     assessment_tags: [状态追踪, 边界辨析, 验证设计]

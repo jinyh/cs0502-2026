@@ -16,8 +16,8 @@ labs: [lab-04-turing-machine]
 figures: [08-turing-transition.svg]
 related_cards: [computability-limits, algorithm-strategies, 02-intro-to-cs, 09-computer-system-arch]
 related_deep: []
-related_visualizations: []
-last_reviewed: 2026-08-21
+related_visualizations: [turing_machine.html]
+last_reviewed: 2026-10-15
 ---
 
 # 图灵机（Turing Machine）
@@ -44,7 +44,7 @@ $$
 
 ![图灵机一次转移](../../figures/08-turing-transition.svg)
 
-图灵机的**配置（configuration）**由当前状态、非空白纸带内容和读写头位置共同确定。执行轨迹就是配置序列；没有匹配规则或进入停机状态时结束。
+图灵机的**配置（configuration）**由当前状态、非空白纸带内容和读写头位置共同确定。执行轨迹就是配置序列。本教学示例约定进入 `halt` 时正常停机；缺少匹配规则报告输入或规则错误，达到步数上限只说明“本次未观察到停机”。
 
 多带图灵机可以在多条纸带上工作，程序更容易写，但单带图灵机可以模拟它，只是可能更慢。这说明“方便程度”和“可计算能力”不同。
 
@@ -74,4 +74,5 @@ $$
 ## 延伸阅读
 
 - [实验 04：图灵机](../../code/labs/lab-04-turing-machine/README.md)
+- [单带图灵机：逐位翻转与一元加法](../../code/visualizations/turing_machine.html)
 - [多带图灵机回文检查器（选学扩展）](../../code/visualizations/TuringMachine.html)

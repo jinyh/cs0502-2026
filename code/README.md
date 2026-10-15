@@ -4,7 +4,7 @@
 
 - `examples/`：18 个概念演示；文件名前缀是主要讲次或兼容 legacy 编号，精确关系见 `docs/curriculum/lecture-card-map.yaml`。
 - `labs/`：8 个形成性核心实验，每个目录包含任务说明、`starter.py` 和公开测试；它们不自动等于正式作业。
-- `visualizations/`：5 个自包含 HTML 页面，打开后先完成页面顶部的预测任务。
+- `visualizations/`：9 个自包含 HTML 页面，打开后先完成页面顶部的预测任务。
 - `runner.py`：课程代码执行护栏，运行 example，并初始化、测试学生 Lab 副本。
 - `progress.py`：匿名本地学习进度工具，只写 `student-work/progress.json`。
 
@@ -37,7 +37,7 @@ uv run python code/runner.py run code/examples/<文件名>.py
 | `06_graph_bfs_dfs.py` | BFS、DFS 与连通分量 | L05、L17 |
 | `07_greedy_dijkstra.py` | 活动调度与 Dijkstra | L06、L17 |
 | `08_cache_locality.py` | 地址步长与空间局部性 | L08 |
-| `08_turing_machine.py` | 图灵机状态、纸带和转移 | L07 |
+| `08_turing_machine.py` | 图灵机翻转、一元加法与配置追踪 | L07 |
 | `09_interleavings.py` | 非原子操作的并发交错 | L09 |
 | `10_retry_idempotency.py` | 重试、请求标识与幂等 | L10 |
 | `13_database.py` | SQLite、关系、键、连接与查询 | L13 |
@@ -87,7 +87,7 @@ test_lab("lab-02-graph")
 - `test_lab.py` 是只读公开测试，用来快速验证接口和代表性行为；通过公开测试不等于覆盖所有边界，最后还要解释复杂度和自行设计新输入。
 - 学生只修改 `student-work/labs/<lab-id>/solution.py`。OpenCode 使用 `/lab <lab-id>`，一次只定位第一个根因。
 
-8 个 Lab 的任务、默认性质与公开作业关联见 [`labs/README.md`](labs/README.md) 和 [`labs/catalog.json`](labs/catalog.json)。5 个交互页面及打开方式见 [`visualizations/README.md`](visualizations/README.md)。
+8 个 Lab 的任务、默认性质与公开作业关联见 [`labs/README.md`](labs/README.md) 和 [`labs/catalog.json`](labs/catalog.json)。9 个交互页面及打开方式见 [`visualizations/README.md`](visualizations/README.md)。
 
 ## 仓库检查
 

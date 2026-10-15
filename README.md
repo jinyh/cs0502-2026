@@ -65,6 +65,14 @@
   <a class="module-link" href="code/visualizations/greedy.html">打开贪心算法交互演示 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide07 · 图灵机</span>
+  <h2>单带图灵机：读写一步，计算一步</h2>
+  <p>同步追踪纸带、读写头、当前状态与转移规则。先预测，再单步验证逐位翻转和一元加法；可修改输入，观察零输入边界。</p>
+  <a class="module-link" href="code/visualizations/turing_machine.html#flip">打开逐位翻转 →</a>
+  <a class="module-link" href="code/visualizations/turing_machine.html#addition">打开一元加法 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">

@@ -1,9 +1,10 @@
 # 交互可视化
 
-点击下方主题即可从课程网站直接体验。8 个概念演示是自包含 HTML 页面；无人船巡检实验室使用独立页面和配套资源。它们用于预测、观察和复盘，默认不属于课程必做内容。
+点击下方主题即可从课程网站直接体验。9 个概念演示是自包含 HTML 页面；无人船巡检实验室使用独立页面和配套资源。它们用于预测、观察和复盘，默认不属于课程必做内容。
 
 ## 直接打开
 
+- [单带图灵机：读写一步，计算一步](turing_machine.html)：纸带、读写头、状态、规则与配置轨迹联动。
 - [DFS 与 BFS：栈和队列](graph_search.html)：同一张图上的调用栈、队列、搜索树与距离联动。
 - [贪心算法：这一步选什么？](greedy.html)：找零反例、活动选择规则对照、Dijkstra 距离与前驱联动。
 - [无人船巡检实验室](usv-inspection/index.html)：路线、断网记录、图像复核与 Python 追踪。
@@ -24,6 +25,7 @@
 
 | 文件 | 主题 | 对应卡片 | 嵌入方式 |
 |---|---|---|---|
+| [turing_machine.html](turing_machine.html) | 单带逐位翻转与一元加法 | `08-turing-machine` | 浏览器直接打开，离线使用 |
 | [graph_search.html](graph_search.html) | DFS 调用栈与 BFS 队列联动 | `06-graph-exploration`、`stack-queue` | 浏览器直接打开，离线使用 |
 | [greedy.html](greedy.html) | 找零反例、活动选择、Dijkstra 最短路径 | `07-greedy-algorithm`、`algorithm-strategies` | 浏览器直接打开，离线使用 |
 | [traffic_conflicts.html](traffic_conflicts.html) | 五岔路口：车流轨迹与交叉冲突图 | 第 3 讲「数据结构一」第 8 页补充 | 浏览器直接打开，离线使用 |
@@ -33,13 +35,16 @@
 | [stack_expr.html](stack_expr.html) | `5+(6-4/2)*3` 的双栈求值过程 | `05-data-structure-advanced` | 同上 |
 | [TuringMachine.html](TuringMachine.html) | 多带图灵机回文检查器（选学扩展） | `08-turing-machine` | 同上 |
 
-## Slide02—06 课堂入口
+## Slide02—07 课堂入口
 
 - Slide02：[无人船巡检实验室](usv-inspection/index.html)，包括 Python 执行追踪。
 - Slide03：[交通流与冲突图](traffic_conflicts.html)，配合数据关系案例。
 - Slide04：[双栈表达式求值](stack_expr.html)（P8 算符表与 P10 过程联动）、[汉诺塔](Hanoi.html)（P14 递归与 P15 次数）、[循环队列](circular_queue.html)（P19）、[二叉堆](binary_heap.html)。
 - Slide05：[DFS 调用栈](graph_search.html#dfs)（P24）、[BFS 队列](graph_search.html#bfs)（P31）。
 - Slide06：[找零反例](greedy.html#coins)、[活动选择](greedy.html#schedule)、[Dijkstra 最短路径](greedy.html#dijkstra)。
+- Slide07：[逐位翻转](turing_machine.html#flip)（P12–13）、[一元加法](turing_machine.html#addition)（P17–20）。
+
+单带图灵机支持单步、回退、播放、调速、重置与修改输入，预测暂停默认开启。初始先预测结果与步数；翻转读空白前、加法改分隔符／擦结束符／收尾前暂停，点击“揭示下一步”只执行一次转移。轨迹仅展示已执行配置，初始记第0步，结果在进入 `halt` 后显示。输入范围为最多32位二进制串（含空串）或两个0–20的整数，仅限制演示规模。用 `0+4`、`4+0`、`0+0` 检查边界；状态表示处理阶段，不等于执行步数。可调用 `show_visualization("turing_machine.html")` 或 `/demo L07`。
 
 贪心演示沿用第6讲的邮票面额 `100、70、34、21、10、1`，目标 140；贪心得 8 张，最优对照为 `70+70`，共 2 张。活动选择用同一组新构造的区间比较最早开始（1 个）、最短时长（2 个）、最早结束（3 个）；首尾相接允许，目标是活动数量最多。Dijkstra 沿用课件有向图，默认最短路 `s→c→d→e→t`，长度 12；可修改 `c→d` 的非负边权并重新追踪。算法实际使用二叉最小堆实现优先队列：每项记录（顶点，暂定距离），`extract-min` 取出最小键，松弛成功后 `decrease-key` 降低对应键。每个未确定顶点只保留一个队列项；右侧按优先级排序展示队列的逻辑视图，并同步显示距离、前驱与已确定集合。绿色边表示当前前驱，最终蓝色边表示到终点的最短路。
 
