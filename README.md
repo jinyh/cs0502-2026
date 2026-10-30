@@ -26,7 +26,7 @@
     <p>查看本学期的正式课程信息、完整教学日历、考核方式和课堂规则。</p>
     <ul>
       <li>课程时间、地点与授课成员</li>
-      <li>22 次课的主题、事件与项目节点</li>
+      <li>21 次课的主题、事件与项目节点</li>
       <li>作业、项目、课堂参与和期末规则</li>
     </ul>
     <a class="module-link" href="https://jinyh.github.io/cs0502-2026/docs/course/overview/">进入课程说明 →</a>
