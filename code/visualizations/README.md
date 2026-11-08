@@ -1,9 +1,10 @@
 # 交互可视化
 
-点击下方主题即可从课程网站直接体验。9 个概念演示是自包含 HTML 页面；无人船巡检实验室使用独立页面和配套资源。它们用于预测、观察和复盘，默认不属于课程必做内容。
+点击下方主题即可从课程网站直接体验。12 个概念演示是自包含 HTML 页面；无人船巡检实验室使用独立页面和配套资源。它们用于预测、观察和复盘，默认不属于课程必做内容。
 
 ## 直接打开
 
+- [Enigma原理：会变化的替换](enigma.html)：四字母模型，单步追踪接线板、转子和反射器；冻结对照、连续输入与恢复初始设置后的解密验证。配合2026版Slide11 P19，见[三分钟讲法](enigma-guide.md)。
 - [共享计数与互斥](shared_counter.html)：一屏对照顺序、交错与加锁执行，追踪局部寄存器、共享值与丢失更新。
 - [轮转调度 RR](round_robin.html)：一屏追踪就绪队列、CPU、剩余时间和运行记录；支持单步、回退、播放、全屏和关键点暂停。
 - [单带图灵机：读写一步，计算一步](turing_machine.html)：纸带、读写头、状态、规则与配置轨迹联动。
@@ -27,6 +28,7 @@
 
 | 文件 | 主题 | 对应卡片 | 嵌入方式 |
 |---|---|---|---|
+| [enigma.html](enigma.html) | 转子密码与可信解密 | `12-information-security`；2026版Slide11 P19 | 浏览器直接打开，离线使用 |
 | [turing_machine.html](turing_machine.html) | 单带逐位翻转与一元加法 | `08-turing-machine` | 浏览器直接打开，离线使用 |
 | [graph_search.html](graph_search.html) | DFS 调用栈与 BFS 队列联动 | `06-graph-exploration`、`stack-queue` | 浏览器直接打开，离线使用 |
 | [greedy.html](greedy.html) | 找零反例、活动选择、Dijkstra 最短路径 | `07-greedy-algorithm`、`algorithm-strategies` | 浏览器直接打开，离线使用 |

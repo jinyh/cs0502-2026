@@ -73,6 +73,13 @@
   <a class="module-link" href="code/visualizations/turing_machine.html#addition">打开一元加法 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide11 · 密码与安全</span>
+  <h2>Enigma原理：会变化的字母替换</h2>
+  <p>用四字母教学模型追踪接线板、转子和反射器，比较动态与冻结转子，并从相同初始设置验证密文还原。</p>
+  <a class="module-link" href="code/visualizations/enigma.html">打开 Enigma 交互演示 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">

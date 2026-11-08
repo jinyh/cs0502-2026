@@ -16,7 +16,7 @@ labs: []
 figures: [12-public-key-signature.svg]
 related_cards: [ai-security, responsible-ai-systems, 10-software-engineering, 11-computer-network]
 related_deep: [quantum-computing]
-related_visualizations: []
+related_visualizations: [enigma]
 last_reviewed: 2026-08-21
 ---
 
@@ -70,6 +70,8 @@ last_reviewed: 2026-08-21
 - 系统安全取决于最弱环节，不能只购买一种“安全产品”。
 
 ## 主动学习与考核迁移
+
+- [Enigma四字母原理演示](../../code/visualizations/enigma.html)：先预测连续输入AAAA的输出，再比较转子步进与冻结两种情况；恢复相同初始设置，输入密文验证还原。四字母接线和进位均为教学简化，配合2026版Slide11 P19。
 
 1. 分析实验室仪器远程控制的 CIA 优先级。
 2. 判断“公开下载文件后验证未被篡改”需要哈希、加密还是签名。

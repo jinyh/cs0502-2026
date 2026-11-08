@@ -1,0 +1,165 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'">
+<title>Enigma原理：会变化的替换｜CS0502</title>
+<style>
+:root{font-family:'Microsoft YaHei','PingFang SC',sans-serif;color:#17304c;background:#f4f7fa;--blue:#004098;--orange:#a65308;--muted:#526980;--line:#c8d4e1}
+*{box-sizing:border-box}body{margin:0}main{max-width:1520px;margin:auto;padding:16px 24px;min-height:100dvh;display:flex;flex-direction:column;gap:10px}h1{font-size:30px;color:var(--blue);margin:0}p{line-height:1.5;margin:4px 0}header p{font-size:16px}.tools,.settings,.input-row{display:flex;flex-wrap:wrap;gap:9px;align-items:center}button,input,select{font:inherit;font-size:16px}button,select{min-height:39px;padding:7px 12px;border:1px solid #a8bbcf;border-radius:5px;background:white;color:#173b68}button{cursor:pointer}button.primary{background:var(--blue);color:white}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,select:focus-visible{outline:3px solid #b46612;outline-offset:2px}label{display:flex;align-items:center;gap:5px}.settings{font-size:15px}.settings input{width:19px;height:19px}.muted{color:var(--muted);font-size:14px}.push{margin-left:auto}.input-row input{width:200px;min-height:39px;border:1px solid #a8bbcf;border-radius:4px;padding:7px 10px;letter-spacing:2px}.keys{display:flex;gap:6px}.key{font-weight:bold;font-size:22px;width:47px;padding:2px}.event{display:grid;grid-template-columns:105px 1fr;gap:12px;align-items:center;background:#e8eff9;border-left:5px solid var(--blue);padding:9px 14px;min-height:68px}#step{font-size:26px;font-weight:bold;color:var(--blue)}#message{font-size:21px;line-height:1.45}.diagram-wrap{background:white;overflow-x:auto}.diagram{display:block;width:100%;height:clamp(300px,41vh,490px);min-width:700px}.diagram text{font-family:'Microsoft YaHei','PingFang SC',sans-serif;fill:#17304c;font-size:18px}.diagram .head{font-weight:bold;font-size:21px;fill:#004098}.diagram .sub{font-size:14px;fill:#526980}.diagram .wire{stroke:#c8d4e1;stroke-width:1.25;fill:none}.diagram .contact{fill:white;stroke:#a8b8ca;stroke-width:1}.diagram .component{fill:#f9fbfd;stroke:#b8c8d8;stroke-width:1}.diagram .highlight{fill:none;stroke-width:3.5;stroke-linejoin:round;stroke-linecap:round}.diagram .active{stroke-width:5}.diagram .input-port{fill:#e4edfc;stroke:#004098;stroke-width:3}.diagram .output-port{fill:#ffe2af;stroke:#a65308;stroke-width:3}.diagram .position{fill:#e8eff9;stroke:#004098;stroke-width:1}.legend{display:flex;gap:22px;flex-wrap:wrap;padding:0 14px 8px;font-size:14px;color:#526980}.legend span:before{content:'';display:inline-block;vertical-align:middle;width:28px;margin-right:7px;border-top:3px solid var(--blue)}.legend .reverse:before{border-color:var(--orange);border-top-style:dashed}.readout{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px;align-items:start}.readout section{min-width:0}.readout h2{font-size:16px;margin:0 0 3px;color:var(--muted);font-weight:normal}.letters{min-height:37px;font-family:ui-monospace,monospace;font-size:26px;overflow-wrap:anywhere;letter-spacing:3px}.lamps{display:flex;gap:9px;align-items:center}.lamp{width:38px;height:38px;border:1px solid #aebfd0;border-radius:50%;text-align:center;line-height:36px;font-weight:bold;color:#738497;background:white}.lamp.lit{background:#ffdf92;color:#643500;border:2px solid #a65308;line-height:34px}.window-label{font-size:15px;color:var(--muted)}#windows{font-size:23px;color:var(--blue);font-weight:bold;letter-spacing:1px}.result{min-height:28px;font-size:18px;color:var(--blue);line-height:1.5}.record-head{display:flex;gap:14px;align-items:center;font-size:15px;color:var(--muted)}details{margin-top:2px}summary{cursor:pointer;font-size:15px;color:var(--blue)}.table-wrap{overflow:auto;max-height:180px}table{border-collapse:collapse;min-width:600px;width:100%;font-size:15px;background:white}th,td{text-align:left;padding:7px 12px;border-bottom:1px solid #d9e2eb}th{color:var(--blue)}footer{font-size:13px;line-height:1.5;color:var(--muted);margin-top:auto}a{color:var(--blue)}dialog{width:min(790px,92vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:7px;padding:22px;color:#17304c}dialog::backdrop{background:#17304c77}dialog h2{margin:0;font-size:24px;color:var(--blue)}dialog h3{font-size:18px;color:var(--blue);margin:18px 0 5px}dialog p,dialog li{font-size:17px;line-height:1.65}dialog .head-row{display:flex;align-items:center;justify-content:space-between;gap:10px}code{font-family:ui-monospace,monospace}
+@media(min-width:1000px) and (max-height:800px){main{padding:10px 20px;gap:7px}h1{font-size:26px}header p{font-size:14px}.event{min-height:58px;padding:7px 12px}#message{font-size:19px}.diagram{height:clamp(260px,38vh,380px)}button,select{min-height:35px;padding:5px 10px}.letters{font-size:23px;min-height:30px}.result{font-size:16px}footer{font-size:12px}}
+@media(max-width:700px){main{padding:12px;gap:12px}h1{font-size:25px}.push{margin-left:0}.event{grid-template-columns:72px 1fr;gap:6px}#step{font-size:21px}#message{font-size:18px}.diagram{height:330px}.readout{grid-template-columns:1fr 1fr;gap:12px}.readout section:last-child{grid-column:1/-1}.settings{gap:8px}.input-row input{width:165px}button,select{min-height:44px}.key{width:44px}.legend{font-size:13px;gap:10px}}
+.legend #signalReadout:before{display:none}.mobile-hint{display:none}@media(max-width:700px){.mobile-hint{display:block;padding:0 14px 8px;font-size:14px;color:var(--muted)}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+</style>
+</head>
+<body><main>
+<header><h1>Enigma原理：会变化的字母替换</h1><p>先预测，再沿电流走一圈。<strong>四字母教学模型</strong>：A、B、C、D；每次按键先推进转子，再接通电路。</p></header>
+<div class="settings" aria-label="初始设置">
+ <span>初始位置</span><label>转子1<select id="initial0" aria-label="转子1初始位置"></select></label><label>转子2<select id="initial1" aria-label="转子2初始位置"></select></label><label>转子3<select id="initial2" aria-label="转子3初始位置"></select></label>
+ <label>接线板<select id="plug"><option value="ab">A↔B，C/D直通</option><option value="none">全部直通</option><option value="pairs">A↔D，B↔C</option></select></label>
+ <label><input type="checkbox" id="freeze">冻结转子（对照）</label><span class="muted">更改设置会清空记录</span>
+</div>
+<div class="input-row">
+ <div class="keys" aria-label="字母键盘"><button class="key" data-key="A" aria-label="按下A">A</button><button class="key" data-key="B" aria-label="按下B">B</button><button class="key" data-key="C" aria-label="按下C">C</button><button class="key" data-key="D" aria-label="按下D">D</button></div>
+ <label>连续输入<input id="input" value="AAAA" maxlength="64" spellcheck="false" autocapitalize="characters" aria-label="连续输入A至D，最多32个字母"></label><button id="load">载入输入</button><button id="decrypt">用输出验证解密</button>
+ <button id="helpOpen" class="push">课堂说明</button><button id="fullscreen">全屏</button>
+</div>
+<div class="tools"><button id="next" class="primary">单步 →</button><button id="play">播放</button><button id="finish">完成本次按键</button><button id="reset">恢复初始设置</button><label>速度<select id="speed"><option value="850">慢</option><option value="450" selected>中</option><option value="120">快</option></select></label><span class="window-label">当前窗口：<span id="windows"></span></span></div>
+<div class="event" aria-live="polite"><div id="step">就绪</div><div id="message"></div></div>
+<section class="diagram-wrap" aria-label="Enigma电路"><svg id="circuit" class="diagram" viewBox="0 0 1050 340" role="img" aria-labelledby="circuitTitle circuitDesc"><title id="circuitTitle">四字母转子密码电路</title><desc id="circuitDesc">信号经过接线板、三个转子、反射器，再反向经过三个转子和接线板，点亮输出字母。蓝色实线表示去程，橙色虚线表示回程。</desc></svg><p class="mobile-hint">横向滑动查看完整电路。</p><div class="legend"><span>去程：键盘到反射器</span><span class="reverse">回程：反射器到灯板</span><span id="signalReadout">结果在灯板步骤揭示</span></div></section>
+<div class="readout"><section><h2>已完成的输入</h2><div id="plain" class="letters">—</div></section><section><h2>已完成的输出</h2><div id="cipher" class="letters">—</div></section><section><h2>灯板 · 本次输出</h2><div class="lamps" id="lamps" aria-label="输出灯板"><span class="lamp" data-lamp="A">A</span><span class="lamp" data-lamp="B">B</span><span class="lamp" data-lamp="C">C</span><span class="lamp" data-lamp="D">D</span></div></section></div>
+<p class="result" id="result" aria-live="polite"></p>
+<details><summary id="recordSummary">逐次记录（0次）</summary><div class="table-wrap"><table><thead><tr><th>按键</th><th>输入</th><th>按键前位置</th><th>本次电路位置</th><th>输出</th></tr></thead><tbody id="history"></tbody></table></div></details>
+<footer>配合Slide11 P19。接线与四进制进位为教学构造；真实Enigma使用26个字母，具有更复杂的进位机制。<a href="./">演示目录</a></footer>
+<dialog id="help"><div class="head-row"><h2>3分钟课堂演示</h2><button id="helpClose">关闭</button></div>
+<h3>① 追踪一次按键</h3><p>按A，先请学生预测，再用“单步”推进：转子步进、接线板、三个转子、反射器、反向返回、灯板。输出只在最后一步记录。</p>
+<h3>② 对比固定与变化的替换</h3><p>用默认设置载入AAAA并播放，输出为BDBC。勾选“冻结转子”后重新载入AAAA，输出为DDDD。关注的是映射随状态变化，而不是每一次输出都必须不同。</p>
+<h3>③ 验证解密</h3><p>完成一串输入后，点击“用输出验证解密”。模型自动恢复同一初始设置，把刚才的输出作为新输入；再播放，观察是否还原原消息。直接从发送结束时的位置继续，通常无法还原。</p>
+<h3>部件的作用</h3><p>接线板成对交换字母；转子内部接线给出替换，位置改变会改变外部映射；反射器把线路成对连接并送回。回程沿转子接线的逆向映射，随后再次通过接线板。相同设置与相同步进使加密、解密使用同一操作。</p>
+<h3>模型边界</h3><p>模型在每次通电前先推进转子1，每4次向转子2进位，每16次向转子3进位。它不模拟真实Enigma的26字母接线、环位或双步进。冻结模式完全不推进转子，用作固定替换对照。</p>
+<p>本模型转子正向接线依次为BDAC、CADB、DBAC；反射器为A↔D、B↔C。初始位置与接线板改变属于密钥设置；机器的连接规则可以公开。</p>
+<p>电路原理参考：Ostwald &amp; Weierud，<a href="https://www.cryptomuseum.com/crypto/enigma/ukwd/files/hmce-ukwd.pdf" target="_blank" rel="noopener noreferrer">History and Modern Cryptanalysis of Enigma’s Pluggable Reflector</a>。本模型接线由课程演示构造。</p></dialog>
+<script id="enigma-model">
+/* Pure model: positions [R1,R2,R3], with R1 nearest the plugboard. */
+const EnigmaModel=(()=>{
+ const ABC='ABCD',rotors=[[1,3,0,2],[2,0,3,1],[3,1,0,2]],reflector=[3,2,1,0],plugs={ab:[1,0,2,3],none:[0,1,2,3],pairs:[3,2,1,0]};
+ const mod=x=>(x%4+4)%4;
+ function validate(config){if(!config||!Array.isArray(config.initial)||config.initial.length!==3||config.initial.some(x=>!Number.isInteger(x)||x<0||x>3)||!Object.hasOwn(plugs,config.plug)||typeof config.freeze!=='boolean')throw Error('无效的机器设置');}
+ function advance(before,frozen=false){const p=before.slice();if(!frozen){p[0]=mod(p[0]+1);if(p[0]===0){p[1]=mod(p[1]+1);if(p[1]===0)p[2]=mod(p[2]+1);}}return p;}
+ function forward(i,p,rotor){return mod(rotor[mod(i+p)]-p);}
+ function reverse(i,p,rotor){return mod(rotor.indexOf(mod(i+p))-p);}
+ function trace(letter,before,config){
+  validate(config);if(!ABC.includes(letter)||letter.length!==1)throw Error('只支持A、B、C、D');if(!Array.isArray(before)||before.length!==3||before.some(x=>!Number.isInteger(x)||x<0||x>3))throw Error('无效的转子位置');
+  const after=advance(before,config.freeze),plug=plugs[config.plug],input=ABC.indexOf(letter),values=[input];let x=plug[input];values.push(x);
+  for(let i=0;i<3;i++){x=forward(x,after[i],rotors[i]);values.push(x);}
+  x=reflector[x];values.push(x);
+  for(let i=2;i>=0;i--){x=reverse(x,after[i],rotors[i]);values.push(x);}
+  x=plug[x];values.push(x);
+  return {input:letter,output:ABC[x],before:before.slice(),after,values};
+ }
+ function normalize(value){const s=value.toUpperCase().replace(/\s/g,'');if(!/^[ABCD]{1,32}$/.test(s))throw Error('请输入1–32个A、B、C、D；空格可作分隔。');return s;}
+ function transform(value,config){validate(config);const s=normalize(value),records=[];let p=config.initial.slice();for(const letter of s){const t=trace(letter,p,config);records.push(t);p=t.after;}return {output:records.map(r=>r.output).join(''),records,positions:p};}
+ return {ABC,rotors,reflector,plugs,mod,validate,advance,forward,reverse,trace,normalize,transform};
+})();
+if(typeof module!=='undefined')module.exports=EnigmaModel;
+</script>
+<script>
+(()=>{
+ const E=EnigmaModel,$=id=>document.getElementById(id),svgNS='http://www.w3.org/2000/svg';
+ let records=[],active=null,phase=0,queue=[],playing=false,timer=null,expected=null,notice='按一个字母，或载入AAAA。先预测输出，再单步观察。';
+ const ys=[95,157,219,281],ports=[65,150,230,315,415,500,600,685,785,895];
+ const format=p=>p.map(x=>E.ABC[x]).join(' · ');
+ for(let i=0;i<3;i++)for(let j=0;j<4;j++){$('initial'+i).add(new Option(E.ABC[j],String(j)));}
+ function config(){return {initial:[0,1,2].map(i=>Number($('initial'+i).value)),plug:$('plug').value,freeze:$('freeze').checked};}
+ function positions(){return active&&phase>=1?active.after:(records.length?records[records.length-1].after:config().initial);}
+ function stop(){playing=false;clearTimeout(timer);timer=null;}
+ function reset(message='已恢复初始设置。请先选择一个输入字母。'){stop();records=[];active=null;phase=0;queue=[];expected=null;notice=message;draw();}
+ function start(letter){const p=records.length?records[records.length-1].after:config().initial;active=E.trace(letter,p,config());phase=0;notice='';}
+ function load(value,target=null){let s;try{s=E.normalize(value);}catch(error){stop();notice=error.message;draw();return false;}reset('');expected=target;queue=[...s];start(queue.shift());draw();return true;}
+ function pending(){return Boolean(active&&phase<11)||queue.length>0;}
+ function next(){
+  if(!active||phase===11){if(!queue.length){stop();draw();return;}start(queue.shift());}
+  else{phase++;if(phase===11)records.push(active);}
+  if(!pending())stop();draw();
+ }
+ function tick(){if(!playing)return;next();if(playing)timer=setTimeout(tick,Number($('speed').value));}
+ function sEl(tag,attrs={},text=''){const e=document.createElementNS(svgNS,tag);for(const [k,v] of Object.entries(attrs))e.setAttribute(k,v);if(text)e.textContent=text;return e;}
+ function path(d,attrs={}){return sEl('path',{d,fill:'none',...attrs});}
+ const pt=(x,i)=>`${x} ${ys[i]}`;
+ const straight=(x1,i1,x2,i2)=>`M ${pt(x1,i1)} L ${pt(x2,i2)}`;
+ function reflectorPath(i){const j=E.reflector[i],turn=Math.min(i,j)===0?1018:984;return `M ${pt(895,i)} H ${turn} V ${ys[j]} H 895`;}
+ function circuit(){
+  const svg=$('circuit'),p=positions(),v=active?active.values:null;svg.replaceChildren(sEl('title',{id:'circuitTitle'},'四字母转子密码电路'),sEl('desc',{id:'circuitDesc'},'输入依次经过接线板、转子1至3、反射器，再反向返回接线板和灯板。蓝色实线为去程，橙色虚线为回程。'));
+  const defs=sEl('defs');for(const [name,color] of [['go','#004098'],['back','#a65308']]){const m=sEl('marker',{id:name,viewBox:'0 0 10 10',refX:9,refY:5,markerWidth:5,markerHeight:5,orient:'auto-start-reverse'});m.append(path('M 1 1 L 9 5 L 1 9 Z',{fill:color,stroke:color}));defs.append(m);}svg.append(defs);
+  const headings=[['键盘／灯板',65,'输入与显示'],['接线板',190,'成对交换'],['转子1',365,''],['转子2',550,''],['转子3',735,''],['反射器',950,'成对连接并折返']];
+  for(const [title,x,sub] of headings){svg.append(sEl('text',{x,y:30,'text-anchor':'middle',class:'head'},title));if(sub)svg.append(sEl('text',{x,y:56,'text-anchor':'middle',class:'sub'},sub));}
+  for(const [j,l,r] of [[0,315,415],[1,500,600],[2,685,785]]){svg.append(sEl('rect',{x:l-18,y:82,width:r-l+36,height:225,rx:6,class:'component'}),sEl('rect',{x:(l+r)/2-26,y:45,width:52,height:30,rx:3,class:'position'}),sEl('text',{x:(l+r)/2,y:67,'text-anchor':'middle'},E.ABC[p[j]]));}
+  svg.append(sEl('rect',{x:132,y:82,width:116,height:225,rx:6,class:'component'}),sEl('rect',{x:877,y:82,width:160,height:225,rx:6,class:'component'}));
+  for(let i=0;i<4;i++){
+   for(const [a,b] of [[65,150],[230,315],[415,500],[600,685],[785,895]])svg.append(path(straight(a,i,b,i),{class:'wire'}));
+   svg.append(path(straight(150,i,230,E.plugs[config().plug][i]),{class:'wire'}));
+   for(const [j,l,r] of [[0,315,415],[1,500,600],[2,685,785]])svg.append(path(straight(l,i,r,E.forward(i,p[j],E.rotors[j])),{class:'wire'}));
+  }
+  for(const i of [0,1])svg.append(path(reflectorPath(i),{class:'wire'}));
+  const routes=v?[
+   '', '',`${straight(65,v[0],150,v[0])} L ${pt(230,v[1])}`,
+   `${straight(230,v[1],315,v[1])} L ${pt(415,v[2])}`,
+   `${straight(415,v[2],500,v[2])} L ${pt(600,v[3])}`,
+   `${straight(600,v[3],685,v[3])} L ${pt(785,v[4])}`,
+   `${straight(785,v[4],895,v[4])} ${reflectorPath(v[4])}`,
+   `${straight(895,v[5],785,v[5])} L ${pt(685,v[6])}`,
+   `${straight(685,v[6],600,v[6])} L ${pt(500,v[7])}`,
+   `${straight(500,v[7],415,v[7])} L ${pt(315,v[8])}`,
+   `${straight(315,v[8],230,v[8])} L ${pt(150,v[9])} L ${pt(65,v[9])}`
+  ]:[];
+  for(let i=2;i<=Math.min(phase,10)&&active;i++){const back=i>=7;svg.append(path(routes[i],{class:'highlight'+(i===phase?' active':''),stroke:back?'#a65308':'#004098','stroke-dasharray':back?'8 5':'none','marker-end':`url(#${back?'back':'go'})`,opacity:i===phase?1:.72}));}
+  for(const x of ports)for(let i=0;i<4;i++){const input=x===65&&active&&active.values[0]===i,output=x===65&&active&&phase===11&&active.values[9]===i;svg.append(sEl('circle',{cx:x,cy:ys[i],r:x===65?20:11,class:output?'output-port':input?'input-port':'contact'}),sEl('text',{x,y:ys[i]+6,'text-anchor':'middle',style:`font-size:${x===65?21:18}px`},E.ABC[i]));}
+  svg.append(sEl('text',{x:535,y:330,'text-anchor':'middle',class:'sub'},phase===0?'先预测：按下后哪些转子会移动，哪个灯会亮？':`本次电路窗口：${format(p)}${config().freeze?'（冻结）':''}`));
+ }
+ function message(){
+  if(notice)return notice;if(!active)return '先按一个字母，或载入一串输入。';const v=active.values,L=i=>E.ABC[v[i]],frozen=config().freeze;
+  return [
+   `已按 ${active.input}。先预测输出；下一步${frozen?'保持转子位置':'推进转子，再接通电路'}。`,
+   frozen?`冻结对照：窗口保持 ${format(active.after)}，替换规则固定。`:`转子步进：${format(active.before)} → ${format(active.after)}。电流尚未通过。`,
+   `接线板输入：${L(0)} → ${L(1)}。按当前成对连接交换字母。`,
+   `转子1正向：${L(1)} → ${L(2)}，窗口为 ${E.ABC[active.after[0]]}。`,
+   `转子2正向：${L(2)} → ${L(3)}，窗口为 ${E.ABC[active.after[1]]}。`,
+   `转子3正向：${L(3)} → ${L(4)}，窗口为 ${E.ABC[active.after[2]]}。`,
+   `反射器：${L(4)} → ${L(5)}。连接到另一条线路，准备折返。`,
+   `转子3反向：${L(5)} → ${L(6)}。沿同一接线反向通过。`,
+   `转子2反向：${L(6)} → ${L(7)}。回程使用逆向映射。`,
+   `转子1反向：${L(7)} → ${L(8)}。窗口在本次通电中保持不变。`,
+   `再次经过接线板：${L(8)} → ${L(9)}。下一步点亮灯板。`,
+   `灯板 ${active.output} 点亮：输入 ${active.input} → 输出 ${active.output}，已记入记录。`
+  ][phase];
+ }
+ function draw(){
+  $('message').textContent=message();$('step').textContent=active?`${phase} / 11`:'就绪';$('windows').textContent=format(positions());
+  $('next').disabled=!pending();$('finish').disabled=!active||phase===11;$('play').disabled=!pending();$('play').textContent=playing?'暂停':'播放';
+  document.querySelectorAll('[data-key]').forEach(b=>b.disabled=Boolean(active&&phase<11)||queue.length>0||records.length>=32);
+  $('decrypt').disabled=!records.length||pending();$('plain').textContent=records.map(r=>r.input).join('')||'—';$('cipher').textContent=records.map(r=>r.output).join('')||'—';
+  document.querySelectorAll('[data-lamp]').forEach(l=>{const lit=active&&phase===11&&l.dataset.lamp===active.output;l.classList.toggle('lit',Boolean(lit));l.setAttribute('aria-label',l.dataset.lamp+(lit?'灯已点亮':'灯未点亮'));});
+  $('signalReadout').textContent=active&&phase===11?`本次：${active.input} → ${active.output}`:'结果在灯板步骤揭示';
+  if(expected&&records.length&&!pending()){$('result').textContent=$('cipher').textContent===expected?`还原成功：${expected}。同一初始设置、同一步进序列。`:'还原不一致，请检查设置。';}
+  else $('result').textContent=queue.length?`待输入：${queue.join('')}（${queue.length}个）`:(records.length&&!pending()?'可继续按键，或点击“用输出验证解密”。':'先预测输出，再单步；可用“完成本次按键”直接查看这一字符的完整路径。');
+  $('recordSummary').textContent=`逐次记录（${records.length}次）`;
+  $('history').replaceChildren(...records.map((r,i)=>{const tr=document.createElement('tr');for(const value of [i+1,r.input,format(r.before),format(r.after),r.output]){const td=document.createElement('td');td.textContent=value;tr.append(td);}return tr;}));
+  circuit();
+ }
+ document.querySelectorAll('[data-key]').forEach(b=>b.addEventListener('click',()=>{stop();expected=null;start(b.dataset.key);draw();}));
+ $('load').addEventListener('click',()=>load($('input').value));$('input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.isComposing)load($('input').value);});
+ $('next').addEventListener('click',()=>{stop();notice='';next();});
+ $('play').addEventListener('click',()=>{if(playing){stop();draw();}else if(pending()){notice='';playing=true;tick();}});
+ $('finish').addEventListener('click',()=>{stop();notice='';if(active&&phase<11){phase=11;records.push(active);}draw();});
+ $('reset').addEventListener('click',()=>reset());
+ for(const id of ['initial0','initial1','initial2','plug','freeze'])$(id).addEventListener('change',()=>reset('设置已更改，记录已清空。下一次按键将从这些初始设置开始。'));
+ $('decrypt').addEventListener('click',()=>{const cipher=records.map(r=>r.output).join(''),plain=records.map(r=>r.input).join('');$('input').value=cipher;load(cipher,plain);});
+ $('helpOpen').addEventListener('click',()=>{stop();draw();$('help').showModal();});$('helpClose').addEventListener('click',()=>$('help').close());
+ $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{notice='当前浏览器未允许全屏，可使用浏览器自身的全屏功能。';draw();}});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){stop();draw();}});
+ document.addEventListener('keydown',e=>{if(e.isComposing||e.ctrlKey||e.metaKey||e.altKey||$('help').open||['INPUT','SELECT','TEXTAREA','BUTTON'].includes(e.target.tagName))return;const key=e.key.toUpperCase();if(/^[ABCD]$/.test(key)&&!(active&&phase<11)&&!queue.length&&records.length<32){e.preventDefault();expected=null;start(key);draw();}});
+ draw();
+})();
+</script></main></body></html>

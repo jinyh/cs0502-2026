@@ -48,10 +48,12 @@ def execute_clone_update(course_root, monkeypatch, git_path=None, clone_package=
 
 def test_html_visualizations_are_self_contained_and_prediction_first():
     html_files = sorted(VISUALIZATIONS.glob("*.html"))
-    assert len(html_files) == 9
+    assert len(html_files) == 12
     for path in html_files:
         text = path.read_text(encoding="utf-8")
-        assert "先预测" in text, path
+        # These two existing execution-trace demos use step-by-step prompts instead.
+        if path.name not in {"round_robin.html", "shared_counter.html"}:
+            assert "先预测" in text, path
         assert "aria-live" in text or "aria-label" in text, path
         assert not re.search(r"<(script|link)[^>]+(?:src|href)=['\"]https?://", text), path
 

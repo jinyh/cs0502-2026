@@ -4,7 +4,7 @@
 
 - `examples/`：18 个概念演示；文件名前缀是主要讲次或兼容 legacy 编号，精确关系见 `docs/curriculum/lecture-card-map.yaml`。
 - `labs/`：8 个形成性核心实验，每个目录包含任务说明、`starter.py` 和公开测试；它们不自动等于正式作业。
-- `visualizations/`：9 个自包含 HTML 页面，打开后先完成页面顶部的预测任务。
+- `visualizations/`：12 个自包含 HTML 页面，打开后先完成页面顶部的预测任务。
 - `runner.py`：课程代码执行护栏，运行 example，并初始化、测试学生 Lab 副本。
 - `progress.py`：匿名本地学习进度工具，只写 `student-work/progress.json`。
 
@@ -87,7 +87,7 @@ test_lab("lab-02-graph")
 - `test_lab.py` 是只读公开测试，用来快速验证接口和代表性行为；通过公开测试不等于覆盖所有边界，最后还要解释复杂度和自行设计新输入。
 - 学生只修改 `student-work/labs/<lab-id>/solution.py`。OpenCode 使用 `/lab <lab-id>`，一次只定位第一个根因。
 
-8 个 Lab 的任务、默认性质与公开作业关联见 [`labs/README.md`](labs/README.md) 和 [`labs/catalog.json`](labs/catalog.json)。9 个交互页面及打开方式见 [`visualizations/README.md`](visualizations/README.md)。
+8 个 Lab 的任务、默认性质与公开作业关联见 [`labs/README.md`](labs/README.md) 和 [`labs/catalog.json`](labs/catalog.json)。12 个交互页面及打开方式见 [`visualizations/README.md`](visualizations/README.md)。
 
 ## 仓库检查
 
