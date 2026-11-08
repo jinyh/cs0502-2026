@@ -16,7 +16,7 @@ labs: []
 figures: [12-public-key-signature.svg]
 related_cards: [ai-security, responsible-ai-systems, 10-software-engineering, 11-computer-network]
 related_deep: [quantum-computing]
-related_visualizations: [enigma]
+related_visualizations: [enigma, rsa]
 last_reviewed: 2026-08-21
 ---
 
@@ -71,6 +71,7 @@ last_reviewed: 2026-08-21
 
 ## 主动学习与考核迁移
 
+- [RSA分步演示](../../code/visualizations/rsa.html)：追踪密钥生成、公开公钥、加密与解密，验证4→16→4；再改变明文并用公开信息破解小整数例子。区分运算正确性与实际安全性，配合2026版Slide11 P24–26。
 - [Enigma四字母原理演示](../../code/visualizations/enigma.html)：先预测连续输入AAAA的输出，再比较转子步进与冻结两种情况；恢复相同初始设置，输入密文验证还原。四字母接线和进位均为教学简化，配合2026版Slide11 P19。
 
 1. 分析实验室仪器远程控制的 CIA 优先级。

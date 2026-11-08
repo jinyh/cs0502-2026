@@ -1,0 +1,108 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'">
+<title>RSA：公开的钥匙，秘密的还原｜CS0502</title>
+<style>
+:root{font-family:'PingFang SC','Microsoft YaHei',sans-serif;color:#17304c;background:#f4f7fa;--blue:#004098;--muted:#526980;--line:#cad6e2;--orange:#99500a;--green:#17614b}*{box-sizing:border-box}body{margin:0}main{max-width:1380px;margin:auto;padding:20px 26px;display:flex;flex-direction:column;gap:16px;min-height:100dvh}h1{font-size:30px;color:var(--blue);margin:0}h2,h3,p{margin:0}header p{margin-top:6px;line-height:1.6}button,input{font:inherit}button{min-height:42px;padding:8px 14px;border:1px solid #aabbd0;border-radius:6px;background:white;color:#173b68;cursor:pointer}button.primary{background:var(--blue);color:white;border-color:var(--blue)}button:disabled{opacity:.45;cursor:default}button:focus-visible,input:focus-visible,summary:focus-visible,a:focus-visible{outline:3px solid #b46612;outline-offset:3px}input{min-height:42px;width:90px;padding:6px 10px;border:1px solid #aabbd0;border-radius:5px;background:white;color:#17304c}.toolbar,.message-input,.controls,.topline{display:flex;flex-wrap:wrap;gap:10px;align-items:center}.toolbar{justify-content:space-between}.message-input label{display:flex;gap:8px;align-items:center}.muted{color:var(--muted);font-size:14px}.steps{display:flex;gap:6px;list-style:none;padding:0;margin:0}.steps li{flex:1;padding:9px 8px;background:#e7edf3;color:var(--muted);text-align:center;border-radius:4px;font-size:15px}.steps li.active{background:#d9e7fb;color:var(--blue);font-weight:600}.steps li.done{background:#e1ede8;color:var(--green)}.event{background:#e8eff9;border-left:5px solid var(--blue);padding:14px 18px;display:grid;grid-template-columns:105px 1fr;gap:16px;align-items:center;min-height:104px}#stepLabel{font-size:22px;font-weight:600;color:var(--blue)}#explanation{font-size:20px;line-height:1.55}#formula{font-size:26px;line-height:1.5;color:var(--blue);font-family:ui-monospace,'PingFang SC',monospace;overflow-wrap:anywhere}.scene{display:grid;grid-template-columns:1fr .9fr 1fr;gap:20px}.person,.channel{min-width:0;display:flex;flex-direction:column;gap:12px}.person h2,.channel h2{font-size:21px;color:var(--blue)}.role{font-size:14px;color:var(--muted);margin-top:3px}.zone{background:white;padding:16px;border:1px solid var(--line);border-radius:7px;min-height:117px;display:flex;flex-direction:column;gap:8px}.zone h3{font-size:15px;font-weight:400;color:var(--muted)}.zone.public{border-top:4px solid var(--blue)}.zone.secret{border-top:4px solid var(--orange);background:#fffaf2}.zone.message{min-height:106px}.big{font-size:27px;font-weight:600;font-variant-numeric:tabular-nums;line-height:1.4;overflow-wrap:anywhere}.small-values{font-size:18px;line-height:1.7;font-variant-numeric:tabular-nums}.waiting{color:var(--muted);font-size:16px;font-weight:400}.channel .zone{background:#edf3f9}.channel .route{color:var(--muted);font-size:14px}.packet{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.packet .arrow{font-size:25px;color:var(--blue)}.active-zone{box-shadow:0 0 0 3px #00409835}.meaning{min-height:28px;font-size:17px;line-height:1.6;color:var(--green)}.lower{display:flex;flex-wrap:wrap;gap:18px;align-items:flex-start}.lower>details{flex:1;min-width:250px}summary{cursor:pointer;color:var(--blue);font-size:16px;line-height:1.6}.detail-body{padding-top:10px;line-height:1.65}.detail-body p+p{margin-top:8px}table{border-collapse:collapse;width:100%;font-size:15px}th,td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:left}th{font-weight:500;color:var(--muted)}#attackStatus{margin:10px 0;font-size:17px;line-height:1.7}#attackPublic{margin-bottom:8px}.attack-actions{display:flex;gap:8px;flex-wrap:wrap}.error{color:#9c2525;min-height:20px;font-size:15px}footer{margin-top:auto;font-size:13px;line-height:1.7;color:var(--muted)}a{color:var(--blue)}dialog{width:min(760px,92vw);max-height:90dvh;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:24px;color:#17304c}dialog::backdrop{background:#17304c77}dialog h2{font-size:23px;color:var(--blue)}dialog h3{margin:16px 0 5px;font-size:18px;color:var(--blue)}dialog p{font-size:17px;line-height:1.7}.topline{justify-content:space-between}code{font-family:ui-monospace,monospace}@media(max-width:760px){main{padding:15px;gap:13px}h1{font-size:25px}.scene{grid-template-columns:1fr}.channel{order:2}.person:last-child{order:3}.zone{min-height:88px}.event{grid-template-columns:1fr;gap:5px;min-height:125px}#stepLabel{font-size:18px}#explanation{font-size:18px}#formula{font-size:22px}.steps{flex-wrap:wrap}.steps li{flex:1 1 40%;text-align:left}.toolbar{align-items:flex-start}.message-input{gap:8px}.big{font-size:25px}button{min-height:44px}.controls{gap:7px}.lower>details{min-width:0;flex-basis:100%}}@media(min-width:761px) and (max-height:800px){main{padding:12px 22px;gap:10px}h1{font-size:26px}.zone{min-height:96px;padding:12px}.scene{gap:16px}.event{min-height:90px;padding:10px 15px}#explanation{font-size:18px}#formula{font-size:23px}.big{font-size:24px}.person,.channel{gap:9px}header p{font-size:14px}}@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.event{grid-template-columns:130px 1fr}.error:empty{display:none}@media(max-width:760px){.event{grid-template-columns:1fr}}
+</style>
+</head>
+<body><main>
+<header><h1>RSA：公开的钥匙，秘密的还原</h1><p>先预测，再逐步验证。Alice 给 Bob 发消息：谁生成密钥？哪些数字公开？谁能还原？</p></header>
+<div class="toolbar"><form id="messageForm" class="message-input" novalidate><label for="messageInput">明文数字 m<input id="messageInput" type="number" min="0" max="32" step="1" value="4" required></label><button type="submit" id="apply">应用明文</button><span class="muted">整数 0–32；应用后从加密前开始</span></form><div class="controls"><button id="helpOpen">课堂说明</button><button id="fullscreen">全屏</button></div></div>
+<div id="inputError" class="error" role="alert"></div>
+<ol class="steps" aria-label="演示阶段"><li data-phase="0">① Bob 生成密钥</li><li data-phase="1">② Alice 加密</li><li data-phase="2">③ 公开信道传输</li><li data-phase="3">④ Bob 解密</li></ol>
+<div class="controls"><button id="previous">← 上一步</button><button class="primary" id="next">下一步 →</button><button id="reset">从头演示</button><span class="muted" id="progress"></span></div>
+<section class="event" aria-live="polite" aria-atomic="true"><div id="stepLabel"></div><div><p id="explanation"></p><p id="formula"></p></div></section>
+<div class="scene" aria-label="Alice、公开信道与Bob之间的信息分工">
+ <section class="person"><div><h2>Alice · 发送者</h2><p class="role">使用 Bob 的公钥加密</p></div><div class="zone public" id="aliceKeyZone"><h3>收到的公开钥匙</h3><div id="aliceKey" class="big"></div><p class="muted">Alice 不需要 Bob 的秘密指数 d</p></div><div class="zone message" id="aliceMessageZone"><h3>准备发送的明文</h3><div id="aliceMessage" class="big"></div><p id="aliceOperation" class="small-values"></p></div></section>
+ <section class="channel"><div><h2>公开信道</h2><p class="role">旁观者也能看到这里的信息</p></div><div class="zone" id="publicZone"><h3>Bob → Alice · 公开公钥</h3><div id="publicKey" class="big"></div><p class="muted">公钥归属必须核验</p></div><div class="zone message" id="cipherZone"><h3>Alice → Bob · 传输密文</h3><div class="packet"><span class="arrow" aria-hidden="true">→</span><span id="cipherPacket" class="big"></span><span class="arrow" aria-hidden="true">→</span></div><p class="route" id="channelNote"></p></div></section>
+ <section class="person"><div><h2>Bob · 接收者</h2><p class="role">生成密钥并保管秘密参数</p></div><div class="zone secret" id="bobSecretZone"><h3>Bob 保管 · 教学视图展开显示</h3><div id="bobSecret" class="small-values"></div></div><div class="zone message" id="bobMessageZone"><h3>接收与还原</h3><div id="bobMessage" class="big"></div><p id="bobOperation" class="small-values"></p></div></section>
+</div>
+<p class="meaning" id="meaning" aria-live="polite"></p>
+<div class="lower"><details id="arithmetic"><summary>展开本次幂运算：逐次相乘取余</summary><div class="detail-body"><p id="arithmeticNote"></p><table id="arithmeticTable" hidden><thead><tr><th>次数</th><th>运算</th><th>当前余数</th></tr></thead><tbody id="arithmeticRows"></tbody></table></div></details>
+<details id="attack"><summary>攻击者视角：这个小整数为什么容易破解？</summary><div class="detail-body"><p id="attackPublic"></p><div class="attack-actions"><button id="attackNext">分解公开的 n</button><button id="attackReset">重新观察</button></div><div id="attackStatus" aria-live="polite"></div><p class="muted">只使用公开的 n、e 和密文计算。教学参数可轻易分解；真实 RSA 使用大参数和标准加密方案。</p></div></details></div>
+<footer>配合 2026 版 Slide11 P24–26。小整数与直接幂运算只演示数学核心；真实 RSA 加密还需标准编码与填充。公钥加密本身不能证明发送者身份。<a href="https://www.rfc-editor.org/rfc/rfc8017.html" target="_blank" rel="noopener noreferrer">原理与标准：RFC 8017</a> · <a href="./">演示目录</a> · <a href="enigma.html">Enigma 演示</a></footer>
+<dialog id="help"><div class="topline"><h2>RSA 课堂讲法</h2><button id="helpClose">关闭</button></div><h3>① 造出一对配套的钥匙</h3><p>从头单步推进。Bob 选 p=3、q=11，计算 n=33、φ(n)=20。选择 e=7，再找 d=3，使 7×3=21，除以20余1。这是模逆元，不是普通倒数。</p><h3>② 让学生先预测</h3><p>Bob 公开 (e,n)=(7,33)，保管秘密指数3以及素数p、q。Alice 用 Bob 的公钥把4变成16；信道传的是16。Bob 再用自己的私钥把16还原成4。结果在相应步骤才揭示。</p><h3>③ 换一个数字检验</h3><p>输入0–32之间的整数，点击“应用明文”，复用同一对密钥。输入范围是本例的合法消息代表值；0、1或其他数字可能加密后数值不变，仍可正确还原。文字等数据需先编码，本例不演示实际消息编码。</p><h3>④ 看清正确性与安全性的区别</h3><p>完成密文传输后，展开攻击者视角：分解公开的33，重建φ(n)与秘密指数，再还原消息。这说明小整数例子没有实际保密能力。分解n能帮助求私钥，但不把RSA反演与整数分解说成已证明完全等价。</p><h3>⑤ 接到数字签名</h3><p>问：攻击者也能用 Bob 的公钥加密，Bob 能因此确定发送者是 Alice 吗？不能。来源认证还需要适当的认证机制。公钥本身也须通过证书或可信渠道核验归属。</p><p>“逐次相乘取余”只解释计算结果。实际大指数通常采用快速模幂；选择配套指数可还原的数论证明不在本演示展开。</p></dialog>
+<script id="rsa-model">
+/* Teaching parameters only; UI and tests share this exact arithmetic. */
+const RSAModel=(()=>{
+ const key=Object.freeze({p:3,q:11,n:33,phi:20,e:7,d:3});
+ function integer(value,name,min,max){if(!Number.isSafeInteger(value)||value<min||value>max)throw Error(`${name}必须是${min}–${max}之间的整数`);return value;}
+ function normalize(value){if(typeof value==='string'){if(!/^\d+$/.test(value.trim()))throw Error('请输入0–32之间的整数，不接受小数或科学计数法');value=Number(value.trim());}return integer(value,'明文',0,key.n-1);}
+ function gcd(a,b){integer(a,'a',0,1000000);integer(b,'b',0,1000000);while(b){[a,b]=[b,a%b];}return a;}
+ function inverse(e,phi){integer(e,'指数',1,10000);integer(phi,'模数',2,10000);if(gcd(e,phi)!==1)throw Error('指数与模数不互质，模逆元不存在');for(let d=1;d<phi;d++)if((e*d)%phi===1)return d;throw Error('模逆元不存在');}
+ function powerTrace(base,exponent,modulus){integer(base,'底数',0,10000);integer(exponent,'指数',0,10000);integer(modulus,'模数',2,10000);let remainder=1;const rows=[];for(let i=1;i<=exponent;i++){const previous=remainder;remainder=Number((BigInt(previous)*BigInt(base))%BigInt(modulus));rows.push({step:i,previous,base,remainder});}return {value:remainder,rows};}
+ function transform(value){const m=normalize(value),encryption=powerTrace(m,key.e,key.n),decryption=powerTrace(encryption.value,key.d,key.n);return {m,c:encryption.value,recovered:decryption.value,encryption,decryption};}
+ function factor(n){integer(n,'n',4,10000);for(let p=2;p*p<=n;p++)if(n%p===0)return {p,q:n/p};throw Error('未找到非平凡因子');}
+ function recover(publicKey,cipher){if(!publicKey)throw Error('缺少公钥');const {n,e}=publicKey;integer(n,'n',4,10000);integer(e,'e',1,10000);integer(cipher,'密文',0,n-1);const {p,q}=factor(n),phi=(p-1)*(q-1),d=inverse(e,phi),m=powerTrace(cipher,d,n).value;return {p,q,phi,d,m};}
+ return {key,normalize,gcd,inverse,powerTrace,transform,factor,recover};
+})();
+if(typeof module!=='undefined')module.exports=RSAModel;
+</script>
+<script>
+(()=>{
+ const M=RSAModel,K=M.key,$=id=>document.getElementById(id);
+ let stage=0,message=4,attackStep=0;
+ const steps=[
+ ['起点','Alice 想给 Bob 发秘密消息。先由 Bob 生成密钥。',''],
+ ['选素数','Bob 秘密选两个不同素数，相乘得到模数 n。','p = 3，q = 11；n = p × q = 33'],
+ ['辅助量','知道 p、q，就可以计算生成钥匙所需的 φ(n)。','φ(n) = (3 − 1) × (11 − 1) = 20'],
+ ['选公钥指数','选择与20互质的 e。7与20的最大公因数为1。','e = 7；gcd(7, 20) = 1'],
+ ['配秘密指数','找整数 d，使 e×d 除以20余1。这是模逆元。','d = 3；7 × 3 = 21 = 1 + 20'],
+ ['公开公钥','Bob 公开 (e,n)。Alice 得到公钥，不需要知道秘密指数 d。','公开 (7, 33)；秘密指数 d = 3 留在 Bob 一侧'],
+ ['先预测','Alice 使用 Bob 的公钥加密。请先预测余数，再点下一步。','encrypt'],
+ ['得到密文','Alice 完成运算，得到将要发送的密文。','encrypted'],
+ ['传输','Alice 通过公开信道发送密文。旁观者也能记录这份密文。','transmit'],
+ ['解密预测','Bob 使用自己的秘密指数 d 解密。请先预测能否还原。','decrypt'],
+ ['恢复明文','Bob 得到原来的数字。公钥负责加密，私钥负责解密。','decrypted']
+ ];
+ function waiting(text){return `<span class="waiting">${text}</span>`;}
+ function draw(){
+  const t=M.transform(message),s=steps[stage];
+  $('stepLabel').textContent=s[0];$('explanation').textContent=s[1];
+  const formulas={encrypt:`c = ${t.m}⁷ mod 33 = ？`,encrypted:`c = ${t.m}⁷ mod 33 = ${t.c}`,transmit:`公开公钥 (7, 33)；传输密文 c = ${t.c}`,decrypt:`m = ${t.c}³ mod 33 = ？`,decrypted:`m = ${t.c}³ mod 33 = ${t.recovered}`};
+  $('formula').textContent=formulas[s[2]]??s[2];
+  const phase=stage<=5?0:stage<=7?1:stage===8?2:3;
+  document.querySelectorAll('[data-phase]').forEach(el=>{const p=Number(el.dataset.phase);el.className=p===phase?'active':p<phase?'done':'';});
+  $('progress').textContent=`步骤 ${stage} / 10`;$('previous').disabled=stage===0;$('next').disabled=stage===10;
+  $('aliceKey').innerHTML=stage>=5?'(e, n) = (7, 33)':waiting('等待 Bob 公开公钥');
+  $('publicKey').innerHTML=stage>=5?'(e, n) = (7, 33)':waiting('尚未发布');
+  $('aliceMessage').textContent=`m = ${t.m}`;
+  $('aliceOperation').textContent=stage>=7?`${t.m}⁷ mod 33 = ${t.c}`:stage>=6?`${t.m}⁷ mod 33 = ？`:'等待公钥与加密步骤';
+  $('cipherPacket').innerHTML=stage>=8?`c = ${t.c}`:waiting(stage===7?'待发送':'尚未发送');
+  $('channelNote').textContent=stage>=8?'这里传输的是密文，未传输秘密指数 d':'结果在传输步骤进入信道';
+  const secret=[];if(stage>=1)secret.push('p = 3，q = 11');if(stage>=2)secret.push('φ(n) = 20');if(stage>=3)secret.push(`${stage>=5?'已公开':'拟公开'}：e = 7，n = 33`);if(stage>=4)secret.push('<strong>秘密指数 d = 3</strong>');
+  $('bobSecret').innerHTML=secret.length?secret.join('<br>'):waiting('尚未生成');
+  $('bobMessage').innerHTML=stage>=10?`还原 m = ${t.recovered}`:stage>=8?`收到 c = ${t.c}`:waiting('等待密文');
+  $('bobOperation').textContent=stage>=10?`${t.c}³ mod 33 = ${t.recovered}`:stage>=9?`${t.c}³ mod 33 = ？`:'';
+  const focus=stage<=4?'bobSecretZone':stage===5?'publicZone':stage<=7?'aliceMessageZone':stage===8?'cipherZone':'bobMessageZone';
+  document.querySelectorAll('.zone').forEach(el=>el.classList.toggle('active-zone',el.id===focus));
+  $('meaning').textContent=stage===10?`${t.m} → ${t.c} → ${t.recovered}：完成还原。${t.m===t.c?'本例该数字加密后数值不变；裸RSA只用于理解数学核心。':'想一想：任何人都能用 Bob 公钥加密，能因此证明发送者是 Alice 吗？'}`:stage===4?'记住：7×3不是等于1，而是除以20余1。':stage===5?'公钥可以公开；Alice 还需确认它确实属于 Bob。':'';
+  const trace=stage>=10?t.decryption:stage>=7?t.encryption:null;
+  $('arithmeticNote').textContent=stage>=10?'解密：从余数1开始，每次乘以密文，再除以33取余。':stage>=7?'加密：从余数1开始，每次乘以明文，再除以33取余。':'完成加密步骤后显示本次实际运算。';
+  $('arithmeticTable').hidden=!trace;$('arithmeticRows').replaceChildren();
+  if(trace)for(const row of trace.rows){const tr=document.createElement('tr');for(const value of [row.step,`${row.previous} × ${row.base} mod 33`,row.remainder]){const td=document.createElement('td');td.textContent=value;tr.append(td);}$('arithmeticRows').append(tr);}
+  if(stage<8)attackStep=0;
+  $('attackPublic').textContent=stage>=8?`旁观者获得：n=33，e=7，密文 c=${t.c}。没有收到私钥。`:'待密文进入公开信道后，使用公开信息尝试还原。';
+  $('attackNext').disabled=stage<8||attackStep===3;$('attackReset').disabled=attackStep===0;
+  $('attackNext').textContent=['分解公开的 n','由因子重建秘密指数','使用求出的指数解密','已完成还原'][attackStep];
+  if(!attackStep)$('attackStatus').textContent=stage>=8?'先预测：33能分解成哪两个素数？':'先完成主流程中的密文传输。';
+  else{const a=M.recover({n:K.n,e:K.e},t.c);$('attackStatus').textContent=attackStep===1?`33 = ${a.p} × ${a.q}。这个小模数很容易分解。`:attackStep===2?`φ(33)=(${a.p}−1)×(${a.q}−1)=${a.phi}；找到 d=${a.d}，满足 7×${a.d} mod ${a.phi}=1。`:`用公开信息求出的 d=${a.d}：${t.c}³ mod 33=${a.m}。已恢复明文。`;}
+ }
+ $('next').addEventListener('click',()=>{stage=Math.min(stage+1,10);draw();});
+ $('previous').addEventListener('click',()=>{stage=Math.max(stage-1,0);draw();});
+ $('reset').addEventListener('click',()=>{stage=0;attackStep=0;$('inputError').textContent='';$('messageInput').value=message;$('attack').open=false;$('arithmetic').open=false;draw();});
+ $('messageForm').addEventListener('submit',event=>{event.preventDefault();try{const value=M.normalize($('messageInput').value);message=value;stage=5;attackStep=0;$('inputError').textContent='';$('attack').open=false;draw();}catch(error){$('inputError').textContent=error.message;}});
+ $('attackNext').addEventListener('click',()=>{if(stage>=8){attackStep=Math.min(3,attackStep+1);draw();}});
+ $('attackReset').addEventListener('click',()=>{attackStep=0;draw();});
+ $('helpOpen').addEventListener('click',()=>$('help').showModal());$('helpClose').addEventListener('click',()=>$('help').close());
+ $('fullscreen').addEventListener('click',async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('inputError').textContent='浏览器未启用全屏，可使用浏览器的全屏菜单。';}});
+ document.addEventListener('fullscreenchange',()=>{$('fullscreen').textContent=document.fullscreenElement?'退出全屏':'全屏';});
+ draw();
+})();
+</script>
+</main></body></html>

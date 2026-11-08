@@ -80,6 +80,13 @@
   <a class="module-link" href="code/visualizations/enigma.html">打开 Enigma 交互演示 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide11 · 公钥密码</span>
+  <h2>RSA：公开的钥匙，秘密的还原</h2>
+  <p>逐步生成密钥，观察 Alice 使用 Bob 公钥加密、公开信道传输密文、Bob 使用私钥还原；修改明文并尝试破解小整数例子。</p>
+  <a class="module-link" href="code/visualizations/rsa.html">打开 RSA 交互演示 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">
