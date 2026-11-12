@@ -126,3 +126,23 @@ def test_offline_assets_and_script_syntax():
     if node:
         for script in re.findall(r'<script(?:\s[^>]*)?>(.*?)</script>', html, re.S):
             subprocess.run([node, '--check'], input=script, text=True, check=True, capture_output=True)
+
+
+def test_expanded_topology_shortest_paths_ties_and_switch_isolation():
+    model("""
+const E=PacketRoutingModel.create('expanded');
+assert.equal(E.routers.length,7);assert.equal(E.links.length,12);assert.equal(E.root,'N7');
+assert.deepEqual(E.stageFrames.given.at(-1).path,['S','N1','N3','N2','N5','N4','N6','N7','T']);
+assert.equal(E.stageFrames.given.at(-1).elapsed,35);
+assert.deepEqual(E.stageFrames.new.at(-1).path,['S','N1','N2','N4','N7','T']);
+assert.equal(E.stageFrames.new.at(-1).elapsed,15);
+assert.equal(E.stageFrames.new.at(-1).hops,3);
+// Independent BFS and enumeration of equally short choices.
+const d={N7:0},q=['N7'];for(let i=0;i<q.length;i++)for(const n of E.neighbors(q[i]))if(!(n in d)){d[n]=d[q[i]]+1;q.push(n);}
+assert.deepEqual(E.stageFrames.routing.at(-1).dist,d);
+for(const n of E.routers)if(n!==E.root){assert.ok(E.neighbors(n).includes(E.newTable[n]));assert.equal(d[n],d[E.newTable[n]]+1);}
+assert.ok(E.routing().some(f=>f.message.includes('等长备选路径')));
+assert.deepEqual(E.createState(),M.createState());
+assert.equal(M.root,'N4');assert.equal(M.stageFrames.new.at(-1).elapsed,12);
+assert.throws(()=>PacketRoutingModel.create('unknown'));
+""")
