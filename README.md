@@ -87,6 +87,13 @@
   <a class="module-link" href="code/visualizations/rsa.html">打开 RSA 交互演示 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide12 · 计算机网络</span>
+  <h2>分组转发与路由计算</h2>
+  <p>先按给定表逐跳转发，再用 Dijkstra 生成到目的地的新表，最后重新发送。比较路径、跳数与处理时延，理解路由计算与转发的分工。</p>
+  <a class="module-link" href="code/visualizations/packet_routing.html">打开分组转发交互演示 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">
