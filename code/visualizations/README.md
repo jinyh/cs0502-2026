@@ -4,8 +4,6 @@
 
 ## 直接打开
 
-- [分组转发与路由计算](packet_routing.html)：按给定表逐跳追踪，用Dijkstra生成新表后重新发送；区分路由跳数与处理时延。配合2026版Slide12 P8–10，见[六分钟讲法](packet_routing-guide.md)。
-
 - [RSA：公开的钥匙，秘密的还原](rsa.html)：沿课件参数逐步生成密钥，追踪加密、传输与解密；可修改明文，并用小整数破解对照理解安全边界。配合2026版Slide11 P24–26，见[课堂讲法](rsa-guide.md)。
 - [Enigma原理：会变化的替换](enigma.html)：四字母模型，单步追踪接线板、转子和反射器；冻结对照、连续输入与恢复初始设置后的解密验证。配合2026版Slide11 P19，见[三分钟讲法](enigma-guide.md)。
 - [共享计数与互斥](shared_counter.html)：一屏对照顺序、交错与加锁执行，追踪局部寄存器、共享值与丢失更新。
@@ -31,7 +29,6 @@
 
 | 文件 | 主题 | 对应卡片 | 嵌入方式 |
 |---|---|---|---|
-| [packet_routing.html](packet_routing.html) | 逐跳查表、最短路计算与新表转发 | `11-computer-network`；2026版Slide12 P8–10 | 浏览器直接打开，离线使用 |
 | [rsa.html](rsa.html) | RSA密钥生成、公钥加密与私钥解密 | `12-information-security`；2026版Slide11 P24–26 | 浏览器直接打开，离线使用 |
 | [enigma.html](enigma.html) | 转子密码与可信解密 | `12-information-security`；2026版Slide11 P19 | 浏览器直接打开，离线使用 |
 | [turing_machine.html](turing_machine.html) | 单带逐位翻转与一元加法 | `08-turing-machine` | 浏览器直接打开，离线使用 |
