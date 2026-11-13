@@ -1,0 +1,152 @@
+<!doctype html>
+<html lang="zh-CN"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'"><title>路由器转发模型｜CS0502</title>
+<style>
+
+:root{font-family:'Microsoft YaHei','PingFang SC',sans-serif;color:#17304c;background:#f3f6fa;--blue:#004098;--gold:#fff0d9;--green:#17614b;--line:#cad6e2;--muted:#526980}*{box-sizing:border-box}body{margin:0}main{height:100dvh;max-width:1600px;margin:auto;padding:16px 24px;display:grid;grid-template-rows:auto auto auto minmax(0,1fr) auto auto;gap:10px}h1{font-size:30px;line-height:1.25;color:var(--blue);margin:0}header p{font-size:16px;line-height:1.5;margin:5px 0 0}h2{font-size:22px;line-height:1.3;color:var(--blue);margin:0 0 8px}.controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}button,select{font:inherit;font-size:16px;min-height:38px;padding:7px 11px;border:1px solid #a8bbcf;border-radius:5px;background:#fff;color:#173b68;cursor:pointer}button.primary{background:var(--blue);color:#fff;border-color:var(--blue)}button:disabled{opacity:.4;cursor:default}button:hover:not(:disabled){border-color:var(--blue)}button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{outline:3px solid #b46612;outline-offset:3px}label{display:flex;gap:5px;align-items:center;font-size:15px}input[type=checkbox]{width:17px;height:17px}.step{font-size:14px;color:var(--muted)}#formationOpen{margin-left:auto}.explanation{background:#e7effa;border-left:5px solid var(--blue);padding:9px 14px;min-height:76px}#message{font-size:21px;line-height:1.45;margin:0}#question{font-size:16px;line-height:1.45;color:#8b5400;margin:3px 0 0;min-height:23px}.scene{position:relative;min-height:0;display:grid;grid-template-columns:minmax(0,1.85fr) minmax(350px,1fr);gap:18px}.drawing,.table-area{background:#fff;border:1px solid var(--line);border-radius:6px;min-width:0;min-height:0}.drawing{padding:8px 12px 10px;display:grid;grid-template-rows:minmax(170px,1fr) auto;gap:4px}#graph{width:100%;height:100%;display:block;min-height:0}#leader{position:absolute;width:100%;height:100%;top:0;left:0;pointer-events:none;overflow:visible;z-index:2}.link{stroke:#b2c2d4;stroke-width:3;fill:none}.link.visited{stroke:#19715c;stroke-width:4}.link.output{stroke:var(--blue);stroke-width:5}.device .halo{fill:none;stroke:transparent;stroke-width:3}.device.current .halo{stroke:var(--blue);fill:#00409808}.device.done .halo{stroke:var(--green)}.router-name,.host-name{font-size:30px;font-weight:600;fill:#173b68;text-anchor:middle}.interface{fill:var(--blue);font-size:19px;font-weight:bold;paint-order:stroke;stroke:#fff;stroke-width:5px;stroke-linejoin:round}.interface.chosen{font-size:23px}.moving rect{stroke:#8da7bf;stroke-width:1.5}.moving text{font-size:18px;font-weight:bold;text-anchor:middle}.packet-label{font-size:15px;color:var(--muted);margin:0 0 5px}.packet-label strong{color:var(--blue)}.report{display:flex;border:1px solid #a8bbcf;border-radius:4px;overflow:hidden}.report-head{flex:3;min-width:0;display:grid;grid-template-columns:1fr 1fr .6fr;background:#f1f5fa}.part-title{grid-column:1/-1;text-align:center;border-bottom:1px solid var(--line);font-size:15px;padding:2px;color:var(--blue)}.field{text-align:center;padding:4px 6px;border-right:1px solid var(--line)}.field small{display:block;font-size:13px;color:var(--muted)}.field strong{display:block;font-size:25px;line-height:1.2;color:#173b68}.field.active{background:var(--gold);box-shadow:inset 0 0 0 2px #b66a12}.other{border-right:0;display:flex;align-items:center;justify-content:center;font-size:23px;color:var(--muted)}.report-data{flex:1.4;min-width:90px;background:#e1ede8;color:var(--green);display:grid;grid-template-rows:auto 1fr;text-align:center}.report-data span{font-size:15px;padding:2px;border-bottom:1px solid #c6dcd2}.report-data strong{align-self:center;font-family:monospace;font-size:26px;font-weight:500}.caption{font-size:12px;line-height:1.4;color:var(--muted);margin:4px 0 0}.table-area{position:relative;padding:14px;overflow:auto;z-index:3}.table-note{font-size:14px;line-height:1.4;color:var(--muted);margin:0 0 10px}table{border-collapse:collapse;width:100%;font-size:21px;line-height:1.3}th,td{border:0;border-bottom:1px solid #d7e1eb;text-align:center;padding:7px 6px}th{font-size:16px;font-weight:500;color:var(--muted);background:#eef3fa}td.addr-hit{background:var(--gold);color:#8b4f05;font-weight:bold;box-shadow:inset 0 0 0 2px #b66a12}td.port-hit,td.next-hit{background:#e1ecfc;color:var(--blue);font-weight:bold;box-shadow:inset 0 0 0 2px var(--blue)}#lookup{font-size:17px;line-height:1.5;color:var(--blue);min-height:45px;margin:10px 0 0}#emptyTable{font-size:18px;line-height:1.8;color:var(--muted);border-top:1px solid var(--line);padding-top:20px;margin:12px 0 0}#tableWrap[hidden],#emptyTable[hidden]{display:none}.trace{font-size:17px;line-height:1.4;color:var(--muted);overflow-wrap:anywhere}.trace strong{color:var(--blue)}footer{font-size:12px;color:var(--muted);line-height:1.5;display:flex;gap:8px 16px;flex-wrap:wrap}a{color:var(--blue)}dialog{max-width:850px;width:90vw;max-height:85dvh;overflow:auto;border:1px solid var(--line);border-radius:8px;padding:24px;color:#17304c}dialog::backdrop{background:#17304c66}.dialog-heading{display:flex;align-items:start;justify-content:space-between;gap:20px}dialog p{font-size:18px;line-height:1.7}.flow{display:flex;align-items:stretch;justify-content:space-between;gap:8px;margin:24px 0}.flow b{flex:1;display:grid;place-items:center;padding:15px 10px;border:1px solid var(--line);border-top:3px solid var(--blue);border-radius:4px;background:#f4f7fb;font-size:18px;text-align:center;line-height:1.5;color:var(--blue)}.flow span{align-self:center;font-size:23px;color:var(--blue)}.flow b small{font-size:14px;font-weight:400}.model-note{font-size:15px;color:var(--muted)}
+@media(min-width:1000px) and (max-height:740px){main{padding:10px 18px;gap:7px}h1{font-size:26px}header p{font-size:14px}button,select{font-size:15px;min-height:34px;padding:6px 9px}.explanation{min-height:66px;padding:7px 12px}#message{font-size:19px}#question{font-size:15px;min-height:22px}.drawing{padding:5px 9px 7px}.table-area{padding:10px}h2{font-size:20px}table{font-size:19px}th,td{padding:5px 6px}#lookup{font-size:16px;min-height:35px}.packet-label,.part-title,.report-data span{font-size:13px}.field{padding:2px 4px}.field small{font-size:12px}.field strong{font-size:22px}.report-data strong{font-size:23px}.caption{font-size:11px}footer{font-size:11px}}
+@media(max-width:999px){main{height:auto;min-height:100dvh;display:flex;flex-direction:column;padding:16px;gap:12px}h1{font-size:26px}header p{font-size:15px}.scene{display:flex;flex-direction:column;gap:12px}.drawing{display:block;padding:8px 10px 10px}#graph{height:auto;aspect-ratio:840/335}.router-name,.host-name{font-size:32px}#leader{display:none}.table-area{padding:12px;overflow:visible}.packet-label{font-size:15px}.report{width:100%}.field small{font-size:12px}.field strong{font-size:23px}.report-head{flex:3.2}.report-data strong{font-size:24px}.caption{font-size:12px}#emptyTable{font-size:17px;padding-top:10px;margin-top:5px}table{font-size:21px}#lookup{min-height:25px}#formationOpen{margin-left:0}#message{font-size:19px}#question{font-size:16px}.explanation{min-height:0}.trace{font-size:16px}.flow{flex-direction:column;gap:5px;margin:15px 0}.flow span{transform:rotate(90deg)}.flow b{padding:8px}#formationClose{white-space:nowrap}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important;transition:none!important}}
+</style></head><body><main>
+<header><h1>路由器转发模型</h1><p>读分组头中的目的地址，查本地转发表，选择输出接口与下一跳。</p></header>
+<div class="controls"><label>目的地<select id="destination" aria-label="选择目的地"><option>A</option><option>B</option><option selected>D</option><option>E</option><option>F</option></select></label><button id="back">← 回退</button><button id="next" class="primary">下一步 →</button><button id="play">▶ 播放</button><button id="reset">重新发送</button><label>速度<select id="speed" aria-label="播放速度"><option value="1600" selected>慢</option><option value="1000">中</option><option value="650">快</option></select></label><label><input id="prediction" type="checkbox" checked>查表前暂停</label><span id="progress" class="step"></span><button id="formationOpen">这些表从哪里来？</button><button id="fullscreen">全屏</button></div>
+<section class="explanation" aria-live="polite" aria-atomic="true"><p id="message"></p><p id="question"></p></section>
+<section class="scene" aria-label="网络拓扑与当前路由器转发表"><div class="drawing"><svg id="graph" viewBox="0 0 840 335" role="img" aria-labelledby="graphTitle graphDesc"><title id="graphTitle">五路由器、六主机的课件拓扑</title><desc id="graphDesc">A、B接R1，C接R2，D、E接R4，F接R5。路由器链路为R1–R2、R1–R3、R2–R3、R2–R5、R3–R4、R3–R5、R4–R5。源主机为C。</desc><g id="links"></g><g id="devices"></g><g id="interfaces"></g><g id="movingPacket" class="moving"><title>当前分组的位置</title><rect x="-53" y="-15" width="50" height="30" fill="#f0f4fa"></rect><rect id="movingDest" x="-3" y="-15" width="30" height="30" fill="#f0f4fa"></rect><rect x="27" y="-15" width="61" height="30" fill="#e1ede8"></rect><text x="-28" y="6" fill="#20394c">源 C</text><text id="miniDest" x="12" y="6" fill="#20394c">D</text><text x="57" y="6" fill="#17614b">hello</text></g></svg>
+<div class="packet-zoom"><p class="packet-label"><strong id="location">当前分组在 C</strong>　报文放大</p><div class="report" aria-label="分组头和数据"><div class="report-head"><div class="part-title">分组头</div><div class="field"><small>源地址</small><strong>C</strong></div><div id="destinationField" class="field"><small>目的地址</small><strong id="destinationValue">D</strong></div><div class="other" aria-label="其他头部字段省略">…</div></div><div class="report-data"><span>数据</span><strong>hello</strong></div></div><p class="caption">简化报文，未展示全部首部字段。移动标记与放大图表示同一个分组。</p></div></div>
+<div id="tableArea" class="table-area"><h2 id="tableTitle">等待分组到达路由器</h2><p id="tableNote" class="table-note">每台路由器只查自己的表。</p><div id="tableWrap" hidden><table aria-label="当前路由器的转发表"><thead><tr><th scope="col">目的地</th><th scope="col">输出接口</th><th scope="col">下一跳</th></tr></thead><tbody id="tableBody"></tbody></table><p id="lookup"></p></div><p id="emptyTable">先预测：C 发给 D 的分组，<br>先到哪台路由器？</p></div><svg id="leader" aria-hidden="true"><path id="leaderPath" fill="none" stroke="#004098" stroke-width="1.6" stroke-dasharray="5 5"></path></svg></section>
+
+<div class="trace">已走过的路径：<strong id="trace">C</strong></div>
+<footer><span>CS0502 · 第12课 P8–9 · 拓扑参照课件，逐跳表项为教学补充；接口编号在各路由器内独立定义。</span><a href="packet_routing-guide.md">课堂讲法</a><span>←／→ 单步，空格播放／暂停。</span></footer>
+</main>
+<dialog id="formation" aria-labelledby="formationTitle"><div class="dialog-heading"><h2 id="formationTitle">转发表怎样形成？</h2><button id="formationClose">关闭</button></div><div class="flow" aria-label="从网络信息到本地转发表的示意"><b>网络连接信息</b><span aria-hidden="true">→</span><b>路由协议／算法<small>交换信息、选择路径</small></b><span aria-hidden="true">→</span><b>转发信息</b><span aria-hidden="true">→</span><b>本地转发表</b></div><p><strong>路由</strong>负责形成和更新路径信息。<strong>转发</strong>在分组到达时查当前的表，决定这一跳从哪个接口送出。</p><p>表准备好以后，沿途设备各自查表，逐跳送达。分组不会在每一跳重新计算整条路线。</p><p class="model-note">实际设备也可以使用静态配置等信息。本演示直接给定教学表，不模拟路由协议的消息交换和收敛。A–F代表目的主机，未展开真实IP前缀匹配。</p></dialog>
+<script id="packet-model">
+'use strict';
+const PacketForwardingModel=(()=>{
+ const hosts=['A','B','C','D','E','F'],routers=['R1','R2','R3','R4','R5'];
+ const attachment={A:'R1',B:'R1',C:'R2',D:'R4',E:'R4',F:'R5'};
+ const links=[['R1','R2'],['R1','R3'],['R2','R3'],['R2','R5'],['R3','R4'],['R3','R5'],['R4','R5'],...hosts.map(h=>[h,attachment[h]])];
+ const nextHops={R1:['A','B','R2','R3','R3','R2'],R2:['R1','R1','C','R3','R3','R5'],R3:['R1','R1','R2','R4','R4','R5'],R4:['R3','R3','R3','D','E','R5'],R5:['R2','R2','R2','R4','R4','F']};
+ const neighbors=n=>links.flatMap(([a,b])=>a===n?[b]:b===n?[a]:[]).sort();
+ const tables=Object.fromEntries(routers.map(r=>[r,hosts.map((dest,i)=>({dest,next:nextHops[r][i],port:neighbors(r).indexOf(nextHops[r][i])+1}))]));
+ const clone=v=>JSON.parse(JSON.stringify(v));
+ function frames(destination){
+  if(!hosts.includes(destination)||destination==='C')throw Error('目的地必须是A、B、D、E或F');
+  const list=[],f={source:'C',destination,payload:'hello',phase:'ready',at:'C',owner:null,header:false,matched:false,output:false,next:null,port:null,edge:null,path:['C'],checkpoint:false,done:false};
+  function push(phase,message,extra={}){Object.assign(f,{phase,message,header:false,matched:false,output:false,next:null,port:null,edge:null,checkpoint:false},extra);list.push(clone(f));}
+  push('ready',`C 已生成发往 ${destination} 的分组。先观察分组头和网络连接。`);
+  push('send',`C 将分组交给直连的 R2。`,{at:'R2',edge:['C','R2']});
+  let current='R2',visited=new Set();
+  while(routers.includes(current)){
+   if(visited.has(current))throw Error('教学表出现环路');visited.add(current);
+   f.path.push(current);
+   push('arrive',`分组到达 ${current}，展开 ${current} 自己的转发表。`,{at:current,owner:current});
+   push('read',`${current} 读取分组头：目的地址是 ${destination}。`,{header:true,checkpoint:true});
+   const entry=tables[current].find(e=>e.dest===destination);
+   if(!entry||!neighbors(current).includes(entry.next))throw Error('表项无效或下一跳不相邻');
+   push('match',`目的地址 ${destination} 对应表中的 ${destination} 行。`,{header:true,matched:true});
+   push('choose',`${current} 选择本地接口 ${entry.port}，下一跳为 ${entry.next}。`,{header:true,matched:true,output:true,next:entry.next,port:entry.port,edge:[current,entry.next]});
+   push('send',`分组沿 ${current}—${entry.next} 移动，目的地址仍是 ${destination}。`,{at:entry.next,header:true,matched:true,output:true,next:entry.next,port:entry.port,edge:[current,entry.next]});
+   current=entry.next;
+  }
+  if(current!==destination)throw Error('分组送到了错误主机');
+  f.path.push(current);
+  push('done',`${destination} 收到分组。沿途路由器分别查自己的表，共同完成送达。`,{at:current,done:true,header:true,matched:true});
+  return list;
+ }
+ function create(destination='D'){return{destination,index:0};}
+ function frame(s){return frames(s.destination)[s.index];}
+ function act(state,event){
+  const s=clone(state),length=frames(s.destination).length;
+  if(event.type==='destination'){frames(event.value);return create(event.value);}
+  if(event.type==='next')s.index=Math.min(s.index+1,length-1);
+  else if(event.type==='back')s.index=Math.max(0,s.index-1);
+  else if(event.type==='reset')s.index=0;
+  else throw Error('未知操作');
+  return s;
+ }
+ return{hosts,routers,attachment,links,neighbors,tables,frames,create,frame,act};
+})();
+</script>
+<script>
+'use strict';
+const M=PacketForwardingModel,$=id=>document.getElementById(id),NS='http://www.w3.org/2000/svg';
+if(location.protocol!=='file:'&&location.pathname.includes('/cs0502-2026/'))document.querySelector('footer a').setAttribute('href','packet_routing-guide/');
+const pos={A:[65,65],B:[65,170],C:[65,280],R1:[235,100],R2:[265,265],R3:[440,70],R4:[620,120],R5:[560,265],D:[765,65],E:[765,170],F:[765,280]};
+const edgeKey=(a,b)=>[a,b].sort().join('-');
+function svg(tag,attrs={},text){const e=document.createElementNS(NS,tag);for(const[k,v]of Object.entries(attrs))e.setAttribute(k,v);if(text!==undefined)e.textContent=text;return e;}
+const deviceEls={},edgeEls={};
+for(const[a,b]of M.links){const[x1,y1]=pos[a],[x2,y2]=pos[b];const line=svg('line',{x1,y1,x2,y2,class:'link'});$('links').append(line);edgeEls[edgeKey(a,b)]=line;}
+for(const[id,[x,y]]of Object.entries(pos)){
+ const group=svg('g',{class:'device',transform:`translate(${x},${y})`});group.append(svg('circle',{r:46,class:'halo'}));
+ if(M.routers.includes(id)){
+  group.append(svg('path',{d:'M-32 -7 L-32 17 A32 13 0 0 0 32 17 L32 -7 Z',fill:'#dbe6f2',stroke:'#58799c','stroke-width':2}));
+  group.append(svg('ellipse',{cx:0,cy:-7,rx:32,ry:13,fill:'#edf4fb',stroke:'#58799c','stroke-width':2}));
+  group.append(svg('path',{d:'M-19 -12 L17 -3 M9 -11 L17 -3 L6 -3 M19 -12 L-17 -3 M-7 -11 L-17 -3 L-7 -3',fill:'none',stroke:'#004098','stroke-width':2}));
+  group.append(svg('text',{x:0,y:-35,class:'router-name'},id));
+ }else{
+  group.append(svg('rect',{x:-27,y:-22,width:54,height:37,rx:3,fill:'#547caa',stroke:'#193954','stroke-width':2}));
+  group.append(svg('rect',{x:-20,y:-16,width:40,height:25,fill:'#e1edf4',stroke:'#193954'}));
+  group.append(svg('path',{d:'M-28 20 L28 20 L34 29 L-34 29 Z',fill:'#a6bdd4',stroke:'#193954','stroke-width':2}));
+  group.append(svg('text',{x:0,y:-35,class:'host-name'},id));
+ }
+ $('devices').append(group);deviceEls[id]=group;
+}
+let state=M.create(),playing=false,timer=null,motion=null;
+const reduced=matchMedia('(prefers-reduced-motion: reduce)');
+function packetPoint(id){const[x,y]=pos[id];return[x-17.5,y];}
+function updateLeader(){
+ const f=M.frame(state),scene=document.querySelector('.scene');
+ if(!f.owner||innerWidth<1000){$('leaderPath').setAttribute('d','');return;}
+ const rect=scene.getBoundingClientRect(),t=$('tableTitle').getBoundingClientRect(),matrix=$('graph').getScreenCTM();
+ if(!matrix)return;const[x,y]=pos[f.owner],pt=new DOMPoint(x+35,y+5).matrixTransform(matrix);
+ $('leader').setAttribute('viewBox',`0 0 ${rect.width} ${rect.height}`);
+ $('leaderPath').setAttribute('d',`M ${pt.x-rect.x} ${pt.y-rect.y} L ${t.x-rect.x-10} ${t.y-rect.y+t.height*.7}`);
+}
+function render(animate=false,previous=null){
+ const f=M.frame(state);motion?.cancel();motion=null;
+ for(const[id,g]of Object.entries(deviceEls))g.setAttribute('class','device'+(id===f.owner?' current':'')+(f.done&&id===f.at?' done':''));
+ for(const line of Object.values(edgeEls))line.setAttribute('class','link');
+ for(let i=1;i<f.path.length;i++)edgeEls[edgeKey(f.path[i-1],f.path[i])].classList.add('visited');
+ if(f.output&&f.edge)edgeEls[edgeKey(...f.edge)].classList.add('output');
+ $('interfaces').replaceChildren();
+ if(f.owner){
+  const[x,y]=pos[f.owner];for(const[neighbor,i]of M.neighbors(f.owner).map((n,i)=>[n,i+1])){
+   const[nx,ny]=pos[neighbor],length=Math.hypot(nx-x,ny-y),dx=(nx-x)/length,dy=(ny-y)/length;
+   const label=svg('text',{x:x+dx*88-dy*9,y:y+dy*88+dx*9+5,class:'interface'+(f.output&&i===f.port?' chosen':'')},String(i));$('interfaces').append(label);
+  }
+ }
+ const[x,y]=packetPoint(f.at);$('movingPacket').setAttribute('transform',`translate(${x},${y})`);
+ if(animate&&f.phase==='send'&&previous&&!reduced.matches){const[px,py]=packetPoint(previous.at);if(px!==x||py!==y)motion=$('movingPacket').animate([{transform:`translate(${px}px,${py}px)`},{transform:`translate(${x}px,${y}px)`}],{duration:Math.min(600,Number($('speed').value)*.65),easing:'ease-in-out'});}
+ $('movingPacket').querySelector('title').textContent=`当前分组在 ${f.at}，源地址C，目的地址${f.destination}，数据hello`;
+ $('miniDest').textContent=f.destination;$('movingDest').setAttribute('fill',f.header?'#fff0d9':'#f0f4fa');
+ $('destinationValue').textContent=f.destination;$('destinationField').classList.toggle('active',f.header);
+ $('location').textContent=f.phase==='send'&&f.edge?`当前分组：${f.edge[0]} 发往 ${f.edge[1]}`:`当前分组在 ${f.at}`;
+ $('tableWrap').hidden=!f.owner;$('emptyTable').hidden=Boolean(f.owner);
+ $('tableTitle').textContent=f.owner?`${f.owner} 的转发表`:'等待分组到达路由器';
+ $('tableNote').textContent=f.owner?'接口编号只在这台路由器内有效。':'每台路由器只查自己的表。';
+ $('tableBody').replaceChildren();
+ if(f.owner)for(const entry of M.tables[f.owner]){
+  const row=document.createElement('tr'),hit=f.matched&&entry.dest===f.destination;
+  for(const[value,cls]of [[entry.dest,hit?'addr-hit':''],[entry.port,hit&&f.output?'port-hit':''],[M.hosts.includes(entry.next)?`直连 ${entry.next}`:entry.next,hit&&f.output?'next-hit':'']]){const cell=document.createElement('td');cell.textContent=value;cell.className=cls;row.append(cell);}$('tableBody').append(row);
+ }
+ $('lookup').textContent=f.output?`接口 ${f.port} 连接 ${f.next}；这就是当前下一跳。`:f.matched?`匹配目的地 ${f.destination}，再读这一行的输出信息。`:f.owner?`表中有多行，先找分组头中的目的地址。`:'';
+ $('message').textContent=f.message;
+ $('question').textContent=f.checkpoint?`先预测：目的地址 ${f.destination} 对应哪一行？应从哪个接口送出？`:f.done?'比较 D、E、F：目的地变了，下一跳一定改变吗？':f.phase==='ready'?'先预测：C 的分组首先到达哪台路由器？':'橙色对应目的地址；蓝色对应输出接口和链路。';
+ $('trace').textContent=f.path.join(' → ');$('progress').textContent=`步骤 ${state.index} / ${M.frames(state.destination).length-1}`;
+ $('back').disabled=state.index===0;$('next').disabled=f.done;$('play').disabled=f.done;$('next').textContent=f.checkpoint?'揭示查表 →':'下一步 →';$('play').textContent=playing?'Ⅱ 暂停':'▶ 播放';
+ requestAnimationFrame(updateLeader);
+}
+function pause(){clearTimeout(timer);timer=null;playing=false;}
+function dispatch(event,animate=false){const previous=M.frame(state);state=M.act(state,event);render(animate,previous);}
+function tick(){if(!playing)return;dispatch({type:'next'},true);const f=M.frame(state);if(f.done||($('prediction').checked&&f.checkpoint)){pause();render();return;}timer=setTimeout(tick,Number($('speed').value));}
+$('next').onclick=()=>{pause();dispatch({type:'next'},true);};$('back').onclick=()=>{pause();dispatch({type:'back'});};$('reset').onclick=()=>{pause();dispatch({type:'reset'});};
+$('destination').onchange=()=>{pause();dispatch({type:'destination',value:$('destination').value});};
+$('play').onclick=()=>{if(playing){pause();render();}else{playing=true;render();timer=setTimeout(tick,Number($('speed').value));}};
+$('speed').onchange=()=>{if(playing){clearTimeout(timer);timer=setTimeout(tick,Number($('speed').value));}};
+$('formationOpen').onclick=()=>{pause();render();$('formation').showModal();};$('formationClose').onclick=()=>$('formation').close();
+$('fullscreen').onclick=async()=>{try{if(document.fullscreenElement)await document.exitFullscreen();else await document.documentElement.requestFullscreen();}catch{$('fullscreen').textContent='请用浏览器全屏';}};
+new ResizeObserver(updateLeader).observe(document.querySelector('.scene'));
+reduced.addEventListener('change',()=>{motion?.cancel();motion=null;});
+document.addEventListener('visibilitychange',()=>{if(document.hidden){pause();render();}});window.addEventListener('pagehide',pause);
+document.addEventListener('keydown',e=>{if($('formation').open||e.target.closest('input,select,a')||e.ctrlKey||e.metaKey||e.altKey)return;if(e.key==='ArrowRight'){e.preventDefault();$('next').click();}else if(e.key==='ArrowLeft'){e.preventDefault();$('back').click();}else if(e.code==='Space'&&!e.target.closest('button')){e.preventDefault();$('play').click();}});
+render();
+</script></body></html>

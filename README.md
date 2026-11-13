@@ -87,6 +87,13 @@
   <a class="module-link" href="code/visualizations/rsa.html">打开 RSA 交互演示 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide12 · 计算机网络</span>
+  <h2>路由器转发：分组头与转发表</h2>
+  <p>读取分组头中的目的地址，匹配当前路由器的转发表，再选择输出接口和下一跳。比较不同目的地的路径，观察沿途设备怎样逐跳送达。</p>
+  <a class="module-link" href="code/visualizations/packet_routing.html">打开分组转发交互演示 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">

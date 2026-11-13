@@ -16,7 +16,7 @@ labs: []
 figures: [11-network-encapsulation.svg]
 related_cards: [ext-web-technologies, distributed-systems, ai-security, 09-computer-system-arch, 12-information-security]
 related_deep: []
-related_visualizations: []
+related_visualizations: [packet_routing]
 last_reviewed: 2026-08-21
 ---
 
@@ -59,6 +59,8 @@ IoT、无线传感器网络（WSN）、RFID 和 5G 把大量物理设备接入�
 - “能联网”不等于“安全联网”，关联见 [12 信息安全](12-information-security.md)。
 
 ## 主动学习与考核迁移
+
+- [路由器转发：分组头与转发表](../../code/visualizations/packet_routing.html)：读取目的地址、命中本地表项、选择接口与下一跳；比较D、E、F的转发过程。配合2026版第12课P8–9，见[课堂讲法](../../code/visualizations/packet_routing-guide.md)。
 
 1. 追踪一次浏览器请求在每层添加和移除的信息。
 2. 为海上传感器选择有线、短距无线或蜂窝接入，并说明约束。
