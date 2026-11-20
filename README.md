@@ -94,6 +94,13 @@
   <a class="module-link" href="code/visualizations/packet_routing.html">打开分组转发交互演示 →</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide13 · 数据库与数据可视化</span>
+  <h2>SQL 选课查询与结果图</h2>
+  <p>用虚构的选课记录练习连接、筛选与分组。先预测结果表，再核对按课比较的柱状图和按日变化的折线图。</p>
+  <a class="module-link" href="code/visualizations/query-chart.html">打开 SQL 选课查询演示</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">

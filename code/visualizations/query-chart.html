@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>选课查询与结果图 · 计算机科学导论</title>
+<style>
+:root{color-scheme:light;--blue:#004098;--ink:#182c40;--muted:#4d6477;--line:#d6e2ec;--paper:#f3f7fa}
+*{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:17px;line-height:1.48}
+main{max-width:1200px;margin:auto;padding:26px 28px 36px}
+header{border-top:5px solid var(--blue);padding:12px 0 15px}
+.course{color:var(--blue);font-weight:650;font-size:15px;margin:0}
+h1{font-size:clamp(29px,4vw,45px);line-height:1.12;margin:9px 0 11px}
+h2{font-size:clamp(19px,2vw,25px);margin:0 0 10px;color:var(--blue)}
+p{margin:0 0 12px}header>p:last-child{margin-bottom:0}
+.controls{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:11px 0 16px;border-top:1px solid var(--line)}
+label{font-weight:650}
+select,button{font:inherit;color:inherit;min-height:44px;border-radius:6px;padding:6px 13px;border:1px solid #94adbf;background:white}
+button{cursor:pointer;font-weight:650}button.primary{background:var(--blue);color:white;border-color:var(--blue)}
+button:disabled{cursor:default;opacity:.6}
+:focus-visible{outline:3px solid #b46026;outline-offset:3px}
+.stage{background:white;border-top:2px solid var(--blue);padding:20px 23px;min-width:0}
+.grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+.split{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:14px}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+caption{text-align:left;font-weight:680;color:var(--blue);margin-bottom:6px}
+th,td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--line);overflow-wrap:anywhere}
+thead th{background:#eef4f9}
+pre{background:#eef4f9;padding:12px 14px;font:15px/1.55 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0 14px;border-radius:4px}
+.prompt{font-weight:650;color:var(--blue)}
+.status{padding:10px 12px;margin-bottom:14px;background:#eaf2fb;border-left:4px solid var(--blue);font-weight:650}
+svg{display:block;width:100%;height:auto;max-height:390px}svg text{font:inherit;fill:var(--ink)}
+.gridline{stroke:#dce5ef;stroke-width:1}.axis{stroke:#6a8297;stroke-width:1.4}
+@media(max-width:720px){main{padding:16px 13px 25px}.grid{grid-template-columns:1fr;gap:20px}.stage{padding:15px}.split{gap:8px}.controls{gap:8px}th,td{padding:5px 6px}}
+</style>
+</head>
+<body>
+<main>
+<header>
+<p class="course">CS0502 计算机科学导论 · 第 13 讲</p>
+<h1>选课查询与结果图</h1>
+<p>用虚构的选课记录追踪两条 SQL 查询。每一步先预测结果，再核对中间表和图。</p>
+</header>
+<div class="controls">
+<label for="preset">查询</label>
+<select id="preset"></select>
+<button type="button" class="primary" id="next">下一步</button>
+<button type="button" id="reset">重置</button>
+</div>
+<section class="stage" aria-label="演示区">
+<div class="status" id="status" aria-live="polite"></div>
+<div class="grid" id="stage"></div>
+</section>
+</main>
+<script>
+"use strict";
+const data = {
+  "courses": [["C1", "数据库"], ["C2", "算法"]],
+  "enrolled": [
+    ["S01", "C1", 1], ["S02", "C1", 2], ["S03", "C1", 2], ["S04", "C1", 3],
+    ["S01", "C2", 1], ["S04", "C2", 2], ["S02", "C2", 3]
+  ]
+};
+const preset = document.querySelector("#preset");
+const next = document.querySelector("#next");
+const reset = document.querySelector("#reset");
+const status = document.querySelector("#status");
+const stage = document.querySelector("#stage");
+const chartColor = "#004098";
+
+function table(caption, columns, rows) {
+  const head = columns.map(name => `<th scope="col">${name}</th>`).join("");
+  const body = rows.map(row =>
+    `<tr>${row.map(value => `<td>${value}</td>`).join("")}</tr>`
+  ).join("");
+  return `<table><caption>${caption}</caption><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
+}
+
+function svg(label, body, viewBox = "0 0 550 340") {
+  return `<svg viewBox="${viewBox}" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
+}
+
+const querySQL = [
+  "SELECT c.name, COUNT(*) AS 人数\nFROM Course c JOIN Enrolled e ON c.cid = e.cid\nGROUP BY c.cid, c.name\nORDER BY COUNT(*) DESC, c.cid;",
+  "SELECT day, COUNT(*) AS 人数\nFROM Enrolled\nWHERE cid = 'C1'\nGROUP BY day\nORDER BY day;",
+];
+
+function queryChart(rows, byDay) {
+  const pos = rows.map(([label, value], index) => [130 + index * (byDay ? 145 : 240), 275 - value * 41, label, value]);
+  const grid = Array.from({ length: 6 }, (_, i) =>
+    `<path class="gridline" d="M72 ${275 - i * 41}H514"/><text x="55" y="${281 - i * 41}" text-anchor="end">${i}</text>`
+  ).join("");
+  const path = byDay
+    ? `<polyline points="${pos.map(([x, y]) => `${x},${y}`).join(" ")}" fill="none" stroke="${chartColor}" stroke-width="4"/>`
+    : "";
+  const marks = pos.map(([x, y, label, value]) =>
+    `${byDay ? `<circle cx="${x}" cy="${y}" r="5" fill="${chartColor}"/>`
+      : `<rect x="${x - 29}" y="${y}" width="58" height="${275 - y}" fill="${chartColor}"/>`}
+     <text x="${x}" y="${y - 11}" text-anchor="middle">${value}</text>
+     <text x="${x}" y="302" text-anchor="middle">${label}</text>`
+  ).join("");
+  return svg(rows.map(([label, value]) => `${label} ${value} 人`).join("，"),
+    `<text x="34" y="37">人数</text>${grid}<path class="axis" fill="none" d="M72 70V275H514"/>${path}${marks}`,
+    "0 0 550 317");
+}
+
+function queryView(index, step) {
+  const day = index === 1;
+  const courses = new Map(data.courses);
+  const intermediate = day
+    ? data.enrolled.filter(([, course]) => course === "C1")
+    : data.enrolled.map(([sid, course, date]) => [sid, courses.get(course), date]);
+  const counts = new Map();
+  for (const row of intermediate) {
+    const key = day ? row[2] : row[1];
+    counts.set(key, (counts.get(key) ?? 0) + 1);
+  }
+  const result = [...counts].sort((a, b) => day ? a[0] - b[0] : b[1] - a[1]);
+  const names = result.map(([key, value]) => [day ? `第 ${key} 天` : key, value]);
+  const columns = [day ? "日期" : "课程", "人数"];
+  const start = `<div class="split">
+     ${table("Course", ["Cid", "课程"], data.courses)}
+     ${table("Enrolled", ["Sid", "Cid", "天"], data.enrolled)}
+   </div>`;
+  const left = step === 0 ? start : table(day ? "筛选数据库课记录" : "按 Cid 匹配课程名",
+    ["Sid", day ? "Cid" : "课程", "天"], intermediate);
+  const right = step < 2
+    ? `<div><h2>查询语句</h2><pre>${querySQL[index]}</pre>
+       <p class="prompt">${step === 0 ? "预测第一步会留下或匹配哪几行。" : "按哪一列分组？各组有多少行？"}</p></div>`
+    : step === 2
+      ? `<div>${table("查询结果", columns, names)}<p class="prompt" style="margin-top:12px">这组数讲的是课程比较，还是日变化？</p></div>`
+      : `<div><h2>${day ? "数据库课的每日新增人数" : "各课程报名人数"}</h2>${queryChart(names, day)}
+         ${table("图表对应结果", columns, names)}</div>`;
+  const actions = ["读取原表", day ? "WHERE 筛选" : "JOIN 匹配", "GROUP BY 汇总", day ? "折线图" : "柱状图"];
+  const labels = [day ? "揭示筛选" : "揭示连接", "揭示分组结果", "揭示图表", "完成"];
+  return { html: `<div>${left}</div>${right}`, message: actions[step], label: labels[step], done: step === 3 };
+}
+
+const choices = ["按课程汇总", "数据库课按日统计"];
+preset.replaceChildren(...choices.map((label, i) => new Option(label, i)));
+let step = 0;
+
+function render() {
+  const frame = queryView(Number(preset.value), step);
+  status.textContent = frame.message;
+  stage.innerHTML = frame.html;
+  next.textContent = frame.label;
+  next.disabled = frame.done;
+  reset.disabled = step === 0;
+}
+function restart() {
+  step = 0;
+  render();
+}
+next.addEventListener("click", () => {
+  step++;
+  render();
+  if (next.disabled) reset.focus();
+});
+reset.addEventListener("click", () => { restart(); next.focus(); });
+preset.addEventListener("change", restart);
+render();
+
+</script>
+</body>
+</html>
