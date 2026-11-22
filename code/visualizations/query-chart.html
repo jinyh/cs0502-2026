@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>选课查询与结果图 · 计算机科学导论</title>
+<title>SQL 选课查询 · 计算机科学导论</title>
 <style>
 :root{color-scheme:light;--blue:#004098;--ink:#182c40;--muted:#4d6477;--line:#d6e2ec;--paper:#f3f7fa}
 *{box-sizing:border-box}body{margin:0;background:var(--paper);color:var(--ink);font-family:"PingFang SC","Microsoft YaHei",system-ui,sans-serif;font-size:17px;line-height:1.48}
@@ -35,12 +35,7 @@ th,td{padding:6px 8px;text-align:left;border-bottom:1px solid var(--line);overfl
 thead th{background:#eef4f9}
 pre{background:#eef4f9;padding:12px 14px;font:15px/1.55 ui-monospace,monospace;white-space:pre-wrap;overflow-wrap:anywhere;margin:10px 0 14px;border-radius:4px}
 .prompt{font-weight:650;color:var(--blue)}
-.chart-result{scroll-margin-top:12px}
-.chart-controls{display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;margin:8px 0 12px}
-.chart-note{color:var(--muted);font-size:15px;margin:4px 0 14px}
 .status{padding:10px 12px;margin-bottom:14px;background:#eaf2fb;border-left:4px solid var(--blue);font-weight:650}
-svg{display:block;width:100%;height:auto;max-height:390px}svg text{font:inherit;fill:var(--ink)}
-.gridline{stroke:#dce5ef;stroke-width:1}.axis{stroke:#6a8297;stroke-width:1.4}
 @media(max-width:720px){main{padding:16px 13px 25px}.grid{grid-template-columns:1fr;gap:20px}.stage{padding:15px}.split{gap:8px}.controls{gap:8px}th,td{padding:5px 6px}}
 </style>
 </head>
@@ -48,14 +43,13 @@ svg{display:block;width:100%;height:auto;max-height:390px}svg text{font:inherit;
 <main>
 <header>
 <p class="course">CS0502 计算机科学导论 · 第 13 讲</p>
-<h1>选课查询与结果图</h1>
-<p>用虚构的选课记录追踪两条 SQL 查询。每一步先预测结果，再核对中间表和图。</p>
+<h1>SQL 选课查询</h1>
+<p>用虚构的选课记录追踪两条 SQL 查询。每一步先预测，再用表格核对。</p>
 </header>
 <div class="controls">
 <label for="preset">查询</label>
 <select id="preset"></select>
 <button type="button" class="primary" id="next">下一步</button>
-<button type="button" id="show-chart">查看图表</button>
 <button type="button" id="reset">重置</button>
 </div>
 <form id="where-editor" class="where-editor" hidden>
@@ -84,14 +78,12 @@ const data = {
 const preset = document.querySelector("#preset");
 const next = document.querySelector("#next");
 const reset = document.querySelector("#reset");
-const chartButton = document.querySelector("#show-chart");
 const status = document.querySelector("#status");
 const stage = document.querySelector("#stage");
 const whereEditor = document.querySelector("#where-editor");
 const whereInput = document.querySelector("#where-clause");
 const whereError = document.querySelector("#where-error");
 const courses = new Map(data.courses);
-const chartColor = "#004098";
 const defaultCourse = "C1";
 const whereFor = courseId => `WHERE cid = '${courseId}'`;
 
@@ -103,56 +95,10 @@ function table(caption, columns, rows) {
   return `<table><caption>${caption}</caption><thead><tr>${head}</tr></thead><tbody>${body}</tbody></table>`;
 }
 
-function svg(label, body, viewBox = "0 0 550 340") {
-  return `<svg viewBox="${viewBox}" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
-}
-
 const courseSQL = "SELECT c.name, COUNT(*) AS 人数\nFROM Course c JOIN Enrolled e ON c.cid = e.cid\nGROUP BY c.cid, c.name\nORDER BY COUNT(*) DESC, c.cid;";
 const dailySQL = courseId => `SELECT day, COUNT(*) AS 人数\nFROM Enrolled\n${whereFor(courseId)}\nGROUP BY day\nORDER BY day;`;
 
-function queryChart(rows, byDay, baseline) {
-  const scale = value => 275 - ((value - baseline) / (5 - baseline)) * 205;
-  const pos = rows.map(([label, value], index) => [130 + index * (byDay ? 145 : 240), scale(value), label, value]);
-  const grid = Array.from({ length: 6 - baseline }, (_, i) => {
-    const value = baseline + i;
-    return `<path class="gridline" d="M72 ${scale(value)}H514"/><text x="55" y="${scale(value) + 6}" text-anchor="end">${value}</text>`;
-  }).join("");
-  const path = byDay
-    ? `<polyline points="${pos.map(([x, y]) => `${x},${y}`).join(" ")}" fill="none" stroke="${chartColor}" stroke-width="4"/>`
-    : "";
-  const marks = pos.map(([x, y, label, value]) =>
-    `${byDay ? `<circle cx="${x}" cy="${y}" r="5" fill="${chartColor}"/>`
-      : `<rect x="${x - 29}" y="${y}" width="58" height="${275 - y}" fill="${chartColor}"/>`}
-     <text x="${x}" y="${y - 11}" text-anchor="middle">${value}</text>
-     <text x="${x}" y="302" text-anchor="middle">${label}</text>`
-  ).join("");
-  return svg(rows.map(([label, value]) => `${label} ${value} 人`).join("，"),
-    `<text x="34" y="37">人数</text>${grid}<path class="axis" fill="none" d="M72 70V275H514"/>${path}${marks}`,
-    "0 0 550 317");
-}
-
-function chartResult(rows, columns, byDay, courseName, baseline) {
-  const title = byDay ? `${courseName}课的每日新增人数` : "各课程报名人数";
-  const controls = byDay ? "" : `<div class="chart-controls">
-      <label for="chart-baseline">柱状图纵轴起点</label>
-      <select id="chart-baseline" aria-describedby="chart-note">
-        <option value="0" ${baseline === 0 ? "selected" : ""}>0 人</option>
-        <option value="2" ${baseline === 2 ? "selected" : ""}>2 人（截断对照）</option>
-      </select>
-    </div>`;
-  const note = byDay ? "纵轴是当天的新增报名人数。"
-    : baseline === 2 ? "两根柱子的可见长度是 2 和 1。实际报名人数仍是 4 人和 3 人。"
-    : "切到 2 人前，先预测哪根柱子看起来会长多少。";
-  return `<section id="chart-result" class="chart-result" aria-labelledby="chart-title">
-    <h2 id="chart-title" tabindex="-1">${title}</h2>
-    ${controls}
-    ${queryChart(rows, byDay, byDay ? 0 : baseline)}
-    <p id="chart-note" class="chart-note">${note}</p>
-    ${table("图表数据", columns, rows)}
-  </section>`;
-}
-
-function queryView(day, step, courseId, baseline) {
+function queryView(day, step, courseId) {
   const courseName = courses.get(courseId);
   const query = day ? dailySQL(courseId) : courseSQL;
   const intermediate = day
@@ -172,40 +118,31 @@ function queryView(day, step, courseId, baseline) {
    </div>`;
   const left = step === 0 ? start : table(day ? `筛选${courseName}课记录` : "按 Cid 匹配课程名",
     ["Sid", day ? "Cid" : "课程", "天"], intermediate);
-  if (step === 3) {
-    const chart = chartResult(names, columns, day, courseName, baseline);
-    return {
-      html: `${chart}<div>${left}</div>`,
-      message: day ? "折线图" : `柱状图 · 纵轴从 ${baseline} 人开始`,
-      label: "完成",
-      done: true,
-    };
-  }
-  const detail = step < 2
-    ? `<div><h2>查询语句</h2><pre>${query}</pre>
-       <p class="prompt">${step === 0 ? "预测第一步会留下或匹配哪几行。" : "按哪一列分组？各组有多少行？"}</p></div>`
-    : `<div>${table("查询结果", columns, names)}<p class="prompt" style="margin-top:12px">这组数讲的是课程比较，还是日变化？</p></div>`;
+  const done = step === 2;
+  const detail = done
+    ? `<div>${table("查询结果", columns, names)}</div>`
+    : `<div><h2>查询语句</h2><pre>${query}</pre>
+       <p class="prompt">${step === 0 ? "预测第一步会留下或匹配哪几行。" : "按哪一列分组？各组有多少行？"}</p></div>`;
   const actions = ["读取原表", day ? "WHERE 筛选" : "JOIN 匹配", "GROUP BY 汇总"];
-  const labels = [day ? "揭示筛选" : "揭示连接", "揭示分组结果", "查看结果图", "完成"];
-  return { html: `<div>${left}</div>${detail}`, message: actions[step], label: labels[step], done: false };
+  const labels = [day ? "揭示筛选" : "揭示连接", "揭示分组结果", "完成"];
+  const html = done ? `${detail}<div>${left}</div>` : `<div>${left}</div>${detail}`;
+  return { html, message: actions[step], label: labels[step], done };
 }
 
 const choices = ["按课程汇总", "按日统计（可改 WHERE）"];
 preset.replaceChildren(...choices.map((label, i) => new Option(label, i)));
 let step = 0;
 let courseId = defaultCourse;
-let baseline = 0;
 
 function render() {
   const byDay = preset.value === "1";
   const pending = byDay && whereInput.value.trim() !== whereFor(courseId);
-  const frame = queryView(byDay, step, courseId, baseline);
+  const frame = queryView(byDay, step, courseId);
   whereEditor.hidden = !byDay;
   status.textContent = pending ? "条件已修改。运行 SQL 后查看筛选结果。" : frame.message;
   stage.innerHTML = frame.html;
   next.textContent = frame.label;
   next.disabled = pending || frame.done;
-  chartButton.disabled = pending;
   reset.disabled = step === 0 && !pending && courseId === defaultCourse;
 }
 
@@ -217,7 +154,6 @@ function clearWhereError() {
 
 function restart() {
   step = 0;
-  baseline = 0;
   courseId = defaultCourse;
   whereInput.value = whereFor(courseId);
   clearWhereError();
@@ -249,28 +185,12 @@ whereEditor.addEventListener("submit", event => {
   next.focus();
 });
 
-function openChart() {
-  step = 3;
-  render();
-  stage.querySelector("#chart-title").focus({ preventScroll: true });
-  stage.querySelector("#chart-result").scrollIntoView({ block: "start" });
-}
-
-chartButton.addEventListener("click", openChart);
 next.addEventListener("click", () => {
-  if (step === 2) {
-    openChart();
-  } else {
-    step++;
-    render();
-  }
-});
-stage.addEventListener("change", event => {
-  if (event.target.id !== "chart-baseline") return;
-  baseline = Number(event.target.value);
+  step++;
   render();
-  stage.querySelector("#chart-baseline").focus({ preventScroll: true });
+  if (next.disabled) reset.focus();
 });
+
 reset.addEventListener("click", () => {
   restart();
   (whereEditor.hidden ? next : whereInput).focus();
