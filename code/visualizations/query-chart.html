@@ -18,6 +18,13 @@ label{font-weight:650}
 select,button{font:inherit;color:inherit;min-height:44px;border-radius:6px;padding:6px 13px;border:1px solid #94adbf;background:white}
 button{cursor:pointer;font-weight:650}button.primary{background:var(--blue);color:white;border-color:var(--blue)}
 button:disabled{cursor:default;opacity:.6}
+.where-editor{margin:0 0 16px;padding:11px 15px;background:#eaf2fb;border-left:4px solid var(--blue)}
+.where-editor label{display:block;margin-bottom:6px}
+.where-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.where-actions input{width:min(100%,340px);min-height:44px;padding:6px 10px;border:1px solid #94adbf;border-radius:6px;background:white;color:var(--ink);font:16px ui-monospace,monospace}
+.where-actions input[aria-invalid="true"]{border-color:#9e2b1e}
+.where-help,.where-error{font-size:15px;margin:6px 0 0}
+.where-help{color:var(--muted)}.where-error{color:#9e2b1e}
 :focus-visible{outline:3px solid #b46026;outline-offset:3px}
 .stage{background:white;border-top:2px solid var(--blue);padding:20px 23px;min-width:0}
 .grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
@@ -47,6 +54,15 @@ svg{display:block;width:100%;height:auto;max-height:390px}svg text{font:inherit;
 <button type="button" class="primary" id="next">下一步</button>
 <button type="button" id="reset">重置</button>
 </div>
+<form id="where-editor" class="where-editor" hidden>
+<label for="where-clause">编辑 WHERE 条件</label>
+<div class="where-actions">
+<input type="text" id="where-clause" value="WHERE cid = 'C1'" aria-describedby="where-help where-error" maxlength="80" spellcheck="false" autocapitalize="off" autocomplete="off">
+<button type="submit" id="run-sql" class="primary">运行 SQL</button>
+</div>
+<p id="where-help" class="where-help">课程号可用 C1（数据库）或 C2（算法）。先预测每天的报名人数，再运行。</p>
+<p id="where-error" class="where-error" role="alert" hidden></p>
+</form>
 <section class="stage" aria-label="演示区">
 <div class="status" id="status" aria-live="polite"></div>
 <div class="grid" id="stage"></div>
@@ -66,7 +82,13 @@ const next = document.querySelector("#next");
 const reset = document.querySelector("#reset");
 const status = document.querySelector("#status");
 const stage = document.querySelector("#stage");
+const whereEditor = document.querySelector("#where-editor");
+const whereInput = document.querySelector("#where-clause");
+const whereError = document.querySelector("#where-error");
+const courses = new Map(data.courses);
 const chartColor = "#004098";
+const defaultCourse = "C1";
+const whereFor = courseId => `WHERE cid = '${courseId}'`;
 
 function table(caption, columns, rows) {
   const head = columns.map(name => `<th scope="col">${name}</th>`).join("");
@@ -80,10 +102,8 @@ function svg(label, body, viewBox = "0 0 550 340") {
   return `<svg viewBox="${viewBox}" role="img" aria-label="${label}" xmlns="http://www.w3.org/2000/svg">${body}</svg>`;
 }
 
-const querySQL = [
-  "SELECT c.name, COUNT(*) AS 人数\nFROM Course c JOIN Enrolled e ON c.cid = e.cid\nGROUP BY c.cid, c.name\nORDER BY COUNT(*) DESC, c.cid;",
-  "SELECT day, COUNT(*) AS 人数\nFROM Enrolled\nWHERE cid = 'C1'\nGROUP BY day\nORDER BY day;",
-];
+const courseSQL = "SELECT c.name, COUNT(*) AS 人数\nFROM Course c JOIN Enrolled e ON c.cid = e.cid\nGROUP BY c.cid, c.name\nORDER BY COUNT(*) DESC, c.cid;";
+const dailySQL = courseId => `SELECT day, COUNT(*) AS 人数\nFROM Enrolled\n${whereFor(courseId)}\nGROUP BY day\nORDER BY day;`;
 
 function queryChart(rows, byDay) {
   const pos = rows.map(([label, value], index) => [130 + index * (byDay ? 145 : 240), 275 - value * 41, label, value]);
@@ -104,11 +124,11 @@ function queryChart(rows, byDay) {
     "0 0 550 317");
 }
 
-function queryView(index, step) {
-  const day = index === 1;
-  const courses = new Map(data.courses);
+function queryView(day, step, courseId) {
+  const courseName = courses.get(courseId);
+  const query = day ? dailySQL(courseId) : courseSQL;
   const intermediate = day
-    ? data.enrolled.filter(([, course]) => course === "C1")
+    ? data.enrolled.filter(([, course]) => course === courseId)
     : data.enrolled.map(([sid, course, date]) => [sid, courses.get(course), date]);
   const counts = new Map();
   for (const row of intermediate) {
@@ -122,42 +142,85 @@ function queryView(index, step) {
      ${table("Course", ["Cid", "课程"], data.courses)}
      ${table("Enrolled", ["Sid", "Cid", "天"], data.enrolled)}
    </div>`;
-  const left = step === 0 ? start : table(day ? "筛选数据库课记录" : "按 Cid 匹配课程名",
+  const left = step === 0 ? start : table(day ? `筛选${courseName}课记录` : "按 Cid 匹配课程名",
     ["Sid", day ? "Cid" : "课程", "天"], intermediate);
   const right = step < 2
-    ? `<div><h2>查询语句</h2><pre>${querySQL[index]}</pre>
+    ? `<div><h2>查询语句</h2><pre>${query}</pre>
        <p class="prompt">${step === 0 ? "预测第一步会留下或匹配哪几行。" : "按哪一列分组？各组有多少行？"}</p></div>`
     : step === 2
       ? `<div>${table("查询结果", columns, names)}<p class="prompt" style="margin-top:12px">这组数讲的是课程比较，还是日变化？</p></div>`
-      : `<div><h2>${day ? "数据库课的每日新增人数" : "各课程报名人数"}</h2>${queryChart(names, day)}
+      : `<div><h2>${day ? `${courseName}课的每日新增人数` : "各课程报名人数"}</h2>${queryChart(names, day)}
          ${table("图表对应结果", columns, names)}</div>`;
   const actions = ["读取原表", day ? "WHERE 筛选" : "JOIN 匹配", "GROUP BY 汇总", day ? "折线图" : "柱状图"];
   const labels = [day ? "揭示筛选" : "揭示连接", "揭示分组结果", "揭示图表", "完成"];
   return { html: `<div>${left}</div>${right}`, message: actions[step], label: labels[step], done: step === 3 };
 }
 
-const choices = ["按课程汇总", "数据库课按日统计"];
+const choices = ["按课程汇总", "按日统计（可改 WHERE）"];
 preset.replaceChildren(...choices.map((label, i) => new Option(label, i)));
 let step = 0;
+let courseId = defaultCourse;
 
 function render() {
-  const frame = queryView(Number(preset.value), step);
-  status.textContent = frame.message;
+  const byDay = preset.value === "1";
+  const pending = byDay && whereInput.value.trim() !== whereFor(courseId);
+  const frame = queryView(byDay, step, courseId);
+  whereEditor.hidden = !byDay;
+  status.textContent = pending ? "条件已修改。运行 SQL 后查看筛选结果。" : frame.message;
   stage.innerHTML = frame.html;
   next.textContent = frame.label;
-  next.disabled = frame.done;
-  reset.disabled = step === 0;
+  next.disabled = pending || frame.done;
+  reset.disabled = step === 0 && !pending && courseId === defaultCourse;
 }
+
+function clearWhereError() {
+  whereInput.removeAttribute("aria-invalid");
+  whereError.hidden = true;
+  whereError.textContent = "";
+}
+
 function restart() {
   step = 0;
+  courseId = defaultCourse;
+  whereInput.value = whereFor(courseId);
+  clearWhereError();
   render();
 }
+
+whereInput.addEventListener("input", () => {
+  clearWhereError();
+  step = 0;
+  render();
+});
+
+whereEditor.addEventListener("submit", event => {
+  event.preventDefault();
+  const match = /^WHERE\s+cid\s*=\s*'([A-Za-z0-9]+)'$/i.exec(whereInput.value.trim());
+  const selected = match?.[1];
+  if (!courses.has(selected)) {
+    whereInput.setAttribute("aria-invalid", "true");
+    whereError.hidden = false;
+    whereError.textContent = "请用 WHERE cid = 'C1' 或 WHERE cid = 'C2'，课程号加单引号。";
+    whereInput.focus();
+    return;
+  }
+  courseId = selected;
+  whereInput.value = whereFor(courseId);
+  clearWhereError();
+  step = 1;
+  render();
+  next.focus();
+});
+
 next.addEventListener("click", () => {
   step++;
   render();
   if (next.disabled) reset.focus();
 });
-reset.addEventListener("click", () => { restart(); next.focus(); });
+reset.addEventListener("click", () => {
+  restart();
+  (whereEditor.hidden ? next : whereInput).focus();
+});
 preset.addEventListener("change", restart);
 render();
 
