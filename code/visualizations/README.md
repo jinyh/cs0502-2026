@@ -4,6 +4,7 @@
 
 ## 直接打开
 
+- [聚类算法：K-Means、层次聚类与 DBSCAN](clustering.html)：支持[同分布三算法对比](clustering.html#compare)（双弯月+噪声、球形团、同心圆、离群点、密度不均，支持点画加点与实时调参），以及 [K-Means 分步](clustering.html#kmeans)（P28 八小区双初值）、[层次聚类与树图](clustering.html#hierarchical)（P30 六点系统树图与切割）、[DBSCAN 分步](clustering.html#dbscan)（P32 八点手算与边界不扩张）。配合 2026 版 Slide14 P24–P34，见[课堂讲法](clustering-guide.md)。
 - [购物篮里的关联规则：Apriori](apriori.html)：用 8 笔交易核对支持度、置信度和提升度，再调整最小支持度，沿三层项集图追踪剪枝。配合 2026 版 Slide14 P17–18。
 - [SQL 选课查询](query-chart.html)：先预测连接或筛选后的行，再查看汇总表。按日统计时可将 WHERE 条件中的课程号从 C1 改为 C2。配合 2026 版第 13 讲 P19。
 - [路由器转发：分组头与转发表](packet_routing.html)：在课件拓扑中对应报文目的地址、命中表项和输出接口，逐跳送达；可更改目的地。配合2026版第12课P8–9，见[课堂讲法](packet_routing-guide.md)。
@@ -33,6 +34,7 @@
 
 | 文件 | 主题 | 对应卡片 | 嵌入方式 |
 |---|---|---|---|
+| [clustering.html](clustering.html) | K-Means、层次聚类与 DBSCAN 原理及分布对比 | `14-data-mining`；2026 版 Slide14 P24–P34 | 浏览器直接打开，离线使用 |
 | [apriori.html](apriori.html) | 关联规则指标与 Apriori 剪枝 | `14-data-mining`；2026 版 Slide14 P17–18 | 浏览器直接打开，离线使用 |
 | [query-chart.html](query-chart.html) | SQL 连接、筛选与分组 | `13-database` | 浏览器直接打开，离线使用 |
 | [packet_routing.html](packet_routing.html) | 分组头、转发表与输出接口联动 | `11-computer-network`；2026版第12课P8–9 | 浏览器直接打开，离线使用 |

@@ -4,6 +4,12 @@
 
 ## 当前进度
 
+### 2026-11-25 聚类算法交互可视化（Slide14）
+
+- 新增单文件自包含交互页面 `code/visualizations/clustering.html` 与讲法说明 `clustering-guide.md`，覆盖 Slide14「数据挖掘一」P24–P34 的三类无监督聚类方法（K-Means、层次聚类、DBSCAN）。
+- 提供四标签双模式：`#compare`（5 套确定性分布并排对比、实时调参、迷你树图与点击加点，含 P34 双弯月+噪声与 DBSCAN 密度不均反例）、`#kmeans`（P28 八小区 A/E 与 A/D 双初值、Voronoi 分界与 P29 离群点拉偏）、`#hierarchical`（P30 六点系统树图、Single/Average/Complete 链接对照与滑块横切）、`#dbscan`（P32 八点手算原题与 MinPts=4 边界点不扩张验证）。
+- 已接入课程首页、交互可视化目录、`14-data-mining` 卡片、L14 映射与运行索引，并新增 Node.js 独立数学模型测试 `tests/test_clustering.py`。
+
 ### 2026-10-15 图灵机课堂可视化
 
 - 新增单带 `turing_machine.html`：逐位翻转与一元加法，配合 Slide07 P9–20；支持修改输入、单步、回退、播放、预测暂停和已执行配置追踪，结果只在停机后显示。

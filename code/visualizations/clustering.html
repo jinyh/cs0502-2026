@@ -1,0 +1,2828 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; connect-src 'none'">
+<title>聚类算法：K-Means、层次聚类与 DBSCAN｜CS0502</title>
+<style>
+:root{
+  color-scheme:light;
+  --blue:#004098;
+  --blue-dark:#07316e;
+  --blue-soft:#e8f0fb;
+  --ink:#17304c;
+  --muted:#4f667c;
+  --line:#cad6e2;
+  --paper:#f3f6fa;
+  --card:#ffffff;
+  --amber:#92400e;
+  --amber-bg:#fff3df;
+  --amber-line:#e2b372;
+  --teal:#0f766e;
+  --teal-bg:#e6f6f3;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  background:var(--paper);
+  color:var(--ink);
+  font-family:'PingFang SC','Microsoft YaHei',system-ui,-apple-system,sans-serif;
+  font-size:15px;
+  line-height:1.48;
+}
+main{
+  max-width:1460px;
+  margin:0 auto;
+  padding:14px 20px 22px;
+  display:flex;
+  flex-direction:column;
+  gap:10px;
+}
+header{
+  border-top:4px solid var(--blue);
+  padding-top:8px;
+  display:flex;
+  justify-content:space-between;
+  align-items:flex-end;
+  flex-wrap:wrap;
+  gap:8px 16px;
+}
+.eyebrow{
+  margin:0;
+  color:var(--blue);
+  font-size:13px;
+  font-weight:700;
+  letter-spacing:.02em;
+}
+h1{
+  margin:2px 0 0;
+  font-size:clamp(22px,2.4vw,30px);
+  line-height:1.2;
+  color:var(--blue);
+}
+.subtitle{
+  margin:4px 0 0;
+  font-size:14px;
+  color:var(--muted);
+}
+.tabs{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  align-items:center;
+}
+.tab{
+  font:inherit;
+  font-size:14px;
+  font-weight:650;
+  padding:7px 13px;
+  min-height:38px;
+  border-radius:6px;
+  border:1px solid #9db4cb;
+  background:#fff;
+  color:var(--ink);
+  cursor:pointer;
+}
+.tab:hover{border-color:var(--blue);background:var(--blue-soft)}
+.tab[aria-selected="true"]{
+  background:var(--blue);
+  border-color:var(--blue);
+  color:#fff;
+}
+button,select{
+  font:inherit;
+  font-size:14px;
+  font-weight:600;
+  min-height:36px;
+  padding:5px 11px;
+  border:1px solid #9db4cb;
+  border-radius:6px;
+  background:#fff;
+  color:var(--ink);
+  cursor:pointer;
+}
+button:hover:not(:disabled),select:hover:not(:disabled){border-color:var(--blue);background:var(--blue-soft)}
+button.primary{background:var(--blue);border-color:var(--blue);color:#fff}
+button.primary:hover:not(:disabled){background:var(--blue-dark);border-color:var(--blue-dark)}
+button.pill[aria-pressed="true"]{
+  background:var(--blue-soft);
+  border-color:var(--blue);
+  color:var(--blue);
+}
+button:disabled{opacity:.42;cursor:default}
+button:focus-visible,select:focus-visible,input:focus-visible,a:focus-visible{
+  outline:3px solid #b45309;
+  outline-offset:2px;
+}
+label.inline{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+  font-size:13.5px;
+  color:var(--ink);
+  font-weight:600;
+}
+input[type="checkbox"]{width:16px;height:16px;accent-color:var(--blue);cursor:pointer}
+input[type="range"]{accent-color:var(--blue);cursor:pointer}
+.toolbar{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:9px 12px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px 10px;
+}
+.toolbar-group{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px;
+}
+.spacer{margin-left:auto}
+.banner{
+  background:var(--blue-soft);
+  border-left:5px solid var(--blue);
+  border-radius:0 8px 8px 0;
+  padding:9px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:3px;
+}
+.banner-main{
+  margin:0;
+  font-size:16.5px;
+  font-weight:700;
+  color:var(--ink);
+}
+.banner-prompt{
+  margin:0;
+  font-size:14.5px;
+  font-weight:600;
+  color:var(--amber);
+}
+.step-badge{
+  font-size:13px;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+  font-weight:600;
+}
+
+/* Compare 3-column grid */
+.compare-grid{
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:12px;
+  align-items:stretch;
+}
+.algo-card{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:11px 12px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  min-width:0;
+}
+.algo-head{
+  display:flex;
+  justify-content:space-between;
+  align-items:baseline;
+  gap:6px;
+  flex-wrap:wrap;
+}
+.algo-head h2{
+  margin:0;
+  font-size:18px;
+  color:var(--blue);
+}
+.principle-tag{
+  font-size:12px;
+  font-weight:650;
+  padding:2px 7px;
+  border-radius:999px;
+  background:#eef4fb;
+  color:var(--blue);
+  border:1px solid #c6d8ee;
+}
+.plot-wrap{
+  position:relative;
+  background:#fbfdff;
+  border:1px solid #d7e2ec;
+  border-radius:8px;
+  overflow:hidden;
+}
+.plot-wrap.drawable svg{cursor:crosshair}
+.plot-svg{
+  display:block;
+  width:100%;
+  height:auto;
+}
+.mini-dendro{
+  display:block;
+  width:100%;
+  height:auto;
+  border:1px dashed #c8d8e8;
+  border-radius:6px;
+  background:#f8fbff;
+}
+.veil{
+  position:absolute;
+  inset:0;
+  display:flex;
+  flex-direction:column;
+  justify-content:flex-end;
+  align-items:center;
+  padding:10px;
+  pointer-events:none;
+}
+.veil span{
+  background:rgba(255,243,223,.94);
+  border:1px solid var(--amber-line);
+  color:var(--amber);
+  font-size:13px;
+  font-weight:700;
+  padding:4px 10px;
+  border-radius:999px;
+}
+.card-controls{
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:6px 10px;
+  padding:6px 8px;
+  background:#f7fafd;
+  border:1px solid #dde7f0;
+  border-radius:6px;
+  font-size:13px;
+}
+.card-controls label{
+  display:inline-flex;
+  align-items:center;
+  gap:4px;
+  font-weight:600;
+}
+.card-controls select,.card-controls button{
+  min-height:30px;
+  padding:2px 8px;
+  font-size:13px;
+}
+.card-controls input[type="range"]{width:84px}
+.metric-row{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px 10px;
+  font-size:12.5px;
+  color:var(--muted);
+  font-variant-numeric:tabular-nums;
+}
+.metric-row strong{color:var(--ink)}
+.card-note{
+  margin:0;
+  font-size:13px;
+  color:var(--ink);
+  border-left:3px solid var(--teal);
+  padding:3px 0 3px 8px;
+  background:var(--teal-bg);
+  border-radius:0 4px 4px 0;
+}
+.card-note.warn{
+  border-left-color:#c2410c;
+  background:#fff4ee;
+}
+.takeaway{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:9px;
+  padding:10px 14px;
+  display:grid;
+  grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);
+  gap:10px 18px;
+  align-items:start;
+}
+.takeaway h3{margin:0 0 4px;font-size:15px;color:var(--blue)}
+.takeaway p{margin:0;font-size:14px;color:var(--ink)}
+.case-box{
+  background:#f6f9fd;
+  border:1px solid #d7e3ef;
+  border-radius:6px;
+  padding:7px 10px;
+  font-size:13.5px;
+}
+.case-box strong{color:var(--blue)}
+
+/* Step-mode 2-column stage */
+.step-stage{
+  display:grid;
+  grid-template-columns:minmax(0,1.18fr) minmax(340px,1fr);
+  gap:14px;
+  align-items:start;
+}
+.panel{
+  background:var(--card);
+  border:1px solid var(--line);
+  border-radius:10px;
+  padding:12px 14px;
+  min-width:0;
+}
+.panel h2{
+  margin:0 0 6px;
+  font-size:18px;
+  color:var(--blue);
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  gap:8px;
+  flex-wrap:wrap;
+}
+.panel-sub{
+  margin:0 0 8px;
+  font-size:13.5px;
+  color:var(--muted);
+}
+.legend-strip{
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 14px;
+  margin-top:8px;
+  font-size:12.5px;
+  color:var(--muted);
+  align-items:center;
+}
+.legend-item{
+  display:inline-flex;
+  align-items:center;
+  gap:5px;
+}
+.dot{
+  display:inline-block;
+  width:11px;
+  height:11px;
+  border-radius:50%;
+}
+table{
+  width:100%;
+  border-collapse:collapse;
+  font-size:13.5px;
+  font-variant-numeric:tabular-nums;
+}
+th,td{
+  padding:6px 7px;
+  border-bottom:1px solid #dce6f0;
+  text-align:left;
+}
+th{
+  background:#eef4fa;
+  color:var(--muted);
+  font-weight:650;
+  font-size:12.5px;
+}
+tr.row-active{
+  background:var(--amber-bg);
+}
+tr.row-active td{
+  font-weight:700;
+  color:#7c2d12;
+}
+.formula-box{
+  margin-top:10px;
+  padding:9px 11px;
+  background:#f4f8fc;
+  border:1px solid #d5e2ef;
+  border-radius:7px;
+  font-size:13.5px;
+  line-height:1.55;
+}
+.formula-box code{
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  font-size:13px;
+  background:#e6eff9;
+  padding:1px 4px;
+  border-radius:3px;
+}
+.badge-role{
+  display:inline-block;
+  padding:1px 7px;
+  border-radius:999px;
+  font-size:12px;
+  font-weight:700;
+}
+.role-core{background:#dbeafe;color:#1e40af;border:1px solid #93c5fd}
+.role-border{background:#ffedd5;color:#9a3412;border:1px solid #fdba74}
+.role-noise{background:#e2e8f0;color:#334155;border:1px solid #94a3b8}
+.role-pending{background:#f8fafc;color:#64748b;border:1px dashed #cbd5e1}
+.cut-control{
+  margin-top:8px;
+  padding:8px 10px;
+  background:#fff7ed;
+  border:1px solid #f4c68f;
+  border-radius:7px;
+  display:flex;
+  flex-wrap:wrap;
+  align-items:center;
+  gap:8px 12px;
+  font-size:13.5px;
+}
+.cut-control strong{color:#9a3412}
+.dist-chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:5px;
+  margin-top:6px;
+}
+.chip{
+  font-size:12.5px;
+  font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  padding:2px 7px;
+  border-radius:5px;
+  border:1px solid #cbd5e1;
+  background:#f8fafc;
+  color:#475569;
+}
+.chip.hit{
+  background:#dbeafe;
+  border-color:#60a5fa;
+  color:#1e3a8a;
+  font-weight:700;
+}
+.chip.exact{
+  background:#fef3c7;
+  border-color:#d97706;
+  color:#92400e;
+  font-weight:700;
+}
+.sse-compare{
+  margin-top:8px;
+  padding:8px 10px;
+  background:#f8fafc;
+  border:1px solid #cbd5e1;
+  border-radius:7px;
+  font-size:13px;
+}
+.sse-compare strong{color:var(--blue)}
+.svg-grid{stroke:#e2eaf2;stroke-width:1}
+.svg-axis{stroke:#7c93a8;stroke-width:1.4}
+.svg-tick{font-size:11px;fill:#62788d;font-variant-numeric:tabular-nums}
+.svg-pt-label{font-size:12px;font-weight:700;fill:#17304c;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round;pointer-events:none}
+.svg-dist-label{font-size:11px;font-weight:700;fill:#92400e;paint-order:stroke;stroke:#fff;stroke-width:3px;stroke-linejoin:round}
+footer{
+  font-size:12px;
+  color:var(--muted);
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:6px 14px;
+  border-top:1px solid var(--line);
+  padding-top:8px;
+}
+footer a{color:var(--blue);font-weight:600}
+[hidden]{display:none !important}
+@media(max-width:1080px){
+  .compare-grid{grid-template-columns:1fr}
+  .step-stage{grid-template-columns:1fr}
+  .takeaway{grid-template-columns:1fr}
+}
+@media(max-width:640px){
+  main{padding:10px 12px 18px}
+  .toolbar{padding:8px 9px}
+  .spacer{margin-left:0}
+  .tabs{width:100%}
+  .tab{flex:1 1 auto;text-align:center;padding:6px 8px;font-size:13px}
+  table{font-size:12.5px}
+  th,td{padding:5px 4px}
+}
+@media(prefers-reduced-motion:reduce){
+  *{transition:none !important;animation:none !important;scroll-behavior:auto !important}
+}
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <div>
+      <p class="eyebrow">CS0502 计算机科学导论 · Slide14 数据挖掘一（P24–P34）</p>
+      <h1>聚类算法：K-Means、层次聚类与 DBSCAN</h1>
+      <p class="subtitle">先预测，再观察：三种无监督聚类如何基于不同假设划分同一批数据点。</p>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="演示模式">
+      <button type="button" class="tab" role="tab" id="tab-compare" data-mode="compare" aria-selected="true">同分布三算法对比</button>
+      <button type="button" class="tab" role="tab" id="tab-kmeans" data-mode="kmeans" aria-selected="false">K-Means 分步（P28）</button>
+      <button type="button" class="tab" role="tab" id="tab-hierarchical" data-mode="hierarchical" aria-selected="false">层次聚类与树图（P30）</button>
+      <button type="button" class="tab" role="tab" id="tab-dbscan" data-mode="dbscan" aria-selected="false">DBSCAN 分步（P32）</button>
+      <button type="button" id="btnFullscreen" title="全屏投影">全屏</button>
+    </nav>
+  </header>
+
+  <!-- ==================== 模式一：同分布三算法对比 ==================== -->
+  <section id="view-compare" role="tabpanel" aria-labelledby="tab-compare">
+    <div class="toolbar">
+      <div class="toolbar-group" role="group" aria-label="选择数据分布案例" id="datasetButtons"></div>
+      <div class="toolbar-group spacer">
+        <button type="button" id="btnRevealCompare" class="primary">揭示三算法结果</button>
+        <label class="inline"><input type="checkbox" id="chkPredictCompare" checked>切换前先预测</label>
+        <label class="inline"><input type="checkbox" id="chkDrawPoints" checked>点击画布加点</label>
+        <button type="button" id="btnClearExtra" disabled>清除自加点</button>
+      </div>
+    </div>
+
+    <div class="banner" aria-live="polite" aria-atomic="true">
+      <p class="banner-main" id="compareMain"></p>
+      <p class="banner-prompt" id="comparePrompt"></p>
+    </div>
+
+    <div class="compare-grid">
+      <!-- K-Means Card -->
+      <article class="algo-card" aria-label="K-Means 对比结果">
+        <div class="algo-head">
+          <h2>1. K-Means（划分）</h2>
+          <span class="principle-tag">中心均值 + 凸 Voronoi 分界</span>
+        </div>
+        <div class="plot-wrap drawable" id="wrapCompareKm">
+          <svg id="svgCompareKm" class="plot-svg" viewBox="0 0 320 320" role="img" aria-label="K-Means 聚类结果图"></svg>
+          <div class="veil" id="veilKm"><span>先预测：中垂线会怎么切？</span></div>
+        </div>
+        <div class="card-controls">
+          <label>k
+            <select id="cmpKmK" aria-label="K-Means 簇数 k">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <button type="button" id="cmpKmSeed">换初值 (#1)</button>
+          <label><input type="checkbox" id="cmpKmVoronoi" checked>Voronoi 分界</label>
+        </div>
+        <div class="metric-row" id="metricsCompareKm"></div>
+        <p class="card-note" id="noteCompareKm"></p>
+      </article>
+
+      <!-- Hierarchical Card -->
+      <article class="algo-card" aria-label="层次聚类对比结果">
+        <div class="algo-head">
+          <h2>2. 层次聚类（凝聚）</h2>
+          <span class="principle-tag">逐层合并 + 树图切割</span>
+        </div>
+        <div class="plot-wrap drawable" id="wrapCompareHc">
+          <svg id="svgCompareHc" class="plot-svg" viewBox="0 0 320 320" role="img" aria-label="层次聚类结果图"></svg>
+          <div class="veil" id="veilHc"><span>先预测：不同链接怎么合并？</span></div>
+        </div>
+        <div class="card-controls">
+          <label>k
+            <select id="cmpHcK" aria-label="层次聚类切割簇数 k">
+              <option value="2">2</option>
+              <option value="3">3</option>
+              <option value="4">4</option>
+              <option value="5">5</option>
+            </select>
+          </label>
+          <label>链接
+            <select id="cmpHcLink" aria-label="层次聚类组间距离准则">
+              <option value="single">Single 最短链</option>
+              <option value="average">Average 平均链</option>
+              <option value="complete">Complete 最长链</option>
+            </select>
+          </label>
+        </div>
+        <div class="metric-row" id="metricsCompareHc"></div>
+        <p class="card-note" id="noteCompareHc"></p>
+        <svg id="svgCompareHcMini" class="mini-dendro" viewBox="0 0 320 62" role="img" aria-label="层次聚类迷你系统树图"></svg>
+      </article>
+
+      <!-- DBSCAN Card -->
+      <article class="algo-card" aria-label="DBSCAN 对比结果">
+        <div class="algo-head">
+          <h2>3. DBSCAN（密度）</h2>
+          <span class="principle-tag">ε-邻域密度链 + 标记噪声</span>
+        </div>
+        <div class="plot-wrap drawable" id="wrapCompareDb">
+          <svg id="svgCompareDb" class="plot-svg" viewBox="0 0 320 320" role="img" aria-label="DBSCAN 聚类结果图"></svg>
+          <div class="veil" id="veilDb"><span>先预测：哪些是密集簇与噪声？</span></div>
+        </div>
+        <div class="card-controls">
+          <label>ε <input type="range" id="cmpDbEps" min="0.40" max="2.60" step="0.05" value="1.15" aria-label="DBSCAN 半径 ε"><span id="cmpDbEpsVal">1.15</span></label>
+          <label>MinPts <input type="range" id="cmpDbMin" min="2" max="8" step="1" value="4" aria-label="DBSCAN 密度阈值 MinPts"><span id="cmpDbMinVal">4</span></label>
+          <label><input type="checkbox" id="cmpDbCircles" checked>ε 圈</label>
+        </div>
+        <div class="metric-row" id="metricsCompareDb"></div>
+        <p class="card-note" id="noteCompareDb"></p>
+      </article>
+    </div>
+
+    <div class="takeaway" id="compareTakeaway" hidden>
+      <div>
+        <h3>本案例原理复盘</h3>
+        <p id="takeawayPrinciple"></p>
+      </div>
+      <div class="case-box">
+        <strong>跨学科案例联想：</strong>
+        <span id="takeawayBridge"></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 模式二：K-Means 分步 ==================== -->
+  <section id="view-kmeans" role="tabpanel" aria-labelledby="tab-kmeans" hidden>
+    <div class="toolbar">
+      <label class="inline">案例
+        <select id="kmPreset" aria-label="选择 K-Means 案例">
+          <option value="slide14_ae">课件 P28：八小区（初值 A, E）</option>
+          <option value="slide14_ad">课件 P28：八小区（初值 A, D · 初值敏感）</option>
+          <option value="outlier_pull">课件 P29：离群点拉偏中心</option>
+        </select>
+      </label>
+      <button type="button" id="kmBack">← 上一步</button>
+      <button type="button" id="kmNext" class="primary">下一步 →</button>
+      <button type="button" id="kmPlay">▶ 播放</button>
+      <button type="button" id="kmReset">重置</button>
+      <label class="inline">速度
+        <select id="kmSpeed" aria-label="K-Means 播放速度">
+          <option value="1600" selected>慢</option>
+          <option value="1000">中</option>
+          <option value="600">快</option>
+        </select>
+      </label>
+      <label class="inline"><input type="checkbox" id="kmPausePredict" checked>预测处暂停</label>
+      <span class="step-badge spacer" id="kmProgress"></span>
+    </div>
+
+    <div class="banner" aria-live="polite" aria-atomic="true">
+      <p class="banner-main" id="kmMessage"></p>
+      <p class="banner-prompt" id="kmPrompt"></p>
+    </div>
+
+    <div class="step-stage">
+      <div class="panel">
+        <h2><span>平面坐标与当前划分</span><span class="principle-tag">每轮：固定中心分配 → 固定分组求均值</span></h2>
+        <p class="panel-sub" id="kmPlotCaption"></p>
+        <div class="plot-wrap">
+          <svg id="svgStepKm" class="plot-svg" viewBox="0 0 460 410" role="img" aria-label="K-Means 分步平面图"></svg>
+        </div>
+        <div class="legend-strip">
+          <span class="legend-item"><span class="dot" style="background:#004098"></span>簇 1 样本</span>
+          <span class="legend-item"><span class="dot" style="background:#c2410c"></span>簇 2 样本</span>
+          <span class="legend-item">★ 当前聚类中心</span>
+          <span class="legend-item">┄┄ 垂直平分线（Voronoi 分界）</span>
+          <span class="legend-item">──▶ 中心移动轨迹</span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2><span>计算追踪与目标函数</span><span class="step-badge" id="kmRoundBadge"></span></h2>
+        <table aria-label="K-Means 当前中心与成员表">
+          <thead>
+            <tr><th scope="col">中心</th><th scope="col">当前坐标</th><th scope="col">组内样本</th><th scope="col">簇内平方和</th></tr>
+          </thead>
+          <tbody id="kmTableBody"></tbody>
+        </table>
+        <div class="formula-box" id="kmFormula"></div>
+        <div class="sse-compare" id="kmCompareNote"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 模式三：层次聚类分步 ==================== -->
+  <section id="view-hierarchical" role="tabpanel" aria-labelledby="tab-hierarchical" hidden>
+    <div class="toolbar">
+      <label class="inline">案例
+        <select id="hcPreset" aria-label="选择层次聚类案例">
+          <option value="hier_six">课件 P30：六点凝聚与系统树图（A–F）</option>
+          <option value="hier_bridge">平行双条带：Single 与 Complete 链接对照</option>
+        </select>
+      </label>
+      <label class="inline">组间距离
+        <select id="hcLinkage" aria-label="选择组间距离准则">
+          <option value="single">Single（最短距离）</option>
+          <option value="average" selected>Average（平均距离）</option>
+          <option value="complete">Complete（最长距离）</option>
+        </select>
+      </label>
+      <button type="button" id="hcBack">← 上一步</button>
+      <button type="button" id="hcNext" class="primary">下一步 →</button>
+      <button type="button" id="hcPlay">▶ 播放</button>
+      <button type="button" id="hcReset">重置</button>
+      <label class="inline"><input type="checkbox" id="hcPausePredict" checked>预测处暂停</label>
+      <span class="step-badge spacer" id="hcProgress"></span>
+    </div>
+
+    <div class="banner" aria-live="polite" aria-atomic="true">
+      <p class="banner-main" id="hcMessage"></p>
+      <p class="banner-prompt" id="hcPrompt"></p>
+    </div>
+
+    <div class="step-stage">
+      <div class="panel">
+        <h2><span>平面点群与凝聚包络</span><span class="principle-tag">初始每点成簇，每次合并最近两簇</span></h2>
+        <p class="panel-sub" id="hcPlotCaption"></p>
+        <div class="plot-wrap">
+          <svg id="svgStepHcPoints" class="plot-svg" viewBox="0 0 460 390" role="img" aria-label="层次聚类平面点群图"></svg>
+        </div>
+        <div class="cut-control">
+          <strong>树图切割（多尺度分组）：</strong>
+          <label class="inline">保留簇数 k = <span id="hcCutVal"></span>
+            <input type="range" id="hcCutSlider" min="1" max="6" step="1" value="6" aria-label="拖动树图切割簇数 k">
+          </label>
+          <span class="step-badge" id="hcCutInfo"></span>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2><span>系统树图（Dendrogram）</span><span class="step-badge" id="hcLinkBadge"></span></h2>
+        <div class="plot-wrap">
+          <svg id="svgStepHcDendro" class="plot-svg" viewBox="0 0 430 250" role="img" aria-label="层次聚类系统树图"></svg>
+        </div>
+        <div class="formula-box" id="hcFormula"></div>
+        <table style="margin-top:8px" aria-label="层次聚类合并记录表">
+          <thead>
+            <tr><th scope="col">合并次序</th><th scope="col">合并的两个簇</th><th scope="col">组间距离 d</th></tr>
+          </thead>
+          <tbody id="hcMergeBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== 模式四：DBSCAN 分步 ==================== -->
+  <section id="view-dbscan" role="tabpanel" aria-labelledby="tab-dbscan" hidden>
+    <div class="toolbar">
+      <label class="inline">案例
+        <select id="dbPreset" aria-label="选择 DBSCAN 案例">
+          <option value="slide14_p32">课件 P32 手算练习（8 点 · ε=2, MinPts=3）</option>
+          <option value="dbscan_border">边界点不扩张演示（11 点 · ε=2, MinPts=4）</option>
+        </select>
+      </label>
+      <button type="button" id="dbBack">← 上一步</button>
+      <button type="button" id="dbNext" class="primary">下一步 →</button>
+      <button type="button" id="dbPlay">▶ 播放</button>
+      <button type="button" id="dbReset">重置</button>
+      <label class="inline">速度
+        <select id="dbSpeed" aria-label="DBSCAN 播放速度">
+          <option value="1600" selected>慢</option>
+          <option value="1000">中</option>
+          <option value="600">快</option>
+        </select>
+      </label>
+      <label class="inline"><input type="checkbox" id="dbPausePredict" checked>关键点暂停</label>
+      <span class="step-badge spacer" id="dbProgress"></span>
+    </div>
+
+    <div class="banner" aria-live="polite" aria-atomic="true">
+      <p class="banner-main" id="dbMessage"></p>
+      <p class="banner-prompt" id="dbPrompt"></p>
+    </div>
+
+    <div class="step-stage">
+      <div class="panel">
+        <h2><span>ε-邻域与核心点链式扩张</span><span class="principle-tag" id="dbRuleBadge">d² ≤ 4（含等号，计入自身）</span></h2>
+        <p class="panel-sub" id="dbPlotCaption">点击图中任意数据点可单独查看其 ε 圆与邻域距离平方。</p>
+        <div class="plot-wrap">
+          <svg id="svgStepDb" class="plot-svg" viewBox="0 0 480 390" role="img" aria-label="DBSCAN 分步平面图"></svg>
+        </div>
+        <div class="legend-strip">
+          <span class="legend-item"><span class="dot" style="background:#004098"></span>核心点（实心圆，可扩张）</span>
+          <span class="legend-item"><span class="dot" style="background:#fff;border:3px solid #004098"></span>边界点（双环，被吸收不扩张）</span>
+          <span class="legend-item"><strong style="color:#475569">×</strong> 噪声点</span>
+          <span class="legend-item">── 核心点连通边</span>
+          <span class="legend-item">⇢ 吸收边界点</span>
+        </div>
+        <div class="formula-box" id="dbInspector"></div>
+      </div>
+
+      <div class="panel">
+        <h2><span>逐点判定表（对照 P33 参考答案）</span><span class="step-badge" id="dbSummaryBadge"></span></h2>
+        <table aria-label="DBSCAN 逐点邻域与类型表">
+          <thead>
+            <tr><th scope="col">点</th><th scope="col">坐标</th><th scope="col">ε-邻域 N(p)</th><th scope="col">|N|</th><th scope="col">类型</th><th scope="col">归属</th></tr>
+          </thead>
+          <tbody id="dbTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <span>CS0502 · Slide14 P24–P34 · P28 八小区与 P32 DBSCAN 采用课件原题整数坐标，其余分布与边界不扩张示例为教学构造模型。</span>
+    <span><a id="guideLink" href="clustering-guide.md">课堂讲法与模型边界</a> · ←／→ 单步，空格播放／暂停</span>
+  </footer>
+</main>
+
+<script id="clustering-model">
+'use strict';
+const ClusteringModel = (() => {
+  const EPS_TOL = 1e-9;
+
+  function dist2(a, b) {
+    const dx = a.x - b.x;
+    const dy = a.y - b.y;
+    return dx * dx + dy * dy;
+  }
+
+  function dist(a, b) {
+    return Math.sqrt(dist2(a, b));
+  }
+
+  function round2(v) {
+    return Math.round(v * 100) / 100;
+  }
+
+  function fmtNum(v) {
+    const r = Math.round(v * 100) / 100;
+    return Number.isInteger(r) ? String(r) : r.toFixed(2).replace(/0$/, '');
+  }
+
+  function makePoints(coords, prefix = '') {
+    return coords.map((item, idx) => {
+      if (Array.isArray(item)) {
+        return { id: prefix ? `${prefix}${idx + 1}` : String.fromCharCode(65 + idx), x: item[0], y: item[1], truth: item[2] ?? null };
+      }
+      return { id: item.id, x: item.x, y: item.y, truth: item.truth ?? null };
+    });
+  }
+
+  // ---- Deterministic Compare Datasets (all within [0, 10] x [0, 10]) ----
+  function buildMoons() {
+    const pts = [];
+    // Interlocking linearly-inseparable crescents
+    for (let i = 0; i < 21; i++) {
+      const t = (0.02 + (0.96 * i) / 20) * Math.PI;
+      const r = 2.65 + (i % 2 === 0 ? 0.10 : -0.10);
+      pts.push([round2(3.8 + r * Math.cos(t)), round2(4.3 + r * Math.sin(t)), 0]);
+    }
+    for (let i = 0; i < 21; i++) {
+      const t = (1.02 + (0.96 * i) / 20) * Math.PI;
+      const r = 2.65 + (i % 2 === 0 ? 0.10 : -0.10);
+      pts.push([round2(6.2 + r * Math.cos(t)), round2(5.7 + r * Math.sin(t)), 1]);
+    }
+    // 6 isolated scatter/noise points (including one right between the two moons)
+    const noise = [[5.0, 5.0, -1], [1.0, 2.2, -1], [9.0, 7.8, -1], [1.2, 8.6, -1], [8.8, 1.4, -1], [5.0, 9.0, -1]];
+    return makePoints([...pts, ...noise], 'P');
+  }
+
+  function buildBlobs() {
+    const centers = [[2.4, 7.4, 0], [7.6, 7.2, 1], [5.0, 2.4, 2]];
+    const offsets = [
+      [0, 0], [0.55, 0.15], [-0.55, 0.25], [0.15, 0.65], [-0.2, -0.6],
+      [0.75, -0.4], [-0.7, -0.35], [0.4, 0.85], [-0.5, 0.78], [0.85, 0.45],
+      [-0.85, 0.05], [0.25, -0.82], [-0.35, -0.9], [0.62, -0.7]
+    ];
+    const pts = [];
+    for (const [cx, cy, g] of centers) {
+      for (const [dx, dy] of offsets) {
+        pts.push([round2(cx + dx), round2(cy + dy), g]);
+      }
+    }
+    return makePoints(pts, 'P');
+  }
+
+  function buildRings() {
+    const pts = [];
+    // Inner compact cluster (16 points, r <= 1.05)
+    pts.push([5.0, 5.0, 0]);
+    for (let i = 0; i < 5; i++) {
+      const a = (2 * Math.PI * i) / 5;
+      pts.push([round2(5.0 + 0.48 * Math.cos(a)), round2(5.0 + 0.48 * Math.sin(a)), 0]);
+    }
+    for (let i = 0; i < 10; i++) {
+      const a = (2 * Math.PI * i) / 10 + 0.18;
+      pts.push([round2(5.0 + 0.98 * Math.cos(a)), round2(5.0 + 0.98 * Math.sin(a)), 0]);
+    }
+    // Outer ring (36 points, r ~ 3.55, gap ~ 2.4)
+    for (let i = 0; i < 36; i++) {
+      const a = (2 * Math.PI * i) / 36;
+      const r = 3.55 + (i % 2 === 0 ? 0.12 : -0.12);
+      pts.push([round2(5.0 + r * Math.cos(a)), round2(5.0 + r * Math.sin(a)), 1]);
+    }
+    return makePoints(pts, 'P');
+  }
+
+  function buildOutliers() {
+    const pts = [];
+    const blobA = [
+      [2.1, 2.7], [2.6, 2.9], [1.7, 2.3], [2.5, 2.2], [1.9, 3.2], [2.9, 2.6],
+      [2.2, 1.9], [1.5, 2.9], [2.7, 3.3], [1.8, 1.8], [2.3, 2.5], [1.4, 2.4], [2.8, 2.1], [2.0, 3.5]
+    ];
+    const blobB = [
+      [5.5, 2.9], [6.0, 3.1], [5.1, 2.5], [5.9, 2.4], [5.3, 3.4], [6.3, 2.8],
+      [5.6, 2.1], [4.9, 3.1], [6.1, 3.5], [5.2, 2.0], [5.7, 2.7], [4.8, 2.6], [6.2, 2.3], [5.4, 3.7]
+    ];
+    const blobC = [
+      [3.1, 6.7], [3.6, 6.9], [2.7, 6.4], [3.5, 6.3], [2.9, 7.2],
+      [3.8, 6.6], [3.2, 6.1], [2.6, 7.0], [3.4, 7.3]
+    ];
+    for (const p of blobA) pts.push([p[0], p[1], 0]);
+    for (const p of blobB) pts.push([p[0], p[1], 1]);
+    for (const p of blobC) pts.push([p[0], p[1], 2]);
+    // 3 far outliers in top-right (pairwise distances > 1.35 so DBSCAN marks all 3 noise)
+    pts.push([9.3, 9.1, -1], [7.8, 9.3, -1], [9.4, 7.3, -1]);
+    return makePoints(pts, 'P');
+  }
+
+  function buildVariedDensity() {
+    const pts = [];
+    // Two tight dense clusters on the left: centers (2.1, 6.75) and (2.1, 3.65), radius ~0.66 -> edge gap ~1.78
+    const tightOffsets = [
+      [0, 0], [0.32, 0.14], [-0.32, 0.12], [0.1, 0.38], [-0.12, -0.36],
+      [0.52, -0.22], [-0.5, -0.2], [0.26, 0.54], [-0.28, 0.5], [0.56, 0.3],
+      [-0.56, 0.28], [0.2, -0.56], [-0.24, -0.54], [0.64, -0.02], [-0.64, 0.05], [0.0, 0.66]
+    ];
+    for (const [dx, dy] of tightOffsets) pts.push([round2(2.1 + dx), round2(6.75 + dy), 0]);
+    for (const [dx, dy] of tightOffsets) pts.push([round2(2.1 + dx), round2(3.65 + dy), 1]);
+    // Right sparse cluster (10 points): 4-NN ~ 1.91 (> left edge gap 1.78), internal avg span ~ 1.95 (< left center dist 3.10)
+    const sparse = [
+      [7.3, 5.2],
+      [5.95, 5.3], [8.65, 5.1], [7.2, 6.55], [7.4, 3.85],
+      [6.0, 6.6], [8.6, 6.5], [6.05, 3.9], [8.65, 3.8],
+      [7.35, 5.2 + 0.0]
+    ].slice(0, 9);
+    // Add 10th point smoothly spaced inside outer boundary
+    sparse.push([9.2, 5.25]);
+    for (const [x, y] of sparse) pts.push([x, y, 2]);
+    return makePoints(pts, 'P');
+  }
+
+  const COMPARE_DATASETS = {
+    moons: {
+      id: 'moons',
+      label: '双弯月 + 噪声（P34）',
+      points: buildMoons(),
+      defaults: { kmK: 2, kmSeed: 0, hcK: 2, hcLink: 'average', dbEps: 1.05, dbMin: 4 },
+      prompt: '先预测：两个弯月形点群之间散落 6 个点，K-Means、层次聚类和 DBSCAN 分别会怎样划分？',
+      summary: '弯月形属于非凸弯曲簇且含散落点：K-Means 的欧氏中垂线只能切出直线分界，必将两弯月拦腰截断并吞并噪声；层次聚类 Average/Complete 倾向球形也会切错，切到 Single 又容易把孤立噪声单独拆成 1 簇；DBSCAN 沿高密度弯月链式扩张，准确分出两弯月并标出全部噪声。',
+      bridge: '材料断口裂纹轨迹识别、船舶航迹带划分或单细胞流形结构发现中，样本常呈弯曲流形且混有异常测点，适合用密度聚类先剥离噪声。',
+      notes: {
+        km: { warn: true, text: '中垂线强行把两弯月劈成左右两半，且 6 个散落点被迫归入簇内。' },
+        hc: { warn: true, text: 'Average/Complete 偏球形切错弯月；若换 Single，孤立噪声会先占掉簇名额。' },
+        db: { warn: false, text: '沿密集弯月链式连通，完整分离双弯月，并将 6 个孤立点标记为 × 噪声。' }
+      }
+    },
+    blobs: {
+      id: 'blobs',
+      label: '团状球形簇',
+      points: buildBlobs(),
+      defaults: { kmK: 3, kmSeed: 0, hcK: 3, hcLink: 'average', dbEps: 1.25, dbMin: 4 },
+      prompt: '先预测：当数据是三个彼此分离、密度接近的紧凑球形团时，三种算法的结果会一致吗？',
+      summary: '当各簇近似球形、尺度与密度相近且间隔清晰时，数据分布同时满足三种算法的假设，K-Means、层次聚类与 DBSCAN 均能稳定还原出一致的三个分组。此时 K-Means 往往是最简洁高效的基线。',
+      bridge: '实验室标准化后的理化指标分群、校园/城市服务网点布点（如 Slide14 早餐供应点），若目标明确且簇呈团状，优先用 K-Means 作基线。',
+      notes: {
+        km: { warn: false, text: '中心落在三团几何中心，Voronoi 分界干净分离三簇，收敛迅速。' },
+        hc: { warn: false, text: '系统树图在 k=3 处存在明显高度间隔，三种链接准则均一致分出三簇。' },
+        db: { warn: false, text: '三团内部密度均高于阈值，无噪声误判，同样准确分出三簇。' }
+      }
+    },
+    rings: {
+      id: 'rings',
+      label: '同心圆环',
+      points: buildRings(),
+      defaults: { kmK: 2, kmSeed: 0, hcK: 2, hcLink: 'single', dbEps: 1.35, dbMin: 4 },
+      prompt: '先预测：一个实心内核被外围圆环包围，K-Means 换再多次初始中心能把内外环分开吗？',
+      summary: '内核与外环的几何中心几乎重合！K-Means 划分出的每个区域必然是凸多边形，不可能把“外环”包在“内核”外面，无论怎么换初值都会劈穿两环。DBSCAN 和无噪声时的 Single 层次聚类只依赖局部近邻连通，因此能沿外环一圈接通，完美分离内外环。',
+      bridge: '雷达/声呐回波分层、同心光学衍射环或细胞核与细胞质边界分割，需借助局部近邻连通性或先做极坐标特征变换。',
+      notes: {
+        km: { warn: true, text: '凸分界无法包围内环，点击“换初值”也只会在不同方向劈开内外两环。' },
+        hc: { warn: false, text: 'Single（最短链）沿外环近邻接通可分内外环；切到 Complete/Average 立刻失效！' },
+        db: { warn: false, text: '内团与外环各自密度连通且中间空隙大于 ε，轻松分离内外环。' }
+      }
+    },
+    outliers: {
+      id: 'outliers',
+      label: '远端离群点（P29）',
+      points: buildOutliers(),
+      defaults: { kmK: 3, kmSeed: 0, hcK: 3, hcLink: 'complete', dbEps: 1.15, dbMin: 4 },
+      prompt: '先预测：右上角多出 3 个远离主体的异常点，K-Means 的均值中心和分组会发生什么变化？',
+      summary: '呼应 Slide14 P29：K-Means 最小化平方距离和，远端离群点权重极大，不仅会把中心拉偏，还可能“抢走”一个宝贵的簇名额，迫使下方两个真实团簇被合并。DBSCAN 不要求所有点入簇，直接将 3 个异常点判为 × 噪声，保护主体结构。',
+      bridge: '传感器故障尖峰、临床检验异常值或工业设备预测维护中，先做异常检测或使用抗噪聚类，能避免极少数坏点扭曲整体分组。',
+      notes: {
+        km: { warn: true, text: '平方距离放大远点影响：3 个离群点抢占中心或拉偏均值，扭曲下方主簇。' },
+        hc: { warn: true, text: '强行切为 k=3 时，离群点常在树图最高处才合并，容易挤占正常簇名额。' },
+        db: { warn: false, text: '3 个远端点的 ε-邻域均不足 MinPts，自动标为 × 噪声，三个主簇完好保留。' }
+      }
+    },
+    varied_density: {
+      id: 'varied_density',
+      label: '密度不均（DBSCAN 局限）',
+      points: buildVariedDensity(),
+      defaults: { kmK: 3, kmSeed: 0, hcK: 3, hcLink: 'average', dbEps: 0.85, dbMin: 4 },
+      prompt: '先预测：左侧是两个紧邻的高密度小簇，右侧是一个稀疏大簇。把 DBSCAN 的 ε 调小或调大，会出现什么两难？',
+      summary: '没有“通吃一切”的算法！DBSCAN 使用全局统一的 (ε, MinPts)：ε 较小时（如 0.85）右侧稀疏簇全变噪声；拖动 ε 增大到 ~2.00 捞回稀疏簇时，左侧两个致密簇却被粘成了一块！此时 K-Means 与 Average 层次聚类反而更稳健。',
+      bridge: '城市人口热区（极密）与郊区站点（稀疏）并存，或天体星团与星系晕同场分析时，单一全局密度阈值会失效，需改用多尺度/自适应方法。',
+      notes: {
+        km: { warn: false, text: '不依赖统一局部密度阈值，k=3 可稳健分开左二密簇与右侧稀疏大簇。' },
+        hc: { warn: false, text: 'Average / Complete 层次聚类同样能稳定识别这三个密度不同的团簇。' },
+        db: { warn: true, text: '试着拖动 ε 滑块：小 ε 漏掉右侧稀疏簇，大 ε 把左侧两密簇粘连在一起！' }
+      }
+    }
+  };
+
+  // ---- Step-mode Presets (Exact Slide14 alignment) ----
+  const KMEANS_STEP_PRESETS = {
+    slide14_ae: {
+      id: 'slide14_ae',
+      title: 'Slide14 P28：八个小区的 K-means（初始中心 A, E）',
+      caption: '西侧小区 A(1,1) B(1,2) C(1,8) D(1,9)；东侧小区 E(9,1) F(9,2) G(9,8) H(9,9)。所有小区等权，使用欧氏平方距离。',
+      bounds: { xMin: 0, xMax: 10, yMin: 0, yMax: 10 },
+      points: makePoints([[1,1],[1,2],[1,8],[1,9],[9,1],[9,2],[9,8],[9,9]]),
+      initIndices: [0, 4],
+      focusPoint: 3, // D(1,9)
+      compareHint: '对照 P28 两组初值：初值 (A, E) 东西分群，收敛中心 (1, 5) 与 (9, 5)，总 SSE = 100；切换到初值 (A, D) 看看南北分群的 SSE = 130！'
+    },
+    slide14_ad: {
+      id: 'slide14_ad',
+      title: 'Slide14 P28：八个小区的 K-means（初始中心 A, D）',
+      caption: '完全相同的 8 个小区，仅把初始中心从 (A, E) 换成 (A, D)，观察分组与 SSE 如何改变。',
+      bounds: { xMin: 0, xMax: 10, yMin: 0, yMax: 10 },
+      points: makePoints([[1,1],[1,2],[1,8],[1,9],[9,1],[9,2],[9,8],[9,9]]),
+      initIndices: [0, 3],
+      focusPoint: 4, // E(9,1)
+      compareHint: '初值敏感验证：同 8 个点、同 k=2，初值 (A, D) 收敛于 (5, 1.5) 与 (5, 8.5)，总 SSE = 130 > 100，陷入了更差的局部最优！'
+    },
+    outlier_pull: {
+      id: 'outlier_pull',
+      title: 'Slide14 P29：离群点拉偏中心（均值对极端值敏感）',
+      caption: '两个紧致小区团 {A..D}、{E..H} 外加 1 个远端异常点 I(9.5, 9.5)。无离群点时团 2 中心为 (6, 6)。',
+      bounds: { xMin: 0, xMax: 10, yMin: 0, yMax: 10 },
+      points: makePoints([[1.5,2.5],[2.5,2.5],[1.5,3.5],[2.5,3.5],[5.5,5.5],[6.5,5.5],[5.5,6.5],[6.5,6.5],[9.5,9.5]]),
+      initIndices: [0, 4],
+      focusPoint: 8, // I(9.5, 9.5)
+      ghostCenter: { x: 6, y: 6, label: '无离群点原中心 (6, 6)' },
+      compareHint: '原理提示：K-Means 用算术均值更新中心，单一个远端离群点 I(9.5, 9.5) 就把右簇中心从 (6, 6) 拽偏到 (6.7, 6.7)。'
+    }
+  };
+
+  const HIER_STEP_PRESETS = {
+    hier_six: {
+      id: 'hier_six',
+      title: 'Slide14 P30：六点凝聚与系统树图（A–F）',
+      caption: '与课件 P30 系统树图结构一致：先合并 (A,B)、(C,D)、(E,F)，再合并 {A,B,C,D}，最后合并为整体。',
+      bounds: { xMin: 0, xMax: 10, yMin: 0, yMax: 7 },
+      points: makePoints([[1.5,2.0],[2.5,2.0],[1.4,4.6],[2.7,4.6],[7.6,2.5],[7.6,4.1]])
+    },
+    hier_bridge: {
+      id: 'hier_bridge',
+      title: '平行双条带：Single（链式）vs Complete（紧致）对比',
+      caption: '上下两条平行点带（行内间距 1.8–2.05，行间垂直间距 3.0）。切换“组间距离”观察 k=2 切割为何出现横切与纵切之别！',
+      bounds: { xMin: 0, xMax: 9, yMin: 1, yMax: 9 },
+      points: makePoints([[1.4,6.5],[3.2,6.5],[5.1,6.5],[7.1,6.5],[1.4,3.5],[3.25,3.5],[5.2,3.5],[7.25,3.5]])
+    }
+  };
+
+  const DBSCAN_STEP_PRESETS = {
+    slide14_p32: {
+      id: 'slide14_p32',
+      title: 'Slide14 P32–P33：DBSCAN 课堂手算原题',
+      caption: 'ε = 2（欧氏距离），MinPts = 3；邻域计入自身，用距离平方 d² ≤ 4（含等号）判断。',
+      bounds: { xMin: 0, xMax: 10, yMin: 0, yMax: 7 },
+      eps: 2,
+      minPts: 3,
+      points: makePoints([
+        { id: 'A', x: 2, y: 2 }, { id: 'B', x: 2, y: 4 }, { id: 'C', x: 3, y: 3 }, { id: 'D', x: 0, y: 2 },
+        { id: 'E', x: 8, y: 2 }, { id: 'F', x: 8, y: 4 }, { id: 'G', x: 9, y: 3 }, { id: 'H', x: 5, y: 6 }
+      ]),
+      checkpointIds: ['B', 'D', 'H']
+    },
+    dbscan_border: {
+      id: 'dbscan_border',
+      title: '进阶验证：边界点不向外扩张、也不桥接两组核心点',
+      caption: 'ε = 2（d² ≤ 4），MinPts = 4（计入自身）。观察 E(5,3) 虽同时挨着核心点 D 与 F，以及 J(2,6) 挨着 K(2,8)，但二者均非核心点，不触发扩张！',
+      bounds: { xMin: 0, xMax: 10, yMin: 0, yMax: 9 },
+      eps: 2,
+      minPts: 4,
+      points: makePoints([
+        { id: 'A', x: 1, y: 3 }, { id: 'B', x: 2, y: 4 }, { id: 'C', x: 2, y: 2 }, { id: 'D', x: 3, y: 3 },
+        { id: 'E', x: 5, y: 3 },
+        { id: 'F', x: 7, y: 3 }, { id: 'G', x: 8, y: 4 }, { id: 'H', x: 8, y: 2 }, { id: 'I', x: 9, y: 3 },
+        { id: 'J', x: 2, y: 6 }, { id: 'K', x: 2, y: 8 }
+      ]),
+      checkpointIds: ['E', 'J', 'K']
+    }
+  };
+
+  // ---- K-Means Engine ----
+  function pickDeterministicInitialCenters(points, k, seed = 0) {
+    const n = points.length;
+    if (k < 1 || k > n) throw Error(`无效簇数 k=${k}`);
+    // Deterministic seeded selection spread across indices (reproducible across browsers & Node)
+    const chosen = [];
+    const start = ((seed * 7) % n + n) % n;
+    chosen.push(start);
+    if (seed % 2 === 0) {
+      // Deterministic farthest-point style seeding from rotated start for stable diverse seeds
+      while (chosen.length < k) {
+        let bestIdx = -1;
+        let bestScore = -1;
+        for (let i = 0; i < n; i++) {
+          if (chosen.includes(i)) continue;
+          let minD = Infinity;
+          for (const c of chosen) minD = Math.min(minD, dist2(points[i], points[c]));
+          if (minD > bestScore + EPS_TOL) {
+            bestScore = minD;
+            bestIdx = i;
+          }
+        }
+        chosen.push(bestIdx);
+      }
+    } else {
+      // Strided / close-start seeding to expose sensitivity to initial centers!
+      const stride = Math.max(1, Math.floor((seed + 1) * 3) % n);
+      let cursor = start;
+      while (chosen.length < k) {
+        cursor = (cursor + stride) % n;
+        while (chosen.includes(cursor)) cursor = (cursor + 1) % n;
+        chosen.push(cursor);
+      }
+    }
+    return chosen.map(i => ({ x: points[i].x, y: points[i].y }));
+  }
+
+  function computeSSE(points, centers, labels) {
+    let total = 0;
+    const perCluster = centers.map(() => 0);
+    for (let i = 0; i < points.length; i++) {
+      const c = labels[i];
+      const d = dist2(points[i], centers[c]);
+      total += d;
+      perCluster[c] += d;
+    }
+    return { total, perCluster };
+  }
+
+  function runKMeans(points, k, initSpec = 0, maxIter = 30) {
+    if (!points.length) throw Error('点集不能为空');
+    const kk = Math.min(Math.max(1, Number(k)), points.length);
+    let centers;
+    if (Array.isArray(initSpec)) {
+      centers = initSpec.map(item =>
+        typeof item === 'number' ? { x: points[item].x, y: points[item].y } : { x: item.x, y: item.y }
+      );
+    } else {
+      centers = pickDeterministicInitialCenters(points, kk, Number(initSpec) || 0);
+    }
+    const frames = [{
+      phase: 'init',
+      round: 0,
+      centers: centers.map(c => ({ ...c })),
+      prevCenters: null,
+      labels: null,
+      sse: null,
+      perClusterSSE: null,
+      checkpoint: true,
+      stable: false
+    }];
+
+    let finalLabels = new Array(points.length).fill(0);
+    let iterations = 0;
+
+    for (let round = 1; round <= maxIter; round++) {
+      iterations = round;
+      const labels = points.map(p => {
+        let best = 0;
+        let bestD = dist2(p, centers[0]);
+        for (let c = 1; c < centers.length; c++) {
+          const d = dist2(p, centers[c]);
+          if (d < bestD - EPS_TOL) {
+            bestD = d;
+            best = c;
+          }
+        }
+        return best;
+      });
+      const assignSSE = computeSSE(points, centers, labels);
+      frames.push({
+        phase: 'assign',
+        round,
+        centers: centers.map(c => ({ ...c })),
+        prevCenters: null,
+        labels: [...labels],
+        sse: assignSSE.total,
+        perClusterSSE: assignSSE.perCluster,
+        checkpoint: round === 1,
+        stable: false
+      });
+
+      const updated = centers.map((oldCenter, c) => {
+        const members = points.filter((_, idx) => labels[idx] === c);
+        if (!members.length) {
+          // Empty-cluster guard: pick the point farthest from its assigned center deterministically
+          let farthestIdx = 0;
+          let maxD = -1;
+          for (let i = 0; i < points.length; i++) {
+            const d = dist2(points[i], centers[labels[i]]);
+            if (d > maxD) { maxD = d; farthestIdx = i; }
+          }
+          return { x: points[farthestIdx].x, y: points[farthestIdx].y };
+        }
+        const sx = members.reduce((s, p) => s + p.x, 0);
+        const sy = members.reduce((s, p) => s + p.y, 0);
+        return { x: sx / members.length, y: sy / members.length };
+      });
+
+      const stable = updated.every((c, idx) => dist2(c, centers[idx]) < EPS_TOL);
+      const updSSE = computeSSE(points, updated, labels);
+      frames.push({
+        phase: stable ? 'done' : 'update',
+        round,
+        centers: updated.map(c => ({ ...c })),
+        prevCenters: centers.map(c => ({ ...c })),
+        labels: [...labels],
+        sse: updSSE.total,
+        perClusterSSE: updSSE.perCluster,
+        checkpoint: false,
+        stable
+      });
+
+      finalLabels = labels;
+      centers = updated;
+      if (stable) break;
+    }
+
+    const last = frames[frames.length - 1];
+    return {
+      frames,
+      finalLabels,
+      finalCenters: last.centers,
+      sse: last.sse,
+      iterations
+    };
+  }
+
+  // Exact Voronoi polygons via Sutherland-Hodgman half-plane clipping inside bounds
+  function voronoiPolygons(centers, bounds = { xMin: 0, xMax: 10, yMin: 0, yMax: 10 }) {
+    const base = [
+      { x: bounds.xMin, y: bounds.yMin },
+      { x: bounds.xMax, y: bounds.yMin },
+      { x: bounds.xMax, y: bounds.yMax },
+      { x: bounds.xMin, y: bounds.yMax }
+    ];
+    return centers.map((ci, i) => {
+      let poly = base.map(p => ({ ...p }));
+      for (let j = 0; j < centers.length; j++) {
+        if (i === j || poly.length === 0) continue;
+        const cj = centers[j];
+        const a = 2 * (cj.x - ci.x);
+        const b = 2 * (cj.y - ci.y);
+        const c = (cj.x * cj.x + cj.y * cj.y) - (ci.x * ci.x + ci.y * ci.y);
+        const next = [];
+        for (let k = 0; k < poly.length; k++) {
+          const p = poly[k];
+          const q = poly[(k + 1) % poly.length];
+          const fp = a * p.x + b * p.y - c;
+          const fq = a * q.x + b * q.y - c;
+          const pIn = fp <= EPS_TOL;
+          const qIn = fq <= EPS_TOL;
+          if (pIn && qIn) {
+            next.push(q);
+          } else if (pIn && !qIn) {
+            const t = fp / (fp - fq);
+            next.push({ x: p.x + t * (q.x - p.x), y: p.y + t * (q.y - p.y) });
+          } else if (!pIn && qIn) {
+            const t = fp / (fp - fq);
+            next.push({ x: p.x + t * (q.x - p.x), y: p.y + t * (q.y - p.y) });
+            next.push(q);
+          }
+        }
+        poly = next;
+      }
+      return poly;
+    });
+  }
+
+  // ---- Hierarchical (Agglomerative) Engine ----
+  function clusterLinkDistance(membersA, membersB, pairDists, linkage) {
+    if (linkage === 'single') {
+      let m = Infinity;
+      let pair = [membersA[0], membersB[0]];
+      for (const a of membersA) {
+        for (const b of membersB) {
+          const d = pairDists[a][b];
+          if (d < m - EPS_TOL) { m = d; pair = [a, b]; }
+        }
+      }
+      return { distance: m, pair };
+    }
+    if (linkage === 'complete') {
+      let m = -Infinity;
+      let pair = [membersA[0], membersB[0]];
+      for (const a of membersA) {
+        for (const b of membersB) {
+          const d = pairDists[a][b];
+          if (d > m + EPS_TOL) { m = d; pair = [a, b]; }
+        }
+      }
+      return { distance: m, pair };
+    }
+    if (linkage === 'average') {
+      let sum = 0;
+      let count = 0;
+      let bestPair = [membersA[0], membersB[0]];
+      let bestMin = Infinity;
+      for (const a of membersA) {
+        for (const b of membersB) {
+          const d = pairDists[a][b];
+          sum += d;
+          count += 1;
+          if (d < bestMin) { bestMin = d; bestPair = [a, b]; }
+        }
+      }
+      return { distance: sum / count, pair: bestPair };
+    }
+    throw Error(`不支持的链接准则: ${linkage}`);
+  }
+
+  function runHierarchical(points, linkage = 'average') {
+    const n = points.length;
+    if (n < 1) throw Error('点集不能为空');
+    const pairDists = Array.from({ length: n }, (_, i) =>
+      Array.from({ length: n }, (_, j) => (i === j ? 0 : dist(points[i], points[j])))
+    );
+
+    let active = points.map((p, i) => ({
+      nodeId: i,
+      members: [i],
+      order: [i],
+      height: 0,
+      left: null,
+      right: null,
+      stepIndex: 0
+    }));
+
+    const merges = [];
+    const stepClusters = [active.map(c => [...c.members])];
+    let nextNodeId = n;
+
+    for (let step = 1; step < n; step++) {
+      let bestI = 0;
+      let bestJ = 1;
+      let bestDist = Infinity;
+      let bestPair = [0, 1];
+      for (let i = 0; i < active.length; i++) {
+        for (let j = i + 1; j < active.length; j++) {
+          const res = clusterLinkDistance(active[i].members, active[j].members, pairDists, linkage);
+          if (res.distance < bestDist - EPS_TOL) {
+            bestDist = res.distance;
+            bestI = i;
+            bestJ = j;
+            bestPair = res.pair;
+          }
+        }
+      }
+      const left = active[bestI];
+      const right = active[bestJ];
+      const merged = {
+        nodeId: nextNodeId++,
+        members: [...left.members, ...right.members].sort((a, b) => a - b),
+        order: [...left.order, ...right.order],
+        height: bestDist,
+        left,
+        right,
+        stepIndex: step
+      };
+      merges.push({
+        step,
+        leftMembers: [...left.members],
+        rightMembers: [...right.members],
+        mergedMembers: [...merged.members],
+        distance: bestDist,
+        closestPair: bestPair,
+        node: merged
+      });
+      active = active.filter((_, idx) => idx !== bestI && idx !== bestJ);
+      active.push(merged);
+      active.sort((a, b) => a.members[0] - b.members[0]);
+      stepClusters.push(active.map(c => [...c.members]));
+    }
+
+    return {
+      n,
+      linkage,
+      merges,
+      root: active[0],
+      leafOrder: active[0].order,
+      stepClusters
+    };
+  }
+
+  function cutDendrogram(hier, k) {
+    const kk = Math.min(Math.max(1, Number(k)), hier.n);
+    const mergesDone = hier.n - kk;
+    const groups = hier.stepClusters[mergesDone];
+    const labels = new Array(hier.n).fill(0);
+    groups.forEach((members, cid) => {
+      for (const idx of members) labels[idx] = cid;
+    });
+    const lastHeight = mergesDone > 0 ? hier.merges[mergesDone - 1].distance : 0;
+    const nextHeight = mergesDone < hier.merges.length ? hier.merges[mergesDone].distance : (lastHeight * 1.12 || 1);
+    const cutHeight = mergesDone === 0 ? nextHeight * 0.45 : (lastHeight + nextHeight) / 2;
+    return {
+      k: kk,
+      mergesDone,
+      groups,
+      labels,
+      lastHeight,
+      nextHeight,
+      cutHeight,
+      sizes: groups.map(g => g.length)
+    };
+  }
+
+  // ---- DBSCAN Engine ----
+  function runDBSCAN(points, eps, minPts, checkpointIds = []) {
+    const n = points.length;
+    if (eps <= 0) throw Error('ε 必须大于 0');
+    const minP = Math.max(1, Math.round(Number(minPts)));
+    const eps2 = eps * eps;
+
+    const neighbors = points.map((p, i) => {
+      const list = [];
+      for (let j = 0; j < n; j++) {
+        if (dist2(p, points[j]) <= eps2 + EPS_TOL) list.push(j);
+      }
+      return list;
+    });
+
+    const isCore = neighbors.map(list => list.length >= minP);
+    const roles = points.map((_, i) => {
+      if (isCore[i]) return 'core';
+      if (neighbors[i].some(j => isCore[j])) return 'border';
+      return 'noise';
+    });
+
+    // Core connected components (matches Slide14 P31 pseudocode & check_dm1.py)
+    const coreComp = new Array(n).fill(-1);
+    const coreGroups = [];
+    const coreEdgesPerCluster = [];
+    for (let i = 0; i < n; i++) {
+      if (!isCore[i] || coreComp[i] !== -1) continue;
+      const cid = coreGroups.length;
+      const stack = [i];
+      const members = [];
+      const edges = [];
+      const edgeSeen = new Set();
+      coreComp[i] = cid;
+      while (stack.length) {
+        const u = stack.pop();
+        members.push(u);
+        for (const v of neighbors[u]) {
+          if (!isCore[v] || v === u) continue;
+          const key = u < v ? `${u}-${v}` : `${v}-${u}`;
+          if (!edgeSeen.has(key)) { edgeSeen.add(key); edges.push([Math.min(u, v), Math.max(u, v)]); }
+          if (coreComp[v] === -1) {
+            coreComp[v] = cid;
+            stack.push(v);
+          }
+        }
+      }
+      members.sort((a, b) => a - b);
+      coreGroups.push(members);
+      coreEdgesPerCluster.push(edges);
+    }
+
+    // Assign each border point to the core cluster with strongest connection (most core neighbors, tie-break nearest core then smallest cluster id)
+    const labels = [...coreComp];
+    const borderLinks = []; // [coreIdx, borderIdx, clusterId]
+    for (let i = 0; i < n; i++) {
+      if (roles[i] !== 'border') continue;
+      const touchingCores = neighbors[i].filter(j => isCore[j]);
+      const counts = new Map();
+      const nearest = new Map();
+      for (const cIdx of touchingCores) {
+        const cid = coreComp[cIdx];
+        counts.set(cid, (counts.get(cid) || 0) + 1);
+        const d = dist2(points[i], points[cIdx]);
+        if (!nearest.has(cid) || d < nearest.get(cid).d - EPS_TOL) {
+          nearest.set(cid, { d, coreIdx: cIdx });
+        }
+      }
+      let bestCid = -1;
+      let bestCount = -1;
+      let bestDist = Infinity;
+      for (const [cid, cnt] of counts.entries()) {
+        const d = nearest.get(cid).d;
+        if (cnt > bestCount || (cnt === bestCount && (d < bestDist - EPS_TOL || (Math.abs(d - bestDist) <= EPS_TOL && cid < bestCid)))) {
+          bestCid = cid;
+          bestCount = cnt;
+          bestDist = d;
+        }
+      }
+      labels[i] = bestCid;
+      borderLinks.push({ from: nearest.get(bestCid).coreIdx, to: i, clusterId: bestCid });
+    }
+
+    const clusters = coreGroups.map((cores, cid) => {
+      const members = [...cores];
+      for (let i = 0; i < n; i++) {
+        if (roles[i] === 'border' && labels[i] === cid) members.push(i);
+      }
+      return members.sort((a, b) => a - b);
+    });
+    const noise = [];
+    for (let i = 0; i < n; i++) if (roles[i] === 'noise') noise.push(i);
+
+    // Build step-by-step pedagogical frames
+    const frames = [];
+    const cpSet = new Set(checkpointIds);
+
+    frames.push({
+      phase: 'intro',
+      activePoint: null,
+      revealedCount: 0,
+      revealedRoles: new Array(n).fill(null),
+      revealedLabels: new Array(n).fill(null),
+      activeCoreEdges: [],
+      activeBorderLinks: [],
+      checkpoint: false
+    });
+
+    // Phase 1: Inspect each point's ε-neighborhood
+    const knownRoles = new Array(n).fill(null);
+    for (let i = 0; i < n; i++) {
+      const id = points[i].id;
+      if (cpSet.has(id)) {
+        frames.push({
+          phase: 'inspect-predict',
+          activePoint: i,
+          revealedCount: i,
+          revealedRoles: [...knownRoles],
+          revealedLabels: new Array(n).fill(null),
+          activeCoreEdges: [],
+          activeBorderLinks: [],
+          checkpoint: true
+        });
+      }
+      // Show exact neighborhood & core vs non-core decision (border vs noise finalizes once all cores are known or immediately when core neighbor known)
+      knownRoles[i] = roles[i];
+      frames.push({
+        phase: 'inspect-reveal',
+        activePoint: i,
+        revealedCount: i + 1,
+        revealedRoles: [...knownRoles],
+        revealedLabels: new Array(n).fill(null),
+        activeCoreEdges: [],
+        activeBorderLinks: [],
+        checkpoint: false
+      });
+    }
+
+    // Phase 2: Expand each core connected component & absorb border points
+    const knownLabels = new Array(n).fill(null);
+    const shownEdges = [];
+    const shownBorders = [];
+    for (let cid = 0; cid < clusters.length; cid++) {
+      for (const u of coreGroups[cid]) knownLabels[u] = cid;
+      shownEdges.push(...coreEdgesPerCluster[cid].map(e => ({ from: e[0], to: e[1], clusterId: cid })));
+      frames.push({
+        phase: 'expand-core',
+        clusterId: cid,
+        activePoint: null,
+        revealedCount: n,
+        revealedRoles: [...roles],
+        revealedLabels: [...knownLabels],
+        activeCoreEdges: [...shownEdges],
+        activeBorderLinks: [...shownBorders],
+        checkpoint: false
+      });
+      const cidBorders = borderLinks.filter(b => b.clusterId === cid);
+      if (cidBorders.length) {
+        for (const b of cidBorders) knownLabels[b.to] = cid;
+        shownBorders.push(...cidBorders);
+        frames.push({
+          phase: 'absorb-border',
+          clusterId: cid,
+          activePoint: null,
+          revealedCount: n,
+          revealedRoles: [...roles],
+          revealedLabels: [...knownLabels],
+          activeCoreEdges: [...shownEdges],
+          activeBorderLinks: [...shownBorders],
+          checkpoint: false
+        });
+      }
+    }
+
+    // Finalize noise points
+    for (const idx of noise) knownLabels[idx] = -1;
+    frames.push({
+      phase: 'done',
+      activePoint: null,
+      revealedCount: n,
+      revealedRoles: [...roles],
+      revealedLabels: [...labels],
+      activeCoreEdges: [...shownEdges],
+      activeBorderLinks: [...shownBorders],
+      checkpoint: false
+    });
+
+    return {
+      eps,
+      minPts: minP,
+      neighbors,
+      isCore,
+      roles,
+      labels,
+      clusters,
+      coreGroups,
+      coreEdgesPerCluster,
+      borderLinks,
+      noise,
+      frames
+    };
+  }
+
+  // ---- 2D Convex Hull (Andrew's monotone chain) for cluster envelopes ----
+  function convexHull(pts) {
+    if (pts.length <= 2) return pts.map(p => ({ x: p.x, y: p.y }));
+    const sorted = [...pts].sort((a, b) => a.x !== b.x ? a.x - b.x : a.y - b.y);
+    const cross = (o, a, b) => (a.x - o.x) * (b.y - o.y) - (a.y - o.y) * (b.x - o.x);
+    const lower = [];
+    for (const p of sorted) {
+      while (lower.length >= 2 && cross(lower[lower.length - 2], lower[lower.length - 1], p) <= 0) lower.pop();
+      lower.push(p);
+    }
+    const upper = [];
+    for (let i = sorted.length - 1; i >= 0; i--) {
+      const p = sorted[i];
+      while (upper.length >= 2 && cross(upper[upper.length - 2], upper[upper.length - 1], p) <= 0) upper.pop();
+      upper.push(p);
+    }
+    upper.pop();
+    lower.pop();
+    return lower.concat(upper);
+  }
+
+  function compareAll(datasetId, extraPoints = [], overrides = {}) {
+    const preset = COMPARE_DATASETS[datasetId];
+    if (!preset) throw Error(`未知数据集: ${datasetId}`);
+    const basePoints = preset.points.map(p => ({ ...p }));
+    const added = extraPoints.map((p, i) => ({ id: `U${i + 1}`, x: round2(p.x), y: round2(p.y), truth: null, custom: true }));
+    const points = [...basePoints, ...added];
+    const params = { ...preset.defaults, ...overrides };
+    const km = runKMeans(points, params.kmK, params.kmSeed);
+    const hcTree = runHierarchical(points, params.hcLink);
+    const hcCut = cutDendrogram(hcTree, params.hcK);
+    const db = runDBSCAN(points, params.dbEps, params.dbMin);
+    return { preset, points, params, km, hcTree, hcCut, db };
+  }
+
+  return {
+    COMPARE_DATASETS,
+    KMEANS_STEP_PRESETS,
+    HIER_STEP_PRESETS,
+    DBSCAN_STEP_PRESETS,
+    dist2,
+    dist,
+    fmtNum,
+    runKMeans,
+    voronoiPolygons,
+    runHierarchical,
+    cutDendrogram,
+    runDBSCAN,
+    convexHull,
+    compareAll
+  };
+})();
+</script>
+
+<script>
+'use strict';
+(() => {
+  const M = ClusteringModel;
+  const $ = id => document.getElementById(id);
+  const NS = 'http://www.w3.org/2000/svg';
+
+  if (location.protocol !== 'file:' && location.pathname.includes('/cs0502-2026/')) {
+    $('guideLink').setAttribute('href', 'clustering-guide/');
+  }
+
+  const PALETTE = [
+    { stroke: '#004098', fill: '#2563eb', tint: 'rgba(37,99,235,0.12)', light: '#dbeafe' },
+    { stroke: '#c2410c', fill: '#ea580c', tint: 'rgba(234,88,12,0.12)', light: '#ffedd5' },
+    { stroke: '#0f766e', fill: '#0d9488', tint: 'rgba(13,148,136,0.12)', light: '#ccfbf1' },
+    { stroke: '#6d28d9', fill: '#7c3aed', tint: 'rgba(124,58,237,0.12)', light: '#ede9fe' },
+    { stroke: '#a16207', fill: '#ca8a04', tint: 'rgba(202,138,4,0.13)', light: '#fef9c3' },
+    { stroke: '#be185d', fill: '#db2777', tint: 'rgba(219,39,119,0.11)', light: '#fce7f3' }
+  ];
+  const colorOf = idx => PALETTE[((idx % PALETTE.length) + PALETTE.length) % PALETTE.length];
+
+  function el(tag, attrs = {}, text) {
+    const node = document.createElementNS(NS, tag);
+    for (const [k, v] of Object.entries(attrs)) node.setAttribute(k, String(v));
+    if (text !== undefined) node.textContent = text;
+    return node;
+  }
+
+  // Uniform 1:1 pixel-per-unit transform so Euclidean circles are ALWAYS exact circles
+  function makeTransform(bounds, width, height, pad = { l: 34, r: 16, t: 16, b: 30 }) {
+    const innerW = width - pad.l - pad.r;
+    const innerH = height - pad.t - pad.b;
+    const spanX = bounds.xMax - bounds.xMin;
+    const spanY = bounds.yMax - bounds.yMin;
+    const scale = Math.min(innerW / spanX, innerH / spanY);
+    const usedW = spanX * scale;
+    const usedH = spanY * scale;
+    const ox = pad.l + (innerW - usedW) / 2;
+    const oy = pad.t + (innerH - usedH) / 2;
+    return {
+      scale,
+      ox,
+      oy,
+      usedW,
+      usedH,
+      bounds,
+      sx: x => ox + (x - bounds.xMin) * scale,
+      sy: y => oy + (bounds.yMax - y) * scale,
+      ix: px => bounds.xMin + (px - ox) / scale,
+      iy: py => bounds.yMax - (py - oy) / scale
+    };
+  }
+
+  function drawGrid(svg, tr, step = 2, showAxes = true) {
+    const { bounds, sx, sy } = tr;
+    const g = el('g');
+    for (let x = Math.ceil(bounds.xMin); x <= bounds.xMax; x += step) {
+      g.append(el('line', { x1: sx(x), y1: sy(bounds.yMin), x2: sx(x), y2: sy(bounds.yMax), class: 'svg-grid' }));
+      if (showAxes) g.append(el('text', { x: sx(x), y: sy(bounds.yMin) + 15, 'text-anchor': 'middle', class: 'svg-tick' }, String(x)));
+    }
+    for (let y = Math.ceil(bounds.yMin); y <= bounds.yMax; y += step) {
+      g.append(el('line', { x1: sx(bounds.xMin), y1: sy(y), x2: sx(bounds.xMax), y2: sy(y), class: 'svg-grid' }));
+      if (showAxes) g.append(el('text', { x: sx(bounds.xMin) - 7, y: sy(y) + 4, 'text-anchor': 'end', class: 'svg-tick' }, String(y)));
+    }
+    g.append(el('rect', {
+      x: sx(bounds.xMin), y: sy(bounds.yMax), width: tr.usedW, height: tr.usedH,
+      fill: 'none', class: 'svg-axis'
+    }));
+    svg.append(g);
+  }
+
+  function drawStar(cx, cy, rOuter, rInner, fill, stroke) {
+    const pts = [];
+    for (let i = 0; i < 10; i++) {
+      const a = -Math.PI / 2 + (i * Math.PI) / 5;
+      const r = i % 2 === 0 ? rOuter : rInner;
+      pts.push(`${(cx + r * Math.cos(a)).toFixed(1)},${(cy + r * Math.sin(a)).toFixed(1)}`);
+    }
+    return el('polygon', { points: pts.join(' '), fill, stroke, 'stroke-width': 2, 'stroke-linejoin': 'round' });
+  }
+
+  function drawNoiseCross(cx, cy, size = 4.5, stroke = '#475569', width = 2.2) {
+    return el('path', {
+      d: `M${cx - size} ${cy - size} L${cx + size} ${cy + size} M${cx + size} ${cy - size} L${cx - size} ${cy + size}`,
+      stroke, 'stroke-width': width, 'stroke-linecap': 'round'
+    });
+  }
+
+  function drawClusterEnvelope(parent, pts, tr, color, dashed = false) {
+    if (!pts.length) return;
+    if (pts.length === 1) {
+      parent.append(el('circle', {
+        cx: tr.sx(pts[0].x), cy: tr.sy(pts[0].y), r: 15,
+        fill: color.tint, stroke: color.stroke, 'stroke-width': 1.6,
+        'stroke-dasharray': dashed ? '4 3' : ''
+      }));
+      return;
+    }
+    if (pts.length === 2) {
+      const x1 = tr.sx(pts[0].x), y1 = tr.sy(pts[0].y);
+      const x2 = tr.sx(pts[1].x), y2 = tr.sy(pts[1].y);
+      parent.append(el('line', {
+        x1, y1, x2, y2, stroke: color.tint, 'stroke-width': 30, 'stroke-linecap': 'round'
+      }));
+      parent.append(el('line', {
+        x1, y1, x2, y2, stroke: color.stroke, 'stroke-width': 1.6, 'stroke-dasharray': dashed ? '4 3' : ''
+      }));
+      return;
+    }
+    const hull = M.convexHull(pts);
+    const d = hull.map((p, i) => `${i === 0 ? 'M' : 'L'}${tr.sx(p.x).toFixed(1)} ${tr.sy(p.y).toFixed(1)}`).join(' ') + ' Z';
+    parent.append(el('path', {
+      d, fill: color.tint, stroke: color.tint, 'stroke-width': 24, 'stroke-linejoin': 'round'
+    }));
+    parent.append(el('path', {
+      d, fill: 'none', stroke: color.stroke, 'stroke-width': 1.7, 'stroke-linejoin': 'round',
+      'stroke-dasharray': dashed ? '5 3' : ''
+    }));
+  }
+
+  // ==================== Global App State ====================
+  const VALID_MODES = ['compare', 'kmeans', 'hierarchical', 'dbscan'];
+  let activeMode = 'compare';
+
+  const compareState = {
+    datasetId: 'moons',
+    revealed: false,
+    extraPoints: [],
+    params: { ...M.COMPARE_DATASETS.moons.defaults },
+    showVoronoi: true,
+    showDbCircles: true
+  };
+
+  const kmState = {
+    presetId: 'slide14_ae',
+    step: 0,
+    playing: false,
+    timer: null
+  };
+
+  const hcState = {
+    presetId: 'hier_six',
+    linkage: 'average',
+    step: 0,
+    cutK: null,
+    playing: false,
+    timer: null
+  };
+
+  const dbState = {
+    presetId: 'slide14_p32',
+    step: 0,
+    inspectedPoint: null,
+    playing: false,
+    timer: null
+  };
+
+  function stopAllPlay() {
+    for (const s of [kmState, hcState, dbState]) {
+      clearTimeout(s.timer);
+      s.timer = null;
+      s.playing = false;
+    }
+    $('kmPlay').textContent = '▶ 播放';
+    $('hcPlay').textContent = '▶ 播放';
+    $('dbPlay').textContent = '▶ 播放';
+  }
+
+  // ==================== Mode 1: Compare ====================
+  function initDatasetButtons() {
+    const host = $('datasetButtons');
+    host.replaceChildren();
+    for (const ds of Object.values(M.COMPARE_DATASETS)) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'pill';
+      btn.dataset.ds = ds.id;
+      btn.textContent = ds.label;
+      btn.setAttribute('aria-pressed', String(ds.id === compareState.datasetId));
+      btn.onclick = () => selectCompareDataset(ds.id);
+      host.append(btn);
+    }
+  }
+
+  function selectCompareDataset(id) {
+    compareState.datasetId = id;
+    compareState.extraPoints = [];
+    compareState.params = { ...M.COMPARE_DATASETS[id].defaults };
+    compareState.revealed = !$('chkPredictCompare').checked;
+    syncCompareControlValues();
+    renderCompare();
+  }
+
+  function syncCompareControlValues() {
+    const p = compareState.params;
+    $('cmpKmK').value = String(p.kmK);
+    $('cmpKmSeed').textContent = `换初值 (#${p.kmSeed + 1})`;
+    $('cmpKmVoronoi').checked = compareState.showVoronoi;
+    $('cmpHcK').value = String(p.hcK);
+    $('cmpHcLink').value = p.hcLink;
+    $('cmpDbEps').value = String(p.dbEps);
+    $('cmpDbEpsVal').textContent = Number(p.dbEps).toFixed(2);
+    $('cmpDbMin').value = String(p.dbMin);
+    $('cmpDbMinVal').textContent = String(p.dbMin);
+    $('cmpDbCircles').checked = compareState.showDbCircles;
+    $('btnClearExtra').disabled = compareState.extraPoints.length === 0;
+    $('btnClearExtra').textContent = compareState.extraPoints.length ? `清除自加点 (${compareState.extraPoints.length})` : '清除自加点';
+    for (const b of $('datasetButtons').querySelectorAll('button')) {
+      b.setAttribute('aria-pressed', String(b.dataset.ds === compareState.datasetId));
+    }
+  }
+
+  function renderComparePlot(svg, points, drawContent) {
+    svg.replaceChildren();
+    const bounds = { xMin: 0, xMax: 10, yMin: 0, yMax: 10 };
+    const tr = makeTransform(bounds, 320, 320, { l: 26, r: 10, t: 10, b: 22 });
+    drawGrid(svg, tr, 2, true);
+    drawContent(svg, tr, bounds);
+    return tr;
+  }
+
+  function drawMiniDendrogram(svg, hier, cut) {
+    svg.replaceChildren();
+    const w = 320, h = 62, padL = 10, padR = 10, padT = 8, padB = 8;
+    const n = hier.n;
+    const leafX = new Map();
+    hier.leafOrder.forEach((idx, pos) => {
+      leafX.set(idx, padL + (pos / Math.max(1, n - 1)) * (w - padL - padR));
+    });
+    const maxH = Math.max(hier.root.height, 0.5) * 1.1;
+    const sy = d => (h - padB) - (d / maxH) * (h - padT - padB);
+
+    function walk(node) {
+      if (!node.left && !node.right) {
+        return { x: leafX.get(node.nodeId), y: sy(0) };
+      }
+      const L = walk(node.left);
+      const R = walk(node.right);
+      const y = sy(node.height);
+      const belowCut = node.stepIndex <= cut.mergesDone;
+      const stroke = belowCut ? colorOf(cut.labels[node.members[0]]).stroke : '#94a3b8';
+      svg.append(el('path', {
+        d: `M${L.x.toFixed(1)} ${L.y.toFixed(1)} V${y.toFixed(1)} H${R.x.toFixed(1)} V${R.y.toFixed(1)}`,
+        fill: 'none', stroke, 'stroke-width': belowCut ? 1.5 : 1.1
+      }));
+      return { x: (L.x + R.x) / 2, y };
+    }
+    walk(hier.root);
+    const cutY = sy(Math.min(cut.cutHeight, maxH));
+    svg.append(el('line', {
+      x1: padL - 4, y1: cutY, x2: w - padR + 4, y2: cutY,
+      stroke: '#dc2626', 'stroke-width': 1.5, 'stroke-dasharray': '4 3'
+    }));
+    svg.append(el('text', { x: w - padR, y: Math.max(11, cutY - 3), 'text-anchor': 'end', fill: '#b91c1c', 'font-size': 10, 'font-weight': 700 }, `切割 k=${cut.k}`));
+  }
+
+  function renderCompare() {
+    syncCompareControlValues();
+    const res = M.compareAll(compareState.datasetId, compareState.extraPoints, compareState.params);
+    const { preset, points, km, hcTree, hcCut, db } = res;
+    const show = compareState.revealed;
+
+    $('btnRevealCompare').textContent = show ? '隐藏以重新预测' : '揭示三算法结果';
+    $('compareMain').textContent = show
+      ? `当前分布：${preset.label}（共 ${points.length} 个点${compareState.extraPoints.length ? `，含 ${compareState.extraPoints.length} 个自加点` : ''}）`
+      : `当前分布：${preset.label}（已隐藏分组，共 ${points.length} 个无标签样本点）`;
+    $('comparePrompt').textContent = show
+      ? '试试调节 k、切换层次链接准则、拖动 ε 滑块，或点击任意画布追加离群点／桥接点，观察三图同步变化。'
+      : preset.prompt;
+
+    for (const id of ['veilKm', 'veilHc', 'veilDb']) $(id).hidden = show;
+    for (const id of ['wrapCompareKm', 'wrapCompareHc', 'wrapCompareDb']) {
+      $(id).classList.toggle('drawable', $('chkDrawPoints').checked);
+    }
+
+    // 1. K-Means compare plot
+    renderComparePlot($('svgCompareKm'), points, (svg, tr, bounds) => {
+      if (show && compareState.showVoronoi) {
+        const polys = M.voronoiPolygons(km.finalCenters, bounds);
+        polys.forEach((poly, c) => {
+          if (poly.length < 3) return;
+          const col = colorOf(c);
+          const ptsAttr = poly.map(p => `${tr.sx(p.x).toFixed(1)},${tr.sy(p.y).toFixed(1)}`).join(' ');
+          svg.append(el('polygon', { points: ptsAttr, fill: col.tint, stroke: col.stroke, 'stroke-opacity': 0.42, 'stroke-width': 1.2, 'stroke-dasharray': '4 3' }));
+        });
+      }
+      points.forEach((p, idx) => {
+        const col = show ? colorOf(km.finalLabels[idx]).fill : '#64748b';
+        svg.append(el('circle', {
+          cx: tr.sx(p.x), cy: tr.sy(p.y), r: p.custom ? 5.2 : 4.2,
+          fill: col, stroke: p.custom ? '#17304c' : '#fff', 'stroke-width': p.custom ? 1.8 : 1
+        }));
+      });
+      if (show) {
+        km.finalCenters.forEach((c, idx) => {
+          svg.append(drawStar(tr.sx(c.x), tr.sy(c.y), 9.5, 4.3, colorOf(idx).stroke, '#fff'));
+        });
+      }
+    });
+
+    // 2. Hierarchical compare plot + mini dendrogram
+    renderComparePlot($('svgCompareHc'), points, (svg, tr) => {
+      points.forEach((p, idx) => {
+        const col = show ? colorOf(hcCut.labels[idx]).fill : '#64748b';
+        svg.append(el('circle', {
+          cx: tr.sx(p.x), cy: tr.sy(p.y), r: p.custom ? 5.2 : 4.2,
+          fill: col, stroke: p.custom ? '#17304c' : '#fff', 'stroke-width': p.custom ? 1.8 : 1
+        }));
+      });
+    });
+    if (show) {
+      $('svgCompareHcMini').hidden = false;
+      drawMiniDendrogram($('svgCompareHcMini'), hcTree, hcCut);
+    } else {
+      $('svgCompareHcMini').hidden = true;
+    }
+
+    // 3. DBSCAN compare plot
+    renderComparePlot($('svgCompareDb'), points, (svg, tr) => {
+      if (show && compareState.showDbCircles) {
+        points.forEach((p, idx) => {
+          if (db.roles[idx] !== 'core') return;
+          const col = colorOf(db.labels[idx]);
+          svg.append(el('circle', {
+            cx: tr.sx(p.x), cy: tr.sy(p.y), r: db.eps * tr.scale,
+            fill: col.tint, stroke: col.stroke, 'stroke-opacity': 0.25, 'stroke-width': 0.8
+          }));
+        });
+      }
+      points.forEach((p, idx) => {
+        if (!show) {
+          svg.append(el('circle', {
+            cx: tr.sx(p.x), cy: tr.sy(p.y), r: p.custom ? 5.2 : 4.2,
+            fill: '#64748b', stroke: p.custom ? '#17304c' : '#fff', 'stroke-width': p.custom ? 1.8 : 1
+          }));
+          return;
+        }
+        const role = db.roles[idx];
+        if (role === 'noise') {
+          svg.append(drawNoiseCross(tr.sx(p.x), tr.sy(p.y), p.custom ? 5.5 : 4.5, '#475569', 2.2));
+        } else {
+          const col = colorOf(db.labels[idx]);
+          svg.append(el('circle', {
+            cx: tr.sx(p.x), cy: tr.sy(p.y), r: p.custom ? 5.2 : 4.2,
+            fill: role === 'core' ? col.fill : '#fff',
+            stroke: col.stroke, 'stroke-width': role === 'core' ? 1.2 : 2.3
+          }));
+        }
+      });
+    });
+
+    // Metrics & notes
+    if (show) {
+      $('metricsCompareKm').innerHTML = `<span>簇数 <strong>${compareState.params.kmK}</strong></span><span>迭代 <strong>${km.iterations}</strong> 轮</span><span>SSE <strong>${M.fmtNum(km.sse)}</strong></span>`;
+      const linkLabel = { single: '最短链', average: '平均链', complete: '最长链' }[compareState.params.hcLink];
+      $('metricsCompareHc').innerHTML = `<span>链接 <strong>${linkLabel}</strong></span><span>切割阈值 d ≈ <strong>${M.fmtNum(hcCut.cutHeight)}</strong></span><span>各簇点数 <strong>[${hcCut.sizes.join(', ')}]</strong></span>`;
+      const coreCnt = db.roles.filter(r => r === 'core').length;
+      const borderCnt = db.roles.filter(r => r === 'border').length;
+      $('metricsCompareDb').innerHTML = `<span>发现簇 <strong>${db.clusters.length}</strong></span><span>核心 <strong>${coreCnt}</strong> · 边界 <strong>${borderCnt}</strong></span><span>噪声(×) <strong>${db.noise.length}</strong></span>`;
+
+      $('noteCompareKm').hidden = false;
+      $('noteCompareKm').className = 'card-note' + (preset.notes.km.warn ? ' warn' : '');
+      $('noteCompareKm').textContent = preset.notes.km.text;
+
+      $('noteCompareHc').hidden = false;
+      $('noteCompareHc').className = 'card-note' + (preset.notes.hc.warn ? ' warn' : '');
+      $('noteCompareHc').textContent = preset.notes.hc.text;
+
+      $('noteCompareDb').hidden = false;
+      $('noteCompareDb').className = 'card-note' + (preset.notes.db.warn ? ' warn' : '');
+      $('noteCompareDb').textContent = preset.notes.db.text;
+
+      $('compareTakeaway').hidden = false;
+      $('takeawayPrinciple').textContent = preset.summary;
+      $('takeawayBridge').textContent = preset.bridge;
+    } else {
+      $('metricsCompareKm').textContent = '先在脑海中画出 K-Means 的中心和直线分界…';
+      $('metricsCompareHc').textContent = '先预测层次聚类自底向上会优先合并哪些近邻…';
+      $('metricsCompareDb').textContent = '先预测哪些区域能沿 ε 邻域连成一片、哪些会成噪声…';
+      $('noteCompareKm').hidden = true;
+      $('noteCompareHc').hidden = true;
+      $('noteCompareDb').hidden = true;
+      $('compareTakeaway').hidden = true;
+    }
+  }
+
+  function attachCompareCanvasClick(svgId) {
+    $(svgId).addEventListener('click', e => {
+      if (!$('chkDrawPoints').checked) return;
+      const svg = $(svgId);
+      const rect = svg.getBoundingClientRect();
+      const px = ((e.clientX - rect.left) / rect.width) * 320;
+      const py = ((e.clientY - rect.top) / rect.height) * 320;
+      const tr = makeTransform({ xMin: 0, xMax: 10, yMin: 0, yMax: 10 }, 320, 320, { l: 26, r: 10, t: 10, b: 22 });
+      const x = tr.ix(px);
+      const y = tr.iy(py);
+      if (x < 0.2 || x > 9.8 || y < 0.2 || y > 9.8) return;
+      compareState.extraPoints.push({ x, y });
+      compareState.revealed = true;
+      renderCompare();
+    });
+  }
+
+  // ==================== Mode 2: K-Means Step ====================
+  function getKmRun() {
+    const preset = M.KMEANS_STEP_PRESETS[kmState.presetId];
+    return { preset, run: M.runKMeans(preset.points, preset.initIndices.length, preset.initIndices) };
+  }
+
+  function renderKMeansStep() {
+    const { preset, run } = getKmRun();
+    kmState.step = Math.min(kmState.step, run.frames.length - 1);
+    const frame = run.frames[kmState.step];
+    const svg = $('svgStepKm');
+    svg.replaceChildren();
+    const tr = makeTransform(preset.bounds, 460, 410, { l: 38, r: 22, t: 18, b: 34 });
+
+    // Voronoi shading & bisector when labels exist
+    if (frame.labels) {
+      const polys = M.voronoiPolygons(frame.centers, preset.bounds);
+      polys.forEach((poly, c) => {
+        if (poly.length < 3) return;
+        const col = colorOf(c);
+        const ptsAttr = poly.map(p => `${tr.sx(p.x).toFixed(1)},${tr.sy(p.y).toFixed(1)}`).join(' ');
+        svg.append(el('polygon', { points: ptsAttr, fill: col.tint, stroke: col.stroke, 'stroke-opacity': 0.55, 'stroke-width': 1.6, 'stroke-dasharray': '6 4' }));
+      });
+    }
+    drawGrid(svg, tr, 1, true);
+
+    // Optional ghost center (for outlier_pull)
+    if (preset.ghostCenter) {
+      const gx = tr.sx(preset.ghostCenter.x), gy = tr.sy(preset.ghostCenter.y);
+      svg.append(el('circle', { cx: gx, cy: gy, r: 7, fill: 'none', stroke: '#64748b', 'stroke-width': 2, 'stroke-dasharray': '3 2' }));
+      svg.append(el('text', { x: gx - 8, y: gy - 11, 'text-anchor': 'end', fill: '#475569', 'font-size': 11, 'font-weight': 700 }, preset.ghostCenter.label));
+    }
+
+    // Assignment lines
+    if (frame.labels) {
+      preset.points.forEach((p, idx) => {
+        const c = frame.centers[frame.labels[idx]];
+        svg.append(el('line', {
+          x1: tr.sx(p.x), y1: tr.sy(p.y), x2: tr.sx(c.x), y2: tr.sy(c.y),
+          stroke: colorOf(frame.labels[idx]).stroke, 'stroke-opacity': 0.35, 'stroke-width': 1.3, 'stroke-dasharray': '3 3'
+        }));
+      });
+    }
+
+    // Center movement arrows
+    if (frame.prevCenters) {
+      frame.centers.forEach((c, idx) => {
+        const prev = frame.prevCenters[idx];
+        if (M.dist2(c, prev) > 1e-6) {
+          const x1 = tr.sx(prev.x), y1 = tr.sy(prev.y), x2 = tr.sx(c.x), y2 = tr.sy(c.y);
+          svg.append(el('circle', { cx: x1, cy: y1, r: 5, fill: '#fff', stroke: colorOf(idx).stroke, 'stroke-width': 2, opacity: 0.65 }));
+          svg.append(el('line', { x1, y1, x2, y2, stroke: colorOf(idx).stroke, 'stroke-width': 2.6 }));
+        }
+      });
+    }
+
+    // Points
+    preset.points.forEach((p, idx) => {
+      const col = frame.labels ? colorOf(frame.labels[idx]).fill : '#526b7f';
+      const isFocus = frame.phase === 'init' && idx === preset.focusPoint;
+      if (isFocus) {
+        svg.append(el('circle', { cx: tr.sx(p.x), cy: tr.sy(p.y), r: 12, fill: '#fff3df', stroke: '#d97706', 'stroke-width': 2, 'stroke-dasharray': '3 2' }));
+      }
+      svg.append(el('circle', { cx: tr.sx(p.x), cy: tr.sy(p.y), r: 6.2, fill: col, stroke: '#fff', 'stroke-width': 1.5 }));
+      svg.append(el('text', { x: tr.sx(p.x) + 10, y: tr.sy(p.y) + 4, class: 'svg-pt-label' }, `${p.id}(${M.fmtNum(p.x)},${M.fmtNum(p.y)})`));
+    });
+
+    // Centers
+    frame.centers.forEach((c, idx) => {
+      const cx = tr.sx(c.x), cy = tr.sy(c.y);
+      svg.append(drawStar(cx, cy, 12, 5.2, colorOf(idx).stroke, '#fff'));
+      svg.append(el('text', { x: cx, y: cy - 15, 'text-anchor': 'middle', fill: colorOf(idx).stroke, 'font-size': 12.5, 'font-weight': 700 }, `C${idx + 1}(${M.fmtNum(c.x)},${M.fmtNum(c.y)})`));
+    });
+
+    // Text & table
+    $('kmPlotCaption').textContent = preset.caption;
+    $('kmProgress').textContent = `步骤 ${kmState.step} / ${run.frames.length - 1}`;
+    $('kmRoundBadge').textContent = frame.round === 0 ? '初始状态' : `第 ${frame.round} 轮`;
+
+    const fp = preset.points[preset.focusPoint];
+    const msgMap = {
+      init: `初始状态：给定 ${frame.centers.length} 个初始中心 C1(${M.fmtNum(frame.centers[0].x)}, ${M.fmtNum(frame.centers[0].y)}) 与 C2(${M.fmtNum(frame.centers[1].x)}, ${M.fmtNum(frame.centers[1].y)})。`,
+      assign: `第 ${frame.round} 轮 · 最近中心分配：每个样本按欧氏平方距离归入最近的中心（虚线为两中心垂直平分线）。`,
+      update: `第 ${frame.round} 轮 · 均值更新中心：对每组样本的 x、y 坐标分别求平均，将中心移到新均值处。`,
+      done: `收敛停止（第 ${frame.round} 轮）：中心坐标不再变化，最终总簇内平方和 SSE = ${M.fmtNum(frame.sse)}。`
+    };
+    const promptMap = {
+      init: `先预测：点 ${fp.id}(${M.fmtNum(fp.x)}, ${M.fmtNum(fp.y)}) 到 C1 和 C2 的距离平方分别是多少？它会分给哪一组？`,
+      assign: '先预测：把当前每组样本的 x 和 y 分别求算术平均，新中心坐标会移到哪里？',
+      update: '中心移动后，各点到新中心的归属还会改变吗？点击下一步验证。',
+      done: '已收敛。切换上方案例对比不同初始中心或离群点的影响。'
+    };
+    $('kmMessage').textContent = msgMap[frame.phase];
+    $('kmPrompt').textContent = promptMap[frame.phase];
+
+    const tbody = $('kmTableBody');
+    tbody.replaceChildren();
+    frame.centers.forEach((c, idx) => {
+      const members = frame.labels ? preset.points.filter((_, i) => frame.labels[i] === idx) : [];
+      const trEl = document.createElement('tr');
+      trEl.innerHTML = `<td style="color:${colorOf(idx).stroke};font-weight:700">中心 C${idx + 1}</td>
+        <td>(${M.fmtNum(c.x)}, ${M.fmtNum(c.y)})</td>
+        <td>${frame.labels ? (members.map(m => m.id).join('、') || '空簇') : '待分配'}</td>
+        <td>${frame.perClusterSSE ? M.fmtNum(frame.perClusterSSE[idx]) : '—'}</td>`;
+      tbody.append(trEl);
+    });
+
+    // Explicit formula calculation
+    if (frame.phase === 'init') {
+      const d0 = M.dist2(fp, frame.centers[0]);
+      const d1 = M.dist2(fp, frame.centers[1]);
+      $('kmFormula').innerHTML = `<strong>距离平方公式：</strong><code>d² = (x − cx)² + (y − cy)²</code><br>提示：以 <strong>${fp.id}(${M.fmtNum(fp.x)}, ${M.fmtNum(fp.y)})</strong> 为例，先比较它到 C1 与 C2 的平方距离（免开方即可比大小）。`;
+    } else if (frame.phase === 'assign') {
+      const d0 = M.dist2(fp, frame.centers[0]);
+      const d1 = M.dist2(fp, frame.centers[1]);
+      const win = d0 <= d1 ? 'C1' : 'C2';
+      $('kmFormula').innerHTML = `<strong>关键点核对（${fp.id}）：</strong><br>
+        <code>d²(${fp.id}, C1) = ${M.fmtNum(d0)}</code>，<code>d²(${fp.id}, C2) = ${M.fmtNum(d1)}</code> → 归入 <strong>${win}</strong>。<br>
+        当前总 <code>SSE = ${M.fmtNum(frame.sse)}</code>。`;
+    } else {
+      const lines = frame.centers.map((c, idx) => {
+        const mems = preset.points.filter((_, i) => frame.labels[i] === idx);
+        const xs = mems.map(m => M.fmtNum(m.x)).join('+');
+        const ys = mems.map(m => M.fmtNum(m.y)).join('+');
+        return `<div><strong style="color:${colorOf(idx).stroke}">C${idx + 1} 新中心</strong>：<code>x̄ = (${xs})/${mems.length} = ${M.fmtNum(c.x)}</code>，<code>ȳ = (${ys})/${mems.length} = ${M.fmtNum(c.y)}</code></div>`;
+      }).join('');
+      $('kmFormula').innerHTML = `<strong>本轮均值更新计算：</strong>${lines}<div style="margin-top:4px">更新后总 <code>SSE = ${M.fmtNum(frame.sse)}</code>${frame.stable ? '（中心未再移动，停止迭代）' : ''}</div>`;
+    }
+    $('kmCompareNote').innerHTML = `<strong>案例对比：</strong>${preset.compareHint}`;
+
+    $('kmBack').disabled = kmState.step === 0;
+    const isEnd = kmState.step === run.frames.length - 1;
+    $('kmNext').disabled = isEnd;
+    $('kmPlay').disabled = isEnd;
+    $('kmNext').textContent = frame.phase === 'init' ? '揭示分配 →' : frame.phase === 'assign' ? '揭示新中心 →' : isEnd ? '已收敛' : '下一步 →';
+  }
+
+  // ==================== Mode 3: Hierarchical Step ====================
+  function getHcRun() {
+    const preset = M.HIER_STEP_PRESETS[hcState.presetId];
+    return { preset, hier: M.runHierarchical(preset.points, hcState.linkage) };
+  }
+
+  function renderHierarchicalStep() {
+    const { preset, hier } = getHcRun();
+    const maxStep = hier.merges.length;
+    hcState.step = Math.min(hcState.step, maxStep);
+    const activeK = hcState.cutK !== null ? hcState.cutK : (hier.n - hcState.step);
+    const cut = M.cutDendrogram(hier, activeK);
+    const nextMerge = hcState.step < maxStep ? hier.merges[hcState.step] : null;
+    const currentMerge = hcState.step > 0 ? hier.merges[hcState.step - 1] : null;
+
+    // Sync slider
+    $('hcCutSlider').max = String(hier.n);
+    $('hcCutSlider').value = String(activeK);
+    $('hcCutVal').textContent = String(activeK);
+    $('hcCutInfo').textContent = `对应合并前 ${cut.mergesDone} 步，切割高度 d ≈ ${M.fmtNum(cut.cutHeight)}`;
+
+    const linkNames = { single: 'Single 最短距离', average: 'Average 平均距离', complete: 'Complete 最长距离' };
+    $('hcLinkBadge').textContent = linkNames[hcState.linkage];
+    $('hcPlotCaption').textContent = preset.caption;
+    $('hcProgress').textContent = `合并 ${hcState.step} / ${maxStep}`;
+
+    // Banner
+    if (hcState.cutK !== null) {
+      $('hcMessage').textContent = `树图切割视图：在高度 d ≈ ${M.fmtNum(cut.cutHeight)} 处横切，当前得到 ${cut.k} 个簇。`;
+      $('hcPrompt').textContent = '继续左右拖动滑块或切换“组间距离”准则，观察同一棵树在不同高度如何给出不同粒度的分组。';
+    } else if (hcState.step === 0) {
+      $('hcMessage').textContent = `初始状态：全部 ${hier.n} 个点各自独立成簇（共 ${hier.n} 个单点簇）。`;
+      $('hcPrompt').textContent = '先预测：按当前组间距离准则，哪两个点最先合并？';
+    } else if (hcState.step < maxStep) {
+      const L = currentMerge.leftMembers.map(i => preset.points[i].id).join(',');
+      const R = currentMerge.rightMembers.map(i => preset.points[i].id).join(',');
+      $('hcMessage').textContent = `第 ${hcState.step} 次合并：{${L}} 与 {${R}}，组间距离 d = ${M.fmtNum(currentMerge.distance)}（剩余 ${hier.n - hcState.step} 簇）。`;
+      $('hcPrompt').textContent = '先预测：下一步哪两个簇的组间距离最小、会被合并？';
+    } else {
+      $('hcMessage').textContent = `全部 ${hier.n} 个点已合并为 1 棵完整系统树图！`;
+      $('hcPrompt').textContent = '拖动下方“保留簇数 k”滑块横切系统树图，观察不同高度对应的分组（k=2 时尤为明显）。';
+    }
+
+    // Left SVG: 2D scatter + cluster envelopes
+    const pSvg = $('svgStepHcPoints');
+    pSvg.replaceChildren();
+    const tr = makeTransform(preset.bounds, 460, 390, { l: 38, r: 22, t: 18, b: 32 });
+    drawGrid(pSvg, tr, 1, true);
+
+    const envGroup = el('g');
+    cut.groups.forEach((members, cid) => {
+      const pts = members.map(i => preset.points[i]);
+      drawClusterEnvelope(envGroup, pts, tr, colorOf(cid), false);
+    });
+    pSvg.append(envGroup);
+
+    // Highlight just-merged pair link
+    if (currentMerge && hcState.cutK === null) {
+      const [u, v] = currentMerge.closestPair;
+      const pu = preset.points[u], pv = preset.points[v];
+      pSvg.append(el('line', {
+        x1: tr.sx(pu.x), y1: tr.sy(pu.y), x2: tr.sx(pv.x), y2: tr.sy(pv.y),
+        stroke: '#b45309', 'stroke-width': 2.6, 'stroke-dasharray': '5 3'
+      }));
+      pSvg.append(el('text', {
+        x: (tr.sx(pu.x) + tr.sx(pv.x)) / 2, y: (tr.sy(pu.y) + tr.sy(pv.y)) / 2 - 7,
+        'text-anchor': 'middle', class: 'svg-dist-label'
+      }, `d = ${M.fmtNum(currentMerge.distance)}`));
+    }
+
+    preset.points.forEach((p, idx) => {
+      const col = colorOf(cut.labels[idx]);
+      pSvg.append(el('circle', { cx: tr.sx(p.x), cy: tr.sy(p.y), r: 6.5, fill: col.fill, stroke: '#fff', 'stroke-width': 1.6 }));
+      pSvg.append(el('text', { x: tr.sx(p.x) + 10, y: tr.sy(p.y) + 4, class: 'svg-pt-label' }, p.id));
+    });
+
+    // Right SVG: Dendrogram growing with hcState.step (or full if cutK active)
+    const dSvg = $('svgStepHcDendro');
+    dSvg.replaceChildren();
+    const dw = 430, dh = 250, padL = 44, padR = 20, padT = 18, padB = 34;
+    const leafX = new Map();
+    hier.leafOrder.forEach((idx, pos) => {
+      leafX.set(idx, padL + (pos / Math.max(1, hier.n - 1)) * (dw - padL - padR));
+    });
+    const maxH = Math.max(hier.root.height, 1) * 1.14;
+    const sy = d => (dh - padB) - (d / maxH) * (dh - padT - padB);
+
+    // Y axis ticks
+    const tickStep = maxH > 5 ? 1 : 0.5;
+    for (let h = 0; h <= maxH + 1e-6; h += tickStep) {
+      const yy = sy(h);
+      dSvg.append(el('line', { x1: padL, y1: yy, x2: dw - padR, y2: yy, class: 'svg-grid' }));
+      dSvg.append(el('text', { x: padL - 6, y: yy + 4, 'text-anchor': 'end', class: 'svg-tick' }, M.fmtNum(h)));
+    }
+    dSvg.append(el('line', { x1: padL, y1: padT, x2: padL, y2: dh - padB, class: 'svg-axis' }));
+    dSvg.append(el('text', { x: 10, y: padT - 4, fill: '#4f667c', 'font-size': 11, 'font-weight': 700 }, '距离 d'));
+
+    const visibleSteps = hcState.cutK !== null ? maxStep : hcState.step;
+    function walk(node) {
+      if (!node.left && !node.right) {
+        return { x: leafX.get(node.nodeId), y: sy(0) };
+      }
+      const L = walk(node.left);
+      const R = walk(node.right);
+      const y = sy(node.height);
+      const shown = node.stepIndex <= visibleSteps;
+      if (shown) {
+        const belowCut = node.stepIndex <= cut.mergesDone;
+        const isCurrent = hcState.cutK === null && node.stepIndex === hcState.step;
+        const stroke = isCurrent ? '#b45309' : belowCut ? colorOf(cut.labels[node.members[0]]).stroke : '#94a3b8';
+        dSvg.append(el('path', {
+          d: `M${L.x.toFixed(1)} ${L.y.toFixed(1)} V${y.toFixed(1)} H${R.x.toFixed(1)} V${R.y.toFixed(1)}`,
+          fill: 'none', stroke, 'stroke-width': isCurrent ? 3 : belowCut ? 2.2 : 1.5
+        }));
+        dSvg.append(el('text', {
+          x: (L.x + R.x) / 2 + (node === hier.root ? 0 : 14), y: y - 4,
+          'text-anchor': node === hier.root ? 'middle' : 'start',
+          fill: isCurrent ? '#92400e' : '#334e68',
+          'font-size': 10.5, 'font-weight': isCurrent ? 700 : 650,
+          'paint-order': 'stroke', stroke: '#ffffff', 'stroke-width': 3.5, 'stroke-linejoin': 'round'
+        }, M.fmtNum(node.height)));
+      }
+      return { x: (L.x + R.x) / 2, y };
+    }
+    walk(hier.root);
+
+    // Leaf labels
+    hier.leafOrder.forEach(idx => {
+      const lx = leafX.get(idx);
+      const col = colorOf(cut.labels[idx]);
+      dSvg.append(el('circle', { cx: lx, cy: sy(0), r: 4, fill: col.fill }));
+      dSvg.append(el('text', { x: lx, y: dh - padB + 18, 'text-anchor': 'middle', fill: col.stroke, 'font-size': 13, 'font-weight': 700 }, preset.points[idx].id));
+    });
+
+    // Horizontal cut line when full tree shown or cutK set
+    if (hcState.cutK !== null || hcState.step === maxStep) {
+      const cutY = sy(Math.min(cut.cutHeight, maxH * 0.98));
+      dSvg.append(el('line', {
+        x1: padL, y1: cutY, x2: dw - padR, y2: cutY,
+        stroke: '#dc2626', 'stroke-width': 2, 'stroke-dasharray': '6 4'
+      }));
+      dSvg.append(el('text', { x: dw - padR, y: Math.max(padT + 10, cutY - 5), 'text-anchor': 'end', fill: '#b91c1c', 'font-size': 11.5, 'font-weight': 700 }, `横切得 k=${cut.k} 簇`));
+    }
+
+    // Principle formula explanation
+    const linkDesc = {
+      single: '<code>d(C1, C2) = min d(a, b)</code>（两簇中<strong>最近点对</strong>的距离，易沿链状结构延伸）',
+      average: '<code>d(C1, C2) = mean d(a, b)</code>（两簇所有点对距离的<strong>平均值</strong>，折中稳健）',
+      complete: '<code>d(C1, C2) = max d(a, b)</code>（两簇中<strong>最远点对</strong>的距离，偏好紧致球形簇）'
+    }[hcState.linkage];
+    const groupsText = cut.groups.map((g, i) => `<strong style="color:${colorOf(i).stroke}">{${g.map(idx => preset.points[idx].id).join(',')}}</strong>`).join(' · ');
+    $('hcFormula').innerHTML = `<strong>当前组间距离定义：</strong>${linkDesc}<br><strong>当前分组（k=${cut.k}）：</strong>${groupsText}`;
+
+    // Merge table
+    const tbody = $('hcMergeBody');
+    tbody.replaceChildren();
+    hier.merges.forEach(m => {
+      if (m.step > visibleSteps) return;
+      const trEl = document.createElement('tr');
+      if (hcState.cutK === null && m.step === hcState.step) trEl.className = 'row-active';
+      const L = m.leftMembers.map(i => preset.points[i].id).join(',');
+      const R = m.rightMembers.map(i => preset.points[i].id).join(',');
+      trEl.innerHTML = `<td>第 ${m.step} 步</td><td>{${L}} + {${R}}</td><td>${M.fmtNum(m.distance)}</td>`;
+      tbody.append(trEl);
+    });
+    if (!tbody.children.length) {
+      const trEl = document.createElement('tr');
+      trEl.innerHTML = '<td colspan="3" style="color:#64748b">尚未执行合并，点击“下一步”观察第一次凝聚。</td>';
+      tbody.append(trEl);
+    }
+
+    $('hcBack').disabled = hcState.step === 0 && hcState.cutK === null;
+    $('hcNext').disabled = hcState.step >= maxStep && hcState.cutK === null;
+    $('hcPlay').disabled = hcState.step >= maxStep;
+    $('hcNext').textContent = hcState.step >= maxStep ? '建树完成' : '揭示下次合并 →';
+  }
+
+  // ==================== Mode 4: DBSCAN Step ====================
+  function getDbRun() {
+    const preset = M.DBSCAN_STEP_PRESETS[dbState.presetId];
+    return { preset, run: M.runDBSCAN(preset.points, preset.eps, preset.minPts, preset.checkpointIds) };
+  }
+
+  function renderDbscanStep() {
+    const { preset, run } = getDbRun();
+    dbState.step = Math.min(dbState.step, run.frames.length - 1);
+    const frame = run.frames[dbState.step];
+    const inspectIdx = dbState.inspectedPoint !== null ? dbState.inspectedPoint : frame.activePoint;
+    const isPredict = frame.phase === 'inspect-predict' && dbState.inspectedPoint === null;
+
+    $('dbRuleBadge').textContent = `ε = ${preset.eps}（d² ≤ ${preset.eps * preset.eps}，含等号），MinPts = ${preset.minPts}（计入自身）`;
+    $('dbProgress').textContent = `步骤 ${dbState.step} / ${run.frames.length - 1}`;
+
+    // Banner messages
+    if (frame.phase === 'intro') {
+      $('dbMessage').textContent = `${preset.title}：共 ${preset.points.length} 个整数坐标点，先逐点用 ε=${preset.eps} 画圆统计邻域点数。`;
+      $('dbPrompt').textContent = '先预测：哪几个点计入自身后邻域点数 ≥ MinPts？点击“下一步”逐点核对。';
+    } else if (frame.phase === 'inspect-predict') {
+      const p = preset.points[frame.activePoint];
+      $('dbMessage').textContent = `检查点 ${p.id}(${p.x}, ${p.y})：已画出以 ${p.id} 为圆心、半径 ε=${preset.eps} 的虚线圈。`;
+      $('dbPrompt').textContent = `先预测：点 ${p.id} 的 ε-邻域里共有几个点（计入自身，d² ≤ ${preset.eps * preset.eps} 含等号）？它属于核心点、边界点还是噪声点？`;
+    } else if (frame.phase === 'inspect-reveal') {
+      const p = preset.points[frame.activePoint];
+      const nbrs = run.neighbors[frame.activePoint].map(j => preset.points[j].id);
+      const roleZh = { core: '核心点', border: '边界点', noise: '噪声点' }[run.roles[frame.activePoint]];
+      $('dbMessage').textContent = `点 ${p.id}(${p.x}, ${p.y})：N(${p.id}) = {${nbrs.join(', ')}}，共 ${nbrs.length} 点 → 判定为「${roleZh}」。`;
+      const extraHint = p.id === 'B' && preset.id === 'slide14_p32'
+        ? '注意两点易错：d²(A,B) = 4 恰好压线计入，且 B 计入自身恰好凑足 3 点！'
+        : p.id === 'D' && preset.id === 'slide14_p32'
+          ? 'D 自身只有 2 点不足 3，但位于核心点 A 邻域内，因此是边界点（被吸收、不向外扩张）。'
+          : p.id === 'E' && preset.id === 'dbscan_border'
+            ? '关键观察：E 的邻域 {D,E,F} 仅 3 点 < 4，所以 E 是边界点，不能把左簇 D 与右簇 F 桥接在一起！'
+            : p.id === 'K' && preset.id === 'dbscan_border'
+              ? '关键观察：K 紧挨着边界点 J（d=2），但 J 不是核心点、不向外扩张，所以 K 仍是噪声点！'
+              : '继续下一步逐点判定，或点击图中任意点查看距离平方明细。';
+      $('dbPrompt').textContent = extraHint;
+    } else if (frame.phase === 'expand-core') {
+      const cores = run.coreGroups[frame.clusterId].map(j => preset.points[j].id).join('、');
+      $('dbMessage').textContent = `沿核心点链扩张 · 簇 ${frame.clusterId + 1}：将彼此距离 ≤ ${preset.eps} 的核心点 {${cores}} 连成连通分量。`;
+      $('dbPrompt').textContent = '先预测：有哪些边界点落在该核心点组的 ε-邻域内，会被吸收进来？';
+    } else if (frame.phase === 'absorb-border') {
+      const bIds = run.borderLinks.filter(b => b.clusterId === frame.clusterId).map(b => preset.points[b.to].id).join('、');
+      $('dbMessage').textContent = `簇 ${frame.clusterId + 1} 吸收边界点 {${bIds}}（虚线单向箭头）：边界点只归入簇，绝不再向外扩张！`;
+      $('dbPrompt').textContent = '继续查看下一核心连通分量与最终噪声判定。';
+    } else {
+      const cText = run.clusters.map((c, i) => `簇 ${i + 1}={${c.map(j => preset.points[j].id).join(',')}}`).join('，');
+      const nText = run.noise.length ? `{${run.noise.map(j => preset.points[j].id).join(',')}}` : '无';
+      $('dbMessage').textContent = `DBSCAN 完成：${cText}；噪声=${nText}。`;
+      $('dbPrompt').textContent = '可点击图中任意点核对 ε 圆与距离平方，或切换“边界点不扩张演示”深化理解。';
+    }
+
+    // SVG plot
+    const svg = $('svgStepDb');
+    svg.replaceChildren();
+    const tr = makeTransform(preset.bounds, 480, 390, { l: 38, r: 22, t: 18, b: 32 });
+    drawGrid(svg, tr, 1, true);
+
+    // Subtle cluster hulls once labels exist
+    for (let cid = 0; cid < run.clusters.length; cid++) {
+      const activeMembers = preset.points.filter((_, idx) => frame.revealedLabels[idx] === cid);
+      if (activeMembers.length) {
+        drawClusterEnvelope(svg, activeMembers, tr, colorOf(cid), true);
+      }
+    }
+
+    // Core-to-core expansion edges
+    for (const e of frame.activeCoreEdges) {
+      const a = preset.points[e.from], b = preset.points[e.to];
+      svg.append(el('line', {
+        x1: tr.sx(a.x), y1: tr.sy(a.y), x2: tr.sx(b.x), y2: tr.sy(b.y),
+        stroke: colorOf(e.clusterId).stroke, 'stroke-width': 3
+      }));
+    }
+
+    // Border absorption dashed edges
+    for (const b of frame.activeBorderLinks) {
+      const a = preset.points[b.from], t = preset.points[b.to];
+      svg.append(el('line', {
+        x1: tr.sx(a.x), y1: tr.sy(a.y), x2: tr.sx(t.x), y2: tr.sy(t.y),
+        stroke: colorOf(b.clusterId).stroke, 'stroke-width': 2.2, 'stroke-dasharray': '5 4'
+      }));
+    }
+
+    // Active inspected point ε-circle
+    if (inspectIdx !== null) {
+      const p = preset.points[inspectIdx];
+      const cx = tr.sx(p.x), cy = tr.sy(p.y);
+      svg.append(el('circle', {
+        cx, cy, r: preset.eps * tr.scale,
+        fill: 'rgba(245,158,11,0.10)', stroke: '#d97706', 'stroke-width': 2.2, 'stroke-dasharray': '6 4'
+      }));
+      // Radius annotation drawn upward so it never collides with right-side point labels
+      svg.append(el('line', { x1: cx, y1: cy, x2: cx, y2: cy - preset.eps * tr.scale, stroke: '#b45309', 'stroke-width': 1.4, 'stroke-dasharray': '3 2' }));
+      svg.append(el('text', { x: cx + 6, y: cy - (preset.eps * tr.scale) * 0.58, 'text-anchor': 'start', class: 'svg-dist-label' }, `ε=${preset.eps}`));
+
+      // Draw neighbor links if not hidden by predict pause
+      if (!isPredict) {
+        for (const j of run.neighbors[inspectIdx]) {
+          if (j === inspectIdx) continue;
+          const q = preset.points[j];
+          const d2 = M.dist2(p, q);
+          svg.append(el('line', {
+            x1: cx, y1: cy, x2: tr.sx(q.x), y2: tr.sy(q.y),
+            stroke: d2 === preset.eps * preset.eps ? '#b45309' : '#2563eb',
+            'stroke-width': 2
+          }));
+          svg.append(el('text', {
+            x: (cx + tr.sx(q.x)) / 2, y: (cy + tr.sy(q.y)) / 2 - 5,
+            'text-anchor': 'middle', class: 'svg-dist-label'
+          }, `d²=${M.fmtNum(d2)}`));
+        }
+      }
+    }
+
+    // Draw clickable points
+    preset.points.forEach((p, idx) => {
+      const cx = tr.sx(p.x), cy = tr.sy(p.y);
+      const role = frame.revealedRoles[idx];
+      const cid = frame.revealedLabels[idx];
+      const g = el('g', { style: 'cursor:pointer' });
+      g.addEventListener('click', () => {
+        dbState.inspectedPoint = dbState.inspectedPoint === idx ? null : idx;
+        renderDbscanStep();
+      });
+
+      if (inspectIdx === idx) {
+        g.append(el('circle', { cx, cy, r: 12, fill: 'none', stroke: '#d97706', 'stroke-width': 2.4 }));
+      }
+
+      if (role === 'noise') {
+        g.append(drawNoiseCross(cx, cy, 6, '#334155', 2.8));
+        g.append(el('circle', { cx, cy, r: 10, fill: 'transparent' }));
+      } else {
+        const col = cid !== null && cid >= 0 ? colorOf(cid)
+          : role === 'core' ? { fill: '#2563eb', stroke: '#004098' }
+          : role === 'border' ? { fill: '#ea580c', stroke: '#c2410c' }
+          : { fill: '#64748b', stroke: '#334155' };
+        g.append(el('circle', {
+          cx, cy, r: 6.8,
+          fill: role === 'border' ? '#fff' : col.fill,
+          stroke: col.stroke,
+          'stroke-width': role === 'border' ? 3 : 1.6
+        }));
+      }
+      g.append(el('text', { x: cx + 10, y: cy - 8, class: 'svg-pt-label' }, `${p.id}(${p.x},${p.y})`));
+      svg.append(g);
+    });
+
+    // Inspector formula box
+    if (inspectIdx !== null) {
+      const p = preset.points[inspectIdx];
+      if (isPredict) {
+        $('dbInspector').innerHTML = `<strong>预测检验 · 点 ${p.id}(${p.x}, ${p.y})：</strong>请目测或心算半径 <code>ε=${preset.eps}</code> 圆内及圆周上共有几个点（别忘了<strong>计入 ${p.id} 自身</strong>），再点击“揭示判定 →”。`;
+      } else {
+        const eps2 = preset.eps * preset.eps;
+        const chips = preset.points.map((q, j) => {
+          const d2 = M.dist2(p, q);
+          const inside = d2 <= eps2 + 1e-9;
+          const exact = Math.abs(d2 - eps2) <= 1e-9;
+          const cls = exact ? 'chip exact' : inside ? 'chip hit' : 'chip';
+          return `<span class="${cls}">${q.id}: d²=${M.fmtNum(d2)}${exact ? ' (压线✓)' : inside ? ' ✓' : ''}</span>`;
+        }).join('');
+        const nbrIds = run.neighbors[inspectIdx].map(j => preset.points[j].id);
+        const roleZh = { core: '核心点（≥ MinPts，可扩张）', border: '边界点（< MinPts，在核心点邻域内，不扩张）', noise: '噪声点（< MinPts，不在任何核心点邻域内）' }[run.roles[inspectIdx]];
+        $('dbInspector').innerHTML = `<strong>点 ${p.id}(${p.x}, ${p.y}) 距离平方明细（阈值 d² ≤ ${eps2}）：</strong>
+          <div class="dist-chips">${chips}</div>
+          <div style="margin-top:6px"><code>N(${p.id}) = {${nbrIds.join(', ')}}</code>，<code>|N| = ${nbrIds.length}</code> → <strong>${roleZh}</strong>${dbState.inspectedPoint !== null ? '（再次点击该点返回步骤视角）' : ''}</div>`;
+      }
+    } else {
+      $('dbInspector').innerHTML = `<strong>DBSCAN 核心规则（对照 P31）：</strong>① 邻域 <code>N(p)</code> 包含 <code>d² ≤ ${preset.eps * preset.eps}</code> 的所有点（含等号、含自身）；② <code>|N(p)| ≥ ${preset.minPts}</code> 为核心点；③ 仅沿核心点链连通成簇，边界点被吸收后不再向外扩张。`;
+    }
+
+    // Table
+    const tbody = $('dbTableBody');
+    tbody.replaceChildren();
+    preset.points.forEach((p, idx) => {
+      const role = frame.revealedRoles[idx];
+      const cid = frame.revealedLabels[idx];
+      const trEl = document.createElement('tr');
+      if (inspectIdx === idx) trEl.className = 'row-active';
+      const nbrText = role ? `{${run.neighbors[idx].map(j => preset.points[j].id).join(',')}}` : '待计算';
+      const cntText = role ? String(run.neighbors[idx].length) : '—';
+      const roleBadge = !role ? '<span class="badge-role role-pending">待判定</span>'
+        : role === 'core' ? '<span class="badge-role role-core">核心点</span>'
+        : role === 'border' ? '<span class="badge-role role-border">边界点</span>'
+        : '<span class="badge-role role-noise">噪声点</span>';
+      const clusterText = cid === null ? '—' : cid === -1 ? '噪声' : `<strong style="color:${colorOf(cid).stroke}">簇 ${cid + 1}</strong>`;
+      trEl.innerHTML = `<td><strong>${p.id}</strong></td><td>(${p.x}, ${p.y})</td><td>${nbrText}</td><td>${cntText}</td><td>${roleBadge}</td><td>${clusterText}</td>`;
+      trEl.style.cursor = 'pointer';
+      trEl.onclick = () => {
+        dbState.inspectedPoint = dbState.inspectedPoint === idx ? null : idx;
+        renderDbscanStep();
+      };
+      tbody.append(trEl);
+    });
+
+    $('dbSummaryBadge').textContent = frame.phase === 'done'
+      ? `${run.clusters.length} 个簇 · ${run.noise.length} 个噪声`
+      : `已判定 ${frame.revealedCount} / ${preset.points.length} 点`;
+
+    const isEnd = dbState.step === run.frames.length - 1;
+    $('dbBack').disabled = dbState.step === 0;
+    $('dbNext').disabled = isEnd;
+    $('dbPlay').disabled = isEnd;
+    $('dbNext').textContent = frame.phase === 'inspect-predict' ? '揭示判定 →' : isEnd ? '已完成' : '下一步 →';
+  }
+
+  // ==================== Mode Switching & Event Wiring ====================
+  function setMode(mode, updateHash = true) {
+    if (!VALID_MODES.includes(mode)) mode = 'compare';
+    stopAllPlay();
+    activeMode = mode;
+    for (const m of VALID_MODES) {
+      $(`view-${m}`).hidden = m !== mode;
+      $(`tab-${m}`).setAttribute('aria-selected', String(m === mode));
+    }
+    if (updateHash && location.hash !== `#${mode}`) {
+      history.replaceState(null, '', `#${mode}`);
+    }
+    if (mode === 'compare') renderCompare();
+    else if (mode === 'kmeans') renderKMeansStep();
+    else if (mode === 'hierarchical') renderHierarchicalStep();
+    else if (mode === 'dbscan') renderDbscanStep();
+  }
+
+  for (const btn of document.querySelectorAll('.tab[data-mode]')) {
+    btn.addEventListener('click', () => setMode(btn.dataset.mode));
+  }
+
+  // Compare listeners
+  $('btnRevealCompare').onclick = () => {
+    compareState.revealed = !compareState.revealed;
+    renderCompare();
+  };
+  $('chkDrawPoints').onchange = renderCompare;
+  $('btnClearExtra').onclick = () => {
+    compareState.extraPoints = [];
+    renderCompare();
+  };
+  $('cmpKmK').onchange = () => {
+    compareState.params.kmK = Number($('cmpKmK').value);
+    compareState.revealed = true;
+    renderCompare();
+  };
+  $('cmpKmSeed').onclick = () => {
+    compareState.params.kmSeed = (compareState.params.kmSeed + 1) % 5;
+    compareState.revealed = true;
+    renderCompare();
+  };
+  $('cmpKmVoronoi').onchange = () => {
+    compareState.showVoronoi = $('cmpKmVoronoi').checked;
+    renderCompare();
+  };
+  $('cmpHcK').onchange = () => {
+    compareState.params.hcK = Number($('cmpHcK').value);
+    compareState.revealed = true;
+    renderCompare();
+  };
+  $('cmpHcLink').onchange = () => {
+    compareState.params.hcLink = $('cmpHcLink').value;
+    compareState.revealed = true;
+    renderCompare();
+  };
+  $('cmpDbEps').oninput = () => {
+    compareState.params.dbEps = Number($('cmpDbEps').value);
+    compareState.revealed = true;
+    renderCompare();
+  };
+  $('cmpDbMin').oninput = () => {
+    compareState.params.dbMin = Number($('cmpDbMin').value);
+    compareState.revealed = true;
+    renderCompare();
+  };
+  $('cmpDbCircles').onchange = () => {
+    compareState.showDbCircles = $('cmpDbCircles').checked;
+    renderCompare();
+  };
+  attachCompareCanvasClick('svgCompareKm');
+  attachCompareCanvasClick('svgCompareHc');
+  attachCompareCanvasClick('svgCompareDb');
+
+  // K-Means Step listeners
+  $('kmPreset').onchange = () => { stopAllPlay(); kmState.presetId = $('kmPreset').value; kmState.step = 0; renderKMeansStep(); };
+  $('kmBack').onclick = () => { stopAllPlay(); kmState.step = Math.max(0, kmState.step - 1); renderKMeansStep(); };
+  $('kmNext').onclick = () => {
+    stopAllPlay();
+    const max = getKmRun().run.frames.length - 1;
+    kmState.step = Math.min(max, kmState.step + 1);
+    renderKMeansStep();
+  };
+  $('kmReset').onclick = () => { stopAllPlay(); kmState.step = 0; renderKMeansStep(); };
+  $('kmPlay').onclick = () => {
+    if (kmState.playing) { stopAllPlay(); return; }
+    stopAllPlay();
+    kmState.playing = true;
+    $('kmPlay').textContent = 'Ⅱ 暂停';
+    const tick = () => {
+      if (!kmState.playing) return;
+      const { run } = getKmRun();
+      if (kmState.step >= run.frames.length - 1) { stopAllPlay(); return; }
+      kmState.step += 1;
+      renderKMeansStep();
+      const f = run.frames[kmState.step];
+      if (kmState.step >= run.frames.length - 1 || ($('kmPausePredict').checked && f.checkpoint)) {
+        stopAllPlay();
+        return;
+      }
+      kmState.timer = setTimeout(tick, Number($('kmSpeed').value));
+    };
+    kmState.timer = setTimeout(tick, Number($('kmSpeed').value));
+  };
+
+  // Hierarchical Step listeners
+  $('hcPreset').onchange = () => { stopAllPlay(); hcState.presetId = $('hcPreset').value; hcState.step = 0; hcState.cutK = null; renderHierarchicalStep(); };
+  $('hcLinkage').onchange = () => { stopAllPlay(); hcState.linkage = $('hcLinkage').value; renderHierarchicalStep(); };
+  $('hcBack').onclick = () => { stopAllPlay(); hcState.cutK = null; hcState.step = Math.max(0, hcState.step - 1); renderHierarchicalStep(); };
+  $('hcNext').onclick = () => {
+    stopAllPlay();
+    hcState.cutK = null;
+    const max = getHcRun().hier.merges.length;
+    hcState.step = Math.min(max, hcState.step + 1);
+    renderHierarchicalStep();
+  };
+  $('hcReset').onclick = () => { stopAllPlay(); hcState.step = 0; hcState.cutK = null; renderHierarchicalStep(); };
+  $('hcCutSlider').oninput = () => {
+    stopAllPlay();
+    hcState.cutK = Number($('hcCutSlider').value);
+    renderHierarchicalStep();
+  };
+  $('hcPlay').onclick = () => {
+    if (hcState.playing) { stopAllPlay(); return; }
+    stopAllPlay();
+    hcState.cutK = null;
+    hcState.playing = true;
+    $('hcPlay').textContent = 'Ⅱ 暂停';
+    const tick = () => {
+      if (!hcState.playing) return;
+      const max = getHcRun().hier.merges.length;
+      if (hcState.step >= max) { stopAllPlay(); return; }
+      hcState.step += 1;
+      renderHierarchicalStep();
+      if (hcState.step >= max || $('hcPausePredict').checked) {
+        stopAllPlay();
+        return;
+      }
+      hcState.timer = setTimeout(tick, 1100);
+    };
+    hcState.timer = setTimeout(tick, 1100);
+  };
+
+  // DBSCAN Step listeners
+  $('dbPreset').onchange = () => { stopAllPlay(); dbState.presetId = $('dbPreset').value; dbState.step = 0; dbState.inspectedPoint = null; renderDbscanStep(); };
+  $('dbBack').onclick = () => { stopAllPlay(); dbState.inspectedPoint = null; dbState.step = Math.max(0, dbState.step - 1); renderDbscanStep(); };
+  $('dbNext').onclick = () => {
+    stopAllPlay();
+    dbState.inspectedPoint = null;
+    const max = getDbRun().run.frames.length - 1;
+    dbState.step = Math.min(max, dbState.step + 1);
+    renderDbscanStep();
+  };
+  $('dbReset').onclick = () => { stopAllPlay(); dbState.step = 0; dbState.inspectedPoint = null; renderDbscanStep(); };
+  $('dbPlay').onclick = () => {
+    if (dbState.playing) { stopAllPlay(); return; }
+    stopAllPlay();
+    dbState.inspectedPoint = null;
+    dbState.playing = true;
+    $('dbPlay').textContent = 'Ⅱ 暂停';
+    const tick = () => {
+      if (!dbState.playing) return;
+      const { run } = getDbRun();
+      if (dbState.step >= run.frames.length - 1) { stopAllPlay(); return; }
+      dbState.step += 1;
+      renderDbscanStep();
+      const f = run.frames[dbState.step];
+      if (dbState.step >= run.frames.length - 1 || ($('dbPausePredict').checked && f.checkpoint)) {
+        stopAllPlay();
+        return;
+      }
+      dbState.timer = setTimeout(tick, Number($('dbSpeed').value));
+    };
+    dbState.timer = setTimeout(tick, Number($('dbSpeed').value));
+  };
+
+  // Fullscreen & keyboard shortcuts
+  $('btnFullscreen').onclick = async () => {
+    try {
+      if (document.fullscreenElement) await document.exitFullscreen();
+      else await document.documentElement.requestFullscreen();
+    } catch {
+      $('btnFullscreen').textContent = '请用浏览器全屏';
+    }
+  };
+
+  document.addEventListener('keydown', e => {
+    if (e.target.closest('input,select,a') || e.ctrlKey || e.metaKey || e.altKey) return;
+    if (activeMode === 'compare') {
+      if (e.code === 'Space' && !e.target.closest('button')) {
+        e.preventDefault();
+        $('btnRevealCompare').click();
+      }
+      return;
+    }
+    const prefix = activeMode === 'kmeans' ? 'km' : activeMode === 'hierarchical' ? 'hc' : 'db';
+    if (e.key === 'ArrowRight') { e.preventDefault(); $(`${prefix}Next`).click(); }
+    else if (e.key === 'ArrowLeft') { e.preventDefault(); $(`${prefix}Back`).click(); }
+    else if (e.code === 'Space' && !e.target.closest('button')) { e.preventDefault(); $(`${prefix}Play`).click(); }
+  });
+
+  document.addEventListener('visibilitychange', () => { if (document.hidden) stopAllPlay(); });
+  window.addEventListener('pagehide', stopAllPlay);
+  window.addEventListener('hashchange', () => {
+    const h = location.hash.replace(/^#/, '');
+    if (VALID_MODES.includes(h) && h !== activeMode) setMode(h, false);
+  });
+
+  // Boot
+  initDatasetButtons();
+  const initialHash = location.hash.replace(/^#/, '');
+  setMode(VALID_MODES.includes(initialHash) ? initialHash : 'compare', false);
+})();
+</script>
+</body>
+</html>

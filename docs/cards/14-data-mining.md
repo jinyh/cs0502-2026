@@ -16,7 +16,7 @@ labs: [lab-06-clustering]
 figures: [14-clustering-comparison.svg]
 related_cards: [data-lifecycle-governance, probability-uncertainty, ml-evaluation, 13-database, 15-data-visualization, 17-machine-learning]
 related_deep: []
-related_visualizations: []
+related_visualizations: [clustering]
 last_reviewed: 2026-08-21
 ---
 
@@ -66,6 +66,8 @@ last_reviewed: 2026-08-21
 完整示例：[14_clustering.py](../../code/examples/14_clustering.py)。
 
 ## 主动学习与考核迁移
+
+- [聚类算法：K-Means、层次聚类与 DBSCAN](../../code/visualizations/clustering.html)：在同一组二维分布（双弯月+噪声、球形团、同心圆、离群点、密度不均）上并排比较三种聚类结果，并逐步追踪 Slide14 P28 K-Means、P30 层次聚类系统树图与 P32 DBSCAN 手算过程。配合 2026 版 Slide14 P24–P34，见[课堂讲法](../../code/visualizations/clustering-guide.md)。
 
 1. 判断“购物篮共现”“未知样品分组”“故障类型预测”分别属于哪类任务。
 2. 解释为什么经纬度、温度和功率直接放入欧氏距离可能不合理。

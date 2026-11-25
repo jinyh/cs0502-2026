@@ -141,7 +141,7 @@ lectures:
     supporting_cards: [13-database, 14-data-mining, reproducible-computing]
     examples: [14_clustering.py]
     labs: [lab-06-clustering]
-    visualizations: []
+    visualizations: [clustering.html]
     figures: [14-data-lifecycle.svg, 14-clustering-comparison.svg]
     assessment_tags: [数据审计, 质量诊断, 治理设计]
   - id: L15

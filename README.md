@@ -101,6 +101,14 @@
   <a class="module-link" href="code/visualizations/query-chart.html">打开 SQL 选课查询演示</a>
 </section>
 
+<section class="module-card module-card-primary">
+  <span class="module-badge">Slide14 · 数据挖掘一</span>
+  <h2>聚类算法：K-Means、层次聚类与 DBSCAN</h2>
+  <p>在同一批无标签点云上横向比较划分、层次与密度三种聚类方法，体验双弯月、同心圆、离群点与密度不均分布下的结果差异，并逐步追踪课件 P28、P30、P32 手算案例。</p>
+  <a class="module-link" href="code/visualizations/clustering.html#compare">打开同分布对比 →</a>
+  <a class="module-link" href="code/visualizations/clustering.html#dbscan">打开 DBSCAN 分步 →</a>
+</section>
+
 ## 课程考核
 
 <div class="grading-grid">
