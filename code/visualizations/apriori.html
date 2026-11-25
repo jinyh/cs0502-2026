@@ -17,6 +17,8 @@
     --teal-light: #d9f0e9;
     --amber: #8b4209;
     --amber-light: #fff0dd;
+    --purple: #51407f;
+    --purple-light: #eeebf7;
   }
   * { box-sizing: border-box; }
   body {
@@ -25,14 +27,14 @@
     color: var(--ink);
     font: 18px/1.5 "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
   }
-  main { width: min(1120px, 100%); margin: auto; padding: 24px 28px 32px; }
-  header { border-top: 5px solid var(--blue); padding: 12px 0 14px; }
+  main { width: min(1120px, 100%); margin: auto; padding: 18px 28px 24px; }
+  header { border-top: 5px solid var(--blue); padding: 10px 0 12px; }
   header p { margin: 0; color: var(--blue); font-size: 15px; font-weight: 650; }
   h1 { font-size: clamp(28px, 4.5vw, 43px); line-height: 1.12; margin: 7px 0 0; }
   h2 { font-size: 21px; margin: 0; }
   p { margin: 0; }
   .card {
-    padding: 14px 18px 17px;
+    padding: 12px 18px 14px;
     background: white;
     border: 1px solid var(--line);
     border-radius: 11px;
@@ -69,14 +71,20 @@
     border-color: #adc9e9;
     color: var(--blue);
   }
+  .basket[data-match="consequent"], .badge[data-match="consequent"] {
+    background: var(--purple-light);
+    border-color: #beb2d7;
+    color: var(--purple);
+  }
   .basket[data-match="butter"], .badge[data-match="butter"] {
     background: var(--amber-light);
     border-color: #e6bd92;
     color: var(--amber);
   }
   .badge { border: 1px solid; border-radius: 4px; padding: 0 6px; }
-  .legend { min-height: 29px; margin-top: 6px; }
-  .modes { margin: 13px 0 10px; }
+  .legend:not(:empty) { margin-top: 7px; }
+  .header-row { align-items: end; }
+  #rules, #prune { margin-top: 10px; }
   button {
     font: inherit;
     font-weight: 650;
@@ -100,12 +108,58 @@
   .metric dd { margin: 1px 0 0; font-size: clamp(18px, 2.4vw, 27px); font-weight: 700; }
   .metric dd + dd { font-size: 14px; font-weight: 400; color: var(--muted); }
   .result-line { border-left: 3px solid var(--teal); padding: 3px 0 3px 9px; }
-  table { width: 100%; border-collapse: collapse; }
-  th, td { text-align: left; vertical-align: top; padding: 4px 8px; border-bottom: 1px solid var(--line); }
-  thead th { background: var(--tint); }
-  th:first-child { white-space: nowrap; }
-  .candidates { display: flex; flex-wrap: wrap; column-gap: 12px; }
-  .candidates span { white-space: nowrap; }
+  figure { margin: 0; }
+  .lattice {
+    display: grid;
+    grid-template-columns: max-content minmax(0, 1fr);
+    column-gap: 10px;
+    --level-height: 54px;
+    --level-gap: 30px;
+    max-width: 740px;
+    margin: 7px auto 0;
+  }
+  .rounds, .lattice-nodes {
+    display: grid;
+    grid-template-rows: repeat(3, var(--level-height));
+    row-gap: var(--level-gap);
+  }
+  .rounds {
+    align-items: center;
+    color: var(--muted);
+    font-size: 15px;
+  }
+  .lattice-body { position: relative; }
+  .lattice-edges { position: absolute; inset: 0; width: 100%; height: 100%; }
+  .lattice-edges line { stroke: #879cae; stroke-width: 1.5; vector-effect: non-scaling-stroke; }
+  .lattice-edges line[data-pruned] { stroke: var(--amber); stroke-dasharray: 4 3; stroke-width: 2; }
+  .lattice-nodes {
+    position: relative;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    justify-items: center;
+  }
+  .itemset {
+    width: min(156px, 95%);
+    display: grid;
+    align-content: center;
+    text-align: center;
+    border: 1px solid #9ac9b9;
+    border-radius: 6px;
+    background: var(--teal-light);
+    color: var(--teal);
+  }
+  .itemset strong { font: 700 21px/1.2 ui-monospace, monospace; }
+  .itemset span { font-size: 15px; line-height: 1.25; }
+  .itemset[data-status="below"] {
+    background: var(--amber-light);
+    border-color: #e6bd92;
+    color: var(--amber);
+  }
+  .itemset[data-status="skipped"] {
+    background: var(--paper);
+    border-color: #99aebe;
+    border-style: dashed;
+    color: var(--muted);
+  }
   #prune-detail { margin-top: 8px; }
   .numbers { font-variant-numeric: tabular-nums; }
   .sr-only {
@@ -120,6 +174,9 @@
     .basket strong { font-size: 17px; white-space: nowrap; }
     .metrics { grid-template-columns: 1fr; }
     .controls { justify-content: flex-start; }
+    .lattice { column-gap: 4px; }
+    .rounds, .itemset span { font-size: 13px; }
+    .itemset strong { font-size: 18px; }
   }
 </style>
 </head>
@@ -127,7 +184,13 @@
 <main>
   <header>
     <p>CS0502 计算机科学导论 · 数据挖掘一</p>
-    <h1>购物篮里的关联规则</h1>
+    <div class="row spread header-row">
+      <h1>购物篮里的关联规则</h1>
+      <div class="row" role="group" aria-label="演示内容">
+        <button type="button" data-mode="rules" aria-controls="rules" aria-pressed="true">核对规则</button>
+        <button type="button" data-mode="prune" aria-controls="prune" aria-pressed="false">追踪 Apriori 剪枝</button>
+      </div>
+    </div>
   </header>
   <section class="card" aria-labelledby="baskets-title">
     <div class="row spread">
@@ -137,10 +200,6 @@
     <ol class="baskets" id="baskets"></ol>
     <div class="legend row subtle" id="legend" aria-label="高亮图例"></div>
   </section>
-  <div class="row modes" role="group" aria-label="演示内容">
-    <button type="button" data-mode="rules" aria-controls="rules" aria-pressed="true">核对规则</button>
-    <button type="button" data-mode="prune" aria-controls="prune" aria-pressed="false">追踪 Apriori 剪枝</button>
-  </div>
   <section class="card" id="rules" aria-labelledby="rules-title">
     <div class="row spread controls">
       <div class="row" role="group" aria-labelledby="rules-title">
@@ -153,8 +212,8 @@
     <p class="prompt" id="rule-prompt"></p>
     <div class="results numbers" id="rule-results" hidden>
       <dl class="metrics">
-        <div class="metric"><dt>支持度</dt><dd id="support-value"></dd><dd>共现笔数 ÷ 全部交易</dd></div>
-        <div class="metric"><dt>置信度</dt><dd id="confidence-value"></dd><dd>共现笔数 ÷ 含前项的交易</dd></div>
+        <div class="metric"><dt>支持度</dt><dd id="support-value"></dd><dd>✓ 共现笔数 ÷ 全部 8 笔</dd></div>
+        <div class="metric"><dt>置信度</dt><dd id="confidence-value"></dd><dd id="confidence-base"></dd></div>
         <div class="metric"><dt>提升度</dt><dd id="lift-value"></dd><dd id="lift-baseline"></dd></div>
       </dl>
       <p class="result-line" id="rule-detail"></p>
@@ -164,18 +223,24 @@
     <div class="row spread controls">
       <div class="row numbers" role="group" aria-labelledby="prune-title">
         <h2 id="prune-title">最小支持度</h2>
-        <button type="button" data-minimum="3" aria-pressed="true">3/8</button>
-        <button type="button" data-minimum="2" aria-pressed="false">2/8</button>
+        <button type="button" data-minimum="3" aria-pressed="true">至少 3 笔（3/8）</button>
+        <button type="button" data-minimum="2" aria-pressed="false">至少 2 笔（2/8）</button>
       </div>
       <button type="button" class="primary" data-reveal="prune" aria-controls="prune-results" aria-expanded="false">揭示计数过程</button>
     </div>
     <p class="prompt" id="prune-prompt"></p>
     <div class="results numbers" id="prune-results" hidden>
-      <table>
-        <caption class="sr-only">Apriori 各轮实际计数及保留的项集</caption>
-        <thead><tr><th scope="col">轮次</th><th scope="col">实际计数（笔）</th><th scope="col">频繁项集</th></tr></thead>
-        <tbody id="levels"></tbody>
-      </table>
+      <figure aria-labelledby="lattice-caption">
+        <figcaption id="lattice-caption" class="subtle"></figcaption>
+        <div class="lattice">
+          <div class="rounds" aria-hidden="true"><span>1 项</span><span>2 项</span><span>3 项</span></div>
+          <div class="lattice-body">
+            <svg class="lattice-edges" id="lattice-edges" viewBox="0 0 600 222"
+              preserveAspectRatio="none" aria-hidden="true" focusable="false"></svg>
+            <div class="lattice-nodes" id="lattice-nodes"></div>
+          </div>
+        </div>
+      </figure>
       <p class="result-line" id="prune-detail"></p>
     </div>
   </section>
@@ -218,48 +283,57 @@
   }
 
   function traceApriori(minimum) {
-    const levels = [];
+    const counted = new Map();
     let candidates = items;
-    for (let size = 1; size <= 3; size += 1) {
-      const counted = candidates.map(itemset => ({ itemset, support: count(itemset) }));
-      const frequent = counted.filter(row => row.support >= minimum).map(row => row.itemset);
-      levels.push({ size, counted, frequent });
+    while (candidates.length) {
+      for (const itemset of candidates) counted.set(itemset, count(itemset));
+      const frequent = candidates.filter(itemset => counted.get(itemset) >= minimum);
       candidates = nextCandidates(frequent);
     }
-    return levels;
+    return counted;
   }
-
-  const marks = {
-    joint: { glyph: "✓", label: "前后项同现" },
-    antecedent: { glyph: "•", label: "有前项，缺后项" },
-    butter: { glyph: "◆", label: "含 C（黄油）" }
-  };
 
   function renderBaskets(show) {
     const pruning = state.mode === "prune";
-    const [antecedent] = state.direction;
-    const markers = pruning ? ["butter"] : ["joint", "antecedent"];
-    get("legend").innerHTML = show
-      ? markers.map(key => `<span class="badge" data-match="${key}">${marks[key].glyph} ${marks[key].label}</span>`).join("")
-      : "";
+    const [antecedent, consequent] = state.direction;
+    const marks = pruning
+      ? { butter: { glyph: "◆", label: "含 C（黄油）" } }
+      : {
+        joint: { glyph: "✓", label: `含 ${antecedent} 和 ${consequent}` },
+        antecedent: { glyph: "•", label: `含 ${antecedent}，缺 ${consequent}` },
+        consequent: { glyph: "◇", label: `含 ${consequent}，缺 ${antecedent}` }
+      };
+    const totals = { joint: 0, antecedent: 0, consequent: 0, butter: 0 };
     get("baskets").innerHTML = baskets.map((basket, index) => {
       let match = "";
       if (show && pruning && basket.includes("C")) match = "butter";
-      if (show && !pruning && basket.includes(antecedent)) {
-        match = contains(basket, state.direction) ? "joint" : "antecedent";
+      if (show && !pruning) {
+        if (contains(basket, state.direction)) match = "joint";
+        else if (basket.includes(antecedent)) match = "antecedent";
+        else if (basket.includes(consequent)) match = "consequent";
       }
       const mark = marks[match];
+      if (mark) totals[match] += 1;
       const indicator = mark
         ? `<span aria-hidden="true">${mark.glyph} </span><span class="sr-only">${mark.label}，</span>`
         : "";
       return `<li class="basket" data-match="${match}"><span class="basket-label">第 ${index + 1} 笔</span><strong>${indicator}${basket}</strong></li>`;
     }).join("");
+    get("legend").innerHTML = show
+      ? Object.entries(marks).map(([key, { glyph, label }]) =>
+        `<span class="badge" data-match="${key}">${glyph} ${label} · ${totals[key]} 笔</span>`).join("")
+      : "";
   }
 
   const percent = fraction => fraction * 100 + "%";
 
   function renderRules(show) {
     const [antecedent, consequent] = state.direction;
+    const prompt = get("rule-prompt");
+    prompt.textContent = show ? ""
+      : `先预测 ${antecedent} → ${consequent} 的置信度。分母是哪几笔交易？`;
+    if (!show) return prompt.textContent;
+
     const total = baskets.length;
     const shared = count(state.direction);
     const antecedentCount = count(antecedent);
@@ -267,33 +341,63 @@
     const confidence = shared / antecedentCount;
     const baseline = consequentCount / total;
     const lift = confidence / baseline;
-    get("rule-prompt").textContent = show ? ""
-      : `先预测 ${antecedent} → ${consequent} 的置信度。分母是哪几笔交易？`;
     get("support-value").textContent = `${shared}/${total} = ${percent(shared / total)}`;
     get("confidence-value").textContent = `${shared}/${antecedentCount} = ${percent(confidence)}`;
-    get("lift-value").textContent = lift;
-    get("lift-baseline").textContent = `置信度 ÷ 后项总体频率 ${consequentCount}/${total}`;
-    const detail = `含 ${antecedent} 的交易中，${consequent} 出现的比例为 ${percent(confidence)}，与其在全部交易中的比例 ${percent(baseline)} 相同。`;
-    get("rule-detail").textContent = detail;
+    get("confidence-base").textContent = `分母 ✓ + • · 含前项 ${antecedent} 的 ${antecedentCount} 笔`;
+    get("lift-value").textContent = `${percent(confidence)} ÷ ${percent(baseline)} = ${lift}`;
+    get("lift-baseline").textContent = `后项 ${consequent} 的总体频率 ${consequentCount}/${total}（✓ + ◇）`;
+    get("rule-detail").textContent = `已知含 ${antecedent} 时，${consequent} 的出现比例和它的总体频率相同。`;
     return `${antecedent} 指向 ${consequent}。支持度 ${shared}/${total}，置信度 ${percent(confidence)}，提升度 ${lift}。`;
+  }
+
+  function renderLattice(counted, threshold) {
+    // 图聚焦 A、B、C。D 的计数与剪枝在图下单列。
+    const levels = [["A", "B", "C"], ["AB", "AC", "BC"], ["", "ABC"]];
+    const nodes = [];
+    const edges = [];
+    levels.forEach((level, round) => {
+      level.forEach((itemset, column) => {
+        if (!itemset) return;
+        const support = counted.get(itemset);
+        const status = support === undefined ? "skipped" : support >= threshold ? "frequent" : "below";
+        const detail = support === undefined ? "跳过计数"
+          : `${support >= threshold ? "达标" : "未达标"} · ${support} 笔`;
+        nodes.push(`<div class="itemset" data-itemset="${itemset}" data-status="${status}"
+          style="grid-area: ${round + 1} / ${column + 1}"><strong>${itemset}</strong><span>${detail}</span></div>`);
+        if (!round) return;
+        levels[round - 1].forEach((subset, previousColumn) => {
+          if (!contains(itemset, subset)) return;
+          const pruned = status === "skipped" && subset.includes("C");
+          // 列中心为 100/300/500，行高 54，行间距 30，单位对应 SVG viewBox。
+          edges.push(`<line data-from="${subset}" data-to="${itemset}"
+            x1="${100 + previousColumn * 200}" y1="${54 + (round - 1) * 84}"
+            x2="${100 + column * 200}" y2="${round * 84}"${pruned ? " data-pruned" : ""}></line>`);
+        });
+      });
+    });
+    get("lattice-nodes").innerHTML = nodes.join("");
+    get("lattice-edges").innerHTML = edges.join("");
   }
 
   function renderPruning(show) {
     const threshold = state.minimum;
-    const butter = count("C");
-    const rounds = traceApriori(threshold);
-    get("prune-prompt").textContent = show ? ""
-      : `先预测。至少出现 ${threshold} 笔时，哪些含 C 的组合需要计数？`;
-    get("levels").innerHTML = rounds.map(({ size, counted, frequent }) => {
-      const evidence = counted.map(({ itemset, support }) => `<span>${itemset} <b>${support}</b></span>`).join(" ");
-      return `<tr><th scope="row">${size} 项</th><td><div class="candidates">${evidence || "无候选"}</div></td>
-        <td>${frequent.join("、") || "无"}</td></tr>`;
-    }).join("");
-    const detail = butter < threshold
-      ? `C 只出现 ${butter} 笔。含 C 的超集最多也出现 ${butter} 笔，AC、BC、ABC 均跳过计数。`
-      : `C 恰好出现 ${butter} 笔。AC、BC 计数后均达标，下一轮计数 ABC。`;
-    const checked = rounds.reduce((sum, round) => sum + round.counted.length, 0);
-    get("prune-detail").textContent = `${detail} 共计数 ${checked} 个项集。`;
+    const prompt = get("prune-prompt");
+    prompt.textContent = show ? ""
+      : `先预测。门槛是 ${threshold} 笔，AC、BC 和 ABC 要计数吗？`;
+    if (!show) return prompt.textContent;
+
+    const counted = traceApriori(threshold);
+    const butter = counted.get("C");
+    const pruned = butter < threshold;
+    get("lattice-caption").textContent = pruned
+      ? "连线表示直接子集关系，虚线标出 C 引起的剪枝。"
+      : "连线表示直接子集关系。AB、AC、BC 都达标，下一轮计数 ABC。";
+    renderLattice(counted, threshold);
+    const detail = pruned
+      ? `C 只有 ${butter} 笔，含 C 的组合最多也只有 ${butter} 笔。`
+      : `C 恰好达到门槛，含 C 的组合 AC、BC、ABC 都进入计数。`;
+    const note = `图外的 D 计数为 ${counted.get("D")} 笔，两档都跳过含 D 的多项组合。`;
+    get("prune-detail").textContent = `${detail} 共计数 ${counted.size} 个项集。${note}`;
     return get("prune-detail").textContent;
   }
 
@@ -311,11 +415,11 @@
     }
     const reveal = document.querySelector(`[data-reveal="${mode}"]`);
     reveal.setAttribute("aria-expanded", String(show));
-    reveal.textContent = show ? "收起答案" : mode === "rules" ? "揭示规则计算" : "揭示计数过程";
+    reveal.textContent = show ? "收起答案" : mode === "rules" ? "揭示规则计算" : "揭示剪枝图";
     get(reveal.getAttribute("aria-controls")).hidden = !show;
     renderBaskets(show);
     const result = mode === "rules" ? renderRules(show) : renderPruning(show);
-    if (announce) get("announcement").textContent = show ? result : get(mode === "rules" ? "rule-prompt" : "prune-prompt").textContent;
+    if (announce) get("announcement").textContent = result;
   }
 
   for (const button of document.querySelectorAll("[data-mode]")) {
@@ -326,13 +430,18 @@
   }
   for (const button of document.querySelectorAll("[data-direction]")) {
     button.addEventListener("click", () => {
+      if (state.direction === button.dataset.direction) return;
       state.direction = button.dataset.direction;
+      state.revealed.rules = false;
       render(true);
     });
   }
   for (const button of document.querySelectorAll("[data-minimum]")) {
     button.addEventListener("click", () => {
-      state.minimum = Number(button.dataset.minimum);
+      const minimum = Number(button.dataset.minimum);
+      if (state.minimum === minimum) return;
+      state.minimum = minimum;
+      state.revealed.prune = false;
       render(true);
     });
   }
