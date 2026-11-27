@@ -14,10 +14,10 @@ estimated_minutes: 45
 assessment_tags: [任务辨析, 数据准备, 算法比较, 结果解释]
 labs: [lab-06-clustering]
 figures: [14-clustering-comparison.svg]
-related_cards: [data-lifecycle-governance, probability-uncertainty, ml-evaluation, 13-database, 15-data-visualization, 17-machine-learning]
+related_cards: [data-lifecycle-governance, probability-uncertainty, ml-evaluation, 13-database, 15-data-visualization, 17-machine-learning, 19-recommend-system]
 related_deep: []
 related_visualizations: [clustering]
-last_reviewed: 2026-08-21
+last_reviewed: 2026-11-27
 ---
 
 # 数据挖掘（Data Mining）
@@ -38,7 +38,7 @@ last_reviewed: 2026-08-21
 
 ### 数据准备
 
-检查缺失值、重复、异常、量纲和采样偏差。距离型算法对尺度敏感，温度与压力等不同量纲直接混用会扭曲结果。
+检查缺失值、重复、异常、量纲和采样偏差。距离型算法（如 KMeans、DBSCAN 的欧氏距离）对尺度敏感，温度与压力等不同量纲直接混用会扭曲结果；而决策树按单个特征阈值切分，对单调缩放天然不敏感。当任务转为关注偏好比例而非总量大小时，可改用余弦相似度（注意区分“单列换单位”与“整条向量缩放”，见 [19 推荐系统：为什么常用余弦而不是欧氏距离](19-recommend-system.md#为什么常用余弦而不是欧氏距离)）。
 
 ### 三类任务
 
